@@ -13,4 +13,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright 2003-2018")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
-[assembly: AssemblyVersion("0.1.0")]
+[assembly: AssemblyVersion("${version}")]
