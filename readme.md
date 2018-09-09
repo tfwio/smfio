@@ -22,6 +22,9 @@ Usage
 
 [TODO: example use-case]
 
+See [branch: smfio.view](https://github.com/tfwio/smfio/tree/smfio.view) for
+the current list-view example.
+
 <!-- See or checkout branch: [smfio.view] for the current example scenario -->
 
 <!--
