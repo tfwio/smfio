@@ -21,7 +21,7 @@
     <AssemblyOriginatorKeyFile>smfio.snk</AssemblyOriginatorKeyFile>
     <DelaySign>False</DelaySign>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
-    <DocumentationFile>bin\$(Platform)\$(Configuration)\gen.snd.midi.xml</DocumentationFile>
+    <DocumentationFile>$(SolutionDIr)/../build/$(Platform)-$(Configuration)/gen.snd.midi.xml</DocumentationFile>
     <OutputPath>$(SolutionDIr)/../build/$(Platform)-$(Configuration)/</OutputPath>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
