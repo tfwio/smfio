@@ -7,7 +7,6 @@ using System;
 using System.Drawing;
 namespace SMFIOViewer
 {
-	using Keys = System.Windows.Forms.Keys;
 
 	public interface IUi
 	{
