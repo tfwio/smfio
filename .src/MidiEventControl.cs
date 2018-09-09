@@ -18,10 +18,11 @@ namespace SMFIOViewer
 {
   public class MidiEventControl : MidiControlBase
 	{
-		SampleClock timing = new SampleClock();
+		// FIXME: we should be using the master clock; not this.
+    SampleClock timing = new SampleClock(){Rate=44100};
 		
 		#region Registry
-		const string regpath = @"Software\tfoxo\midi";
+		const string regpath = @"Software\tfoxo\smfio";
 		const string reg_list_columns 	= "EventList2.Columns[]";
 		const string reg_list_fontsize 	= "EventList2.FontSize";
 		
@@ -97,6 +98,7 @@ namespace SMFIOViewer
 		public override void FileLoaded(object sender, EventArgs e)
 		{
 			base.FileLoaded(sender, e);
+			
 			if (!UserInterface.MidiParser.MessageHandlers.Contains(GotMidiEventD))
 				UserInterface.MidiParser.MessageHandlers.Add(GotMidiEventD);
 		}
@@ -148,11 +150,12 @@ namespace SMFIOViewer
 		{
 			timing.SolveSamples(
 				ppq,
-				44100,
+				timing.Rate,
 				UserInterface.MidiParser.MidiTimeInfo.Tempo,
 				UserInterface.MidiParser.SmfFileHandle.Division,
 				true
 			);
+		  
 			switch (t)
 			{
 				case MidiMsgType.MetaStr:
