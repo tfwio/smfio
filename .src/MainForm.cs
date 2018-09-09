@@ -21,6 +21,18 @@ namespace SMFIOViewer
     public MainForm() { InitializeComponent(); }
     public MainForm(IList<MasterViewContainer> tasks)
     {
+      mSettings = new TimeConfiguration() {
+        // AUDIO
+        Rate = 44100,
+        Channels = 2,
+        // Latency = 8096,
+        // MIDI
+        Division = 480,
+        Tempo = 120,
+        TimeSignature = new MidiTimeSignature(4, 4, 24, 4),
+        KeySignature = new MidiKeySignature(on.smfio.Common.KeySignatureType.C, true),
+        IsSingleZeroChannel = false
+      };
       InitializeComponent();
       SetProgressDelegate = SetProgress;
       numPpq.NumericUpDownControl.Increment = 24;
@@ -91,9 +103,9 @@ namespace SMFIOViewer
         //     .Tag = new KeyValuePair<int,int>(track.Key, i);
         //
         // }
-//        if (channels.Count > 0) tn.DropDownItems.Insert(0, new ToolStripSeparator());
+        //        if (channels.Count > 0) tn.DropDownItems.Insert(0, new ToolStripSeparator());
         // if (channels.Count > 0) // all channels node // only added to tracks that have channels
-        // {          
+        // {
         //   ToolStripItem another = new ToolStripMenuItem("All Channels", null, Event_ListBoxContextMenuItem);
         //   another.Tag = new KeyValuePair<int,int>(track.Key, -1);
         //   tn.DropDownItems.Insert(0, another);
@@ -107,6 +119,7 @@ namespace SMFIOViewer
     {
       // initialize the views
       this.InitializeEnumerable(tasks);
+      
       MidiTree.InitializeTreeNodes(this.tree, this);
       
       // there is however no player.
@@ -116,6 +129,7 @@ namespace SMFIOViewer
     
     public List<MidiControlBase> ChildrenControls = new List<MidiControlBase>();
     
+    //
     void InitializeEnumerable(IEnumerable<MasterViewContainer> tasks)
     {
       foreach (MasterViewContainer view in tasks)
@@ -158,7 +172,7 @@ namespace SMFIOViewer
     /// <seealso cref="on.smfio.MidiReader.TrackSelectAction()">on.smfio.MidiReader.TrackSelectAction()</seealso>
     Func<string> LoadTracks = null;
     
-    System.Threading.Thread thread;
+    System.Threading.Thread thread; // FIXME: Is this never used?
     
     void StartLoad()
     {

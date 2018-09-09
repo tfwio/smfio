@@ -22,8 +22,8 @@ namespace SMFIOViewer
     
     /// <inheritdoc/>
     public ITimeConfiguration Settings {
-      get { return TimeConfiguration.Instance; }
-    }
+      get { return mSettings; }
+    } internal protected TimeConfiguration mSettings;
     
     // don't know what this was for any more!
     // nor do I get why it is causing an exception
