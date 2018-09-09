@@ -4,9 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # SharpDevelop 5.2
 VisualStudioVersion = 12.0.20827.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "smfio", "..\.src\smfio.csproj", "{96A731DE-D50C-47D8-93FC-DC030D8E3C2E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "smfio", "..\smfio\.src\smfio.csproj", "{96A731DE-D50C-47D8-93FC-DC030D8E3C2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "smfio.view", "..\.src-view\smfio.view.csproj", "{4A63EF1D-7E42-464F-945F-C0CCE5EA81D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "smfio.view", "..\.src\smfio.view.csproj", "{4A63EF1D-7E42-464F-945F-C0CCE5EA81D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

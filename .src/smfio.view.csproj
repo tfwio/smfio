@@ -92,18 +92,18 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\.src\smfio.csproj">
-      <Project>{96a731de-d50c-47d8-93fc-dc030d8e3c2e}</Project>
-      <Name>smfio</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MidiEventControl.resx">
       <DependentUpon>MidiEventControl.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\smfio\.src\smfio.csproj">
+      <Project>{96a731de-d50c-47d8-93fc-dc030d8e3c2e}</Project>
+      <Name>smfio</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
