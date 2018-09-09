@@ -11,13 +11,18 @@ using CliHandler = System.EventHandler;
 
 namespace on.smfio
 {
-  
+	
 	/// <summary>
 	/// Internally, we load three text files from a subdirectory named ‘ext’.
 	/// Controller change values, drum kit names and instrument names.
 	/// </summary>
 	public partial class MidiReader : IDisposable, IMidiParser
 	{
+		const int default_Fs = 44100;
+		const int default_Tempo = 120;
+		const int default_Division = 480;
+		
+		
 		#region INotifyPropertyChanged
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -33,7 +38,7 @@ namespace on.smfio
 		public int SelectedTrackChannel {
 			get { return selectedTrackChannel; }
 			
-		} int selectedTrackChannel  = -1;
+		} int selectedTrackChannel	= -1;
 		/// <inheritdoc/>
 		public DictionaryList<int,MidiMessage> MidiDataList {
 			get { return midiDataList; }
@@ -49,7 +54,7 @@ namespace on.smfio
 		
 		#region POSITION
 
-    public int RunningStatus32 { get; set; } 
+		public int RunningStatus32 { get; set; } 
 
 		public ulong TicksPerQuarterNote {
 			get { return ticksPerQuarterNote; }
@@ -79,7 +84,7 @@ namespace on.smfio
 		public SampleClock MidiTimeInfo {
 			get { return midiTimeInfo; }
 			set { midiTimeInfo = value; }
-		} SampleClock midiTimeInfo = new SampleClock(0,48000,120,480);
+		} SampleClock midiTimeInfo = new SampleClock(0, default_Fs, default_Tempo, default_Division);
 		
 		#endregion
 		#region TIME (int) DivMeasure, DivBar, DivNote, FileDivision
@@ -111,7 +116,7 @@ namespace on.smfio
 		public void GetDivision()
 		{
 			FileDivision = SmfFileHandle.Division;
-      DivQuarter = FileDivision * 4;
+			DivQuarter = FileDivision * 4;
 			DivBar = DivQuarter * 4;
 			DivMeasure = DivBar * 4;
 		}
@@ -151,7 +156,7 @@ namespace on.smfio
 			ParseTrackMeta(metaTrackId);
 			
 			MidiEventDelegate backup = this.MessageHandler;
-      MessageHandler = PARSER_MidiDataList;
+			MessageHandler = PARSER_MidiDataList;
 			ParseAll();
 			this.MessageHandler = backup;
 		}
@@ -295,8 +300,8 @@ namespace on.smfio
 				case (int)MetaMsgU16FF.Cue:
 					// FF07
 				case (int)MetaMsgU16FF.Port:
-          // FF08
-          this.MessageHandler(MidiMsgType.MetaStr, ntrack, position, CurrentIntMessage, CurrentByte, TicksPerQuarterNote, RunningStatus32, false);
+					// FF08
+					this.MessageHandler(MidiMsgType.MetaStr, ntrack, position, CurrentIntMessage, CurrentByte, TicksPerQuarterNote, RunningStatus32, false);
 					//lve.AddItem( c4, MeasureBarTick( TicksPerQuarterNote ), TicksPerQuarterNote.ToString(), ""/*(RunningStatus32 & 0x0F)+1*/, MetaHelpers.MetaNameFF( CurrentIntMessage ) , GetMetaString( position ) );
 					DELTA_Returned = GetMetaNextPos(position);
 					break;
@@ -313,9 +318,9 @@ namespace on.smfio
 				case (int)MetaMsgU16FF.TimeSignature:
 					// FF58
 				case (int)MetaMsgU16FF.KeySignature:
-          // FF59
-          // why is this filtered and no others ? see gettrackmessage
-          this.MessageHandler(MidiMsgType.MetaInf, ntrack, position, CurrentIntMessage, CurrentByte, TicksPerQuarterNote, RunningStatus32, false);
+					// FF59
+					// why is this filtered and no others ? see gettrackmessage
+					this.MessageHandler(MidiMsgType.MetaInf, ntrack, position, CurrentIntMessage, CurrentByte, TicksPerQuarterNote, RunningStatus32, false);
 					DELTA_Returned = GetMetaNextPos(position);
 					break;
 				case (int)MetaMsgU16FF.SystemSpecific:
@@ -359,9 +364,9 @@ namespace on.smfio
 		/// MESSAGE PARSER see 'ParseTrackMeta'
 		public virtual int GetTrackTiming(int ntrack, int position, int delta)
 		{
-			int  DELTA_Returned    = delta;
-			byte CurrentByte       = SmfFileHandle.Get8Bit(ntrack, position);
-			int  CurrentIntMessage = SmfFileHandle.Get16BitInt32(ntrack, position);
+			int	DELTA_Returned		= delta;
+			byte CurrentByte			 = SmfFileHandle.Get8Bit(ntrack, position);
+			int	CurrentIntMessage = SmfFileHandle.Get16BitInt32(ntrack, position);
 			
 			switch (CurrentIntMessage) {
 				case (int)MetaMsgU16FF.Text:
@@ -509,7 +514,7 @@ namespace on.smfio
 		#endregion
 		
 		#region ¿¡WHAT?!
-		///  (¿¡WHAT?!) this is only called on errors
+		///	(¿¡WHAT?!) this is only called on errors
 		/// <inheritdoc/>
 		public int GetOffset(int offset)
 		{
@@ -571,10 +576,10 @@ namespace on.smfio
 			}
 			return i;
 		}
-    
+		
 		#endregion
 		#region READ META TRACK
-    
+		
 		/// <inheritdoc/>
 		public void ParseTrackMeta(int tk)
 		{
@@ -590,7 +595,7 @@ namespace on.smfio
 		}
 		
 		#endregion
-		#region READ 1   TRACK
+		#region READ 1	 TRACK
 		
 		/// <summary>
 		/// Parse the selected track
@@ -615,11 +620,11 @@ namespace on.smfio
 			
 			return SmfFileHandle.Tracks[SelectedTrackNumber].track.Length;
 		}
-    #endregion
-    #region READ (PARSE) ALL TRACKS
+		#endregion
+		#region READ (PARSE) ALL TRACKS
 
-    // when IsTrackSelected, the total number of ticks in the track.
-    long totlen = 0;
+		// when IsTrackSelected, the total number of ticks in the track.
+		long totlen = 0;
 
 		/// <summary>
 		/// Parse all tracks to mididatalist
@@ -652,9 +657,9 @@ namespace on.smfio
 //			return SmfFileHandle.Tracks[SelectedTrackNumber].track.Length;
 		}
 
-    #region PARSER_MidiDataList (DEFAULT PARSER!)
+		#region PARSER_MidiDataList (DEFAULT PARSER!)
 
-    void PARSER_MidiDataList(MidiMsgType t, int track, int offset, int imsg, byte bmsg, ulong ppq, int rse, bool isrse)
+		void PARSER_MidiDataList(MidiMsgType t, int track, int offset, int imsg, byte bmsg, ulong ppq, int rse, bool isrse)
 		{
 			switch (t)
 			{
