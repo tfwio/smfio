@@ -20,7 +20,7 @@ namespace on.smfio
 		/// <returns>True if delta-time is contained within sample ranges min and max</returns>
 		public bool IsContained(SampleClock c, Loop b, double min, double max)
 		{
-			double samplePos = c.SolveSamples(DeltaTime).Samples32;
+			double samplePos = c.SolveSamples(Frame).Samples32;
 			return samplePos >= min && samplePos < max && samplePos < b.End;
 		}
 		/// <summary>
@@ -31,7 +31,7 @@ namespace on.smfio
 		/// <returns>True if delta-time is contained within sample ranges min and max</returns>
 		public bool IsContained(SampleClock c, Loop b)
 		{
-			double samplePos = c.SolveSamples(DeltaTime).Samples32;
+			double samplePos = c.SolveSamples(Frame).Samples32;
 			return samplePos >= b.Begin && samplePos < b.End;
 		}
 		#endregion
@@ -45,31 +45,27 @@ namespace on.smfio
 		public byte ChannelBit { get { return Convert.ToByte(Message & 0x000F); } }
 		public byte MessageBit { get { return Convert.ToByte(Message & 0x00F0); } }
 		
-		public int Message {
-			get { return message; } set { message = value; }
-		} int message;
+    public int Message { get; set; } 
 		
-		public ulong DeltaTime {
-			get { return deltaTime; } set { deltaTime = value; }
-		} ulong deltaTime;
+    /// <summary>Not quite sure this is the best name for this guy.</summary>
+    public ulong Frame { get; set; } 
 		
-		public byte[] Data {
-			get { return data; } set { data = value; }
-		} byte[] data;
+    public byte[] Data { get; set; } 
 
 		#endregion
 		
 		/// <summary>
 		/// </summary>
-		/// <param name="delta"></param>
-		/// <param name="msgType">Typically 8, 9, A, B and C</param>
-		/// <param name="data">Must be a length of 4 bytes.</param>
-		public MidiMessage(MidiMsgType t, ulong delta, int message, params byte[] data)
+    /// <param name="pMsgType">Typically 8, 9, A, B and C</param>
+		/// <param name="pFrame"></param>
+    /// <param name="pIntMessage">Must be a length of 4 bytes.</param>
+		/// <param name="pMsgData">Must be a length of 4 bytes.</param>
+		public MidiMessage(MidiMsgType pMsgType, ulong pFrame, int pIntMessage, params byte[] pMsgData)
 		{
-			this.Data = data;
-			this.DeltaTime = delta;
-			this.Message = message;
-			this.messageFlag = t;
+			this.Frame = pFrame;
+			this.messageFlag = pMsgType;
+      this.Message = pIntMessage;
+      this.Data = pMsgData;
 		}
 	}
 

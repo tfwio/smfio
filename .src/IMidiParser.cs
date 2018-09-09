@@ -52,7 +52,7 @@ namespace on.smfio
 		
 		#region DATA standard global
 		
-		Stack<MidiMessage> TempoChanges { get; }
+		List<TempoChange> TempoChanges { get; }
 		
 		MidiKeySignature KeySignature { get;set; }
 		
@@ -112,6 +112,9 @@ namespace on.smfio
 		
 		/// <summary>
 		/// Get default META-data information such as ITimeConfiguration.
+		/// 
+		/// This is likely a simple pre-scan for meta information such
+		/// scanning for tempo-changes, time-signatures and so forth.
 		/// </summary>
 		/// <param name="trackNo"></param>
 		void ParseTrackMeta(int trackNo);
@@ -121,6 +124,8 @@ namespace on.smfio
 		#endregion
 		
 		#region PARSE TRACK event
+		
+    event EventHandler<TempoChangedEventArgs> TempoChangedEvent;
 		
 		event EventHandler<MidiMessageEvent> ProcessMidiMessage;
 		

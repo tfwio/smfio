@@ -28,7 +28,8 @@ namespace on.smfio.util
     // =========================================
     // IAudioClock
     // =========================================
-    
+
+    // FIXME: RATE SHOULD NOT BE SET HERE!    
     /// <inheritdoc/>
     public int Rate { get; set; }
     
@@ -96,7 +97,14 @@ namespace on.smfio.util
     
     /// <inheritdoc/>
     public TimeSpan Time {
-      get { return TimeSpan.FromSeconds(Samples / Rate); }
+      get {
+        // this would likely break down if SampleRate is not set (0)
+        // in which case the following yields double.NaN
+        // double tvalue = Samples / Rate;
+        // return TimeSpan.FromSeconds(tvalue == double.NaN ? 0.0: tvalue);
+        // double tvalue = Samples / Rate; // tvalue != double.NaN ? tValue : 0.0
+        return TimeSpan.FromSeconds(Samples / Rate);
+      }
     }
     
     /// <inheritdoc/>
@@ -154,6 +162,9 @@ namespace on.smfio.util
     /// <inheritdoc/>
     public double Tick { get { return (Division * (QuarterHelperInhibited * Division)) % Division; } }
     
+    /// <summary>
+    /// Pulses (aka: Frames)
+    /// </summary>
     /// See: <see cref="SamplesFromPulses(double,double,int,int)"/>
     public double Pulses {
       get { return pulses; }
@@ -212,33 +223,33 @@ namespace on.smfio.util
     }
     
     /// <inheritdoc/>
-    public SampleClock SolvePPQ(double samples, ITimeConfiguration config)
+    public SampleClock SolvePPQ(double pSamples, ITimeConfiguration config)
     {
       Rate                   = config.Rate;
       Tempo                  = config.Tempo;
       Division               = config.Division;
       IsQuarterOffsetInTicks = true;
-      Samples                = samples;
+      Samples                = pSamples;
       return this;
     }
     
     // Samples
     
     /// <inheritdoc/>
-    public SampleClock SolveSamples(double pulses)
+    public SampleClock SolveSamples(double pPulseFrame)
     {
-      Pulses = pulses;
+      Pulses = pPulseFrame;
       return this;
     }
     
     /// <inheritdoc/>
-    public SampleClock SolveSamples(double pulses, int rate, double tempo, int division, bool inTicks)
+    public SampleClock SolveSamples(double pPuseFrame, int pRate, double pTempo, int pDivision, bool pIsInTicks)
     {
-      Rate = rate;
-      Tempo = tempo;
-      Division = division;
-      IsQuarterOffsetInTicks = inTicks;
-      Pulses = pulses;
+      Rate = pRate;
+      Tempo = pTempo;
+      Division = pDivision;
+      IsQuarterOffsetInTicks = pIsInTicks;
+      Pulses = pPuseFrame;
       return this;
     }
 

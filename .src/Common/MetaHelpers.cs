@@ -168,7 +168,8 @@ namespace on.smfio.Common
 		static public string meta_FF20(smf_mtrk track, int pos1) { return string.Format("{0}",track.track[pos1]); }
 		
 		const string msg_time_ms_pqn = "mspqn: {0:###,###,###,##0}/{1:###,###,###,##0} = {2}";
-		/// mSpQ
+		
+		/// string format milliseconds per quarter
 		static public string meta_FF51(int num) { return string.Format(msg_time_ms_pqn, 60000000, num, 60000000/num ); }
 		
 		/// ?

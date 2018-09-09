@@ -11,6 +11,14 @@ namespace on.smfio
 	/// type of midi event being processed by the actual int/byte msg.
 	/// </summary>
 	public enum MidiMsgType {
-		Undefined, MetaInf, MetaStr, System, SysCommon, Channel, CC, NoteOn, NoteOff,
+		Undefined,
+		MetaInf,
+		MetaStr,
+		System,
+		SysCommon,
+		Channel,
+		CC,
+		NoteOn,
+		NoteOff,
 	}
 }

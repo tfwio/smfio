@@ -28,7 +28,7 @@ namespace on.smfio
     
     public struct MidiEvent
     {
-      public int Track,Offset,Delta,Ppq;
+      public int Track, Offset, Delta, Ppq;
       public byte[] Data;
       public byte ChMsg { get { return Convert.ToByte(Data[0] & 0xF0); } }
       public byte ChByte { get { return Convert.ToByte(Data[0] & 0x0F); } }

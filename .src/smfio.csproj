@@ -119,6 +119,8 @@
     <Compile Include="MidiReader.Resources.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleClock.cs" />
+    <Compile Include="TempoChange.cs" />
+    <Compile Include="TempoChangedEventArgs.cs" />
     <Compile Include="xg\XgNrpn.cs" />
   </ItemGroup>
   <ItemGroup>
