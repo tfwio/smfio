@@ -53,7 +53,7 @@ Though I tend to use a modest machine, therefore mostly SharpDevelop and VisualS
 ### BUILD SCRIPT(S)
 
 The build scripts are configured to MSBUILD from Visual Studio 2017 Community Edition,  
-Commented msbuild_path likely points to Visual Studio 2017 Community Edition.
+Commented msbuild_path likely points to Visual Studio 2015 CE.
 
 Check your setup and modify the batch script(s) accordingly.
 
