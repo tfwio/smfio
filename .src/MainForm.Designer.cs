@@ -134,7 +134,7 @@ namespace SMFIOViewer
       this.listBox1.Name = "listBox1";
       this.listBox1.Size = new System.Drawing.Size(184, 148);
       this.listBox1.TabIndex = 17;
-      this.listBox1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Event_MidiChangeTrack_MenuItemSelected);
+      this.listBox1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Event_MidiChangeTrack);
       // 
       // listBoxContextMenuStrip
       // 

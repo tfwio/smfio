@@ -18,16 +18,15 @@ namespace SMFIOViewer
   /// </summary>
   public partial class MainForm : Form
   {
-    public MainForm()
-    {
-      InitializeComponent();
-    }
+    public MainForm() { InitializeComponent(); }
     public MainForm(IList<MasterViewContainer> tasks)
     {
       InitializeComponent();
       SetProgressDelegate = SetProgress;
       numPpq.NumericUpDownControl.Increment = 24;
       this.InitializeModestForm(tasks);
+      numPpq.NumericUpDownControl.ReadOnly = true;
+      numTempo.NumericUpDownControl.ReadOnly = true;
     }
     
     #region Action_PlayerUpDown2Ppq
@@ -40,20 +39,7 @@ namespace SMFIOViewer
       Action_PlayerUpDown2Ppq();
     }
     #endregion
-    #region Action_Player_Tempo2UpDown controls
-    void Action_Player_Tempo2UpDown()
-    {
-      numTempo.Value = Convert.ToDecimal(Settings.Tempo);
-    }
-    void Action_Player_UpDown2Tempo()
-    {
-      Settings.Tempo = Convert.ToDouble(numTempo.Value);
-    }
-    void Event_PlayerUpDown2Tempo(object sender, EventArgs e)
-    {
-      Action_Player_UpDown2Tempo();
-    }
-    #endregion
+    
     #region MIDI (Clear) Memory
     /// <remarks>Action_ClearMemory: Reset (ListBox) listBox1 and (ToolStripMenuItem) btn_pick_track bound to Midi</remarks>
     void Event_MidiClearMemory(object sender, EventArgs e)
@@ -61,7 +47,7 @@ namespace SMFIOViewer
       Action_ClearMemory();
     }
     
-    /// <summary>Clear Midi (Parsed) Memory, Stop Playback, Unload Midi Track Lists, Etc,,</summary>
+    /// <summary>Clear Midi (Parsed) Memory, Unload Midi Track Lists, Etc,,</summary>
     /// <remarks>Reset (ListBox) listBox1 and (ToolStripMenuItem) btn_pick_track bound to Midi</remarks>
     void Action_ClearMemory()
     {
@@ -70,10 +56,7 @@ namespace SMFIOViewer
     }
     
     #endregion
-    void Event_AddChannelMapping(object sender, EventArgs e)
-    {
-      MessageBox.Show(string.Format(sender.ToString()));
-    }
+    
     void Event_MidiActiveTrackChanged_ListBoxItemSelected(object o, EventArgs e)
     {
       #if DEBUG
@@ -88,6 +71,7 @@ namespace SMFIOViewer
       this.toolStripProgressBar1.Maximum = 0;
       this.toolStripProgressBar1.Enabled = false;
     }
+    
     void TracksToListBoxContext()
     {
       listBoxContextMenuStrip.Items.Clear();
@@ -107,7 +91,7 @@ namespace SMFIOViewer
         //     .Tag = new KeyValuePair<int,int>(track.Key, i);
         //
         // }
-        if (channels.Count > 0) tn.DropDownItems.Insert(0, new ToolStripSeparator());
+//        if (channels.Count > 0) tn.DropDownItems.Insert(0, new ToolStripSeparator());
         // if (channels.Count > 0) // all channels node // only added to tracks that have channels
         // {          
         //   ToolStripItem another = new ToolStripMenuItem("All Channels", null, Event_ListBoxContextMenuItem);
@@ -119,32 +103,23 @@ namespace SMFIOViewer
       channels = null;
     }
     
-    //    #endregion
-    
     void InitializeModestForm(IList<MasterViewContainer> tasks)
     {
-      // ofd_config.Filter = sfd_config.Filter = Strings.FileFilter_VstConfig;
-      // this.InitialiseDirectSoundControls();
-      
-      // // construct the master container
-      // this.vstContainer = new NAudioVstContainer(this);
-      // this.vstContainer.VstPlayer.BufferCycle += Event_BufferCycle_to_Label2;
-      // this.vstContainer.VstPlayer.DriverId = (this.comboBoxDirectSound.SelectedItem as DirectSoundDeviceInfo).Guid;
-      
       // initialize the views
       this.InitializeEnumerable(tasks);
       MidiTree.InitializeTreeNodes(this.tree, this);
       
-      this.numTempo.ValueChanged += Event_PlayerUpDown2Tempo;
-      this.numPpq.ValueChanged += this.Event_PlayerUpDown2Ppq;
-      // this.Event_ConfigOpenDefault(null, null);
+      // there is however no player.
+      // this.numTempo.ValueChanged += Event_PlayerUpDown2Tempo;
+      // this.numPpq.ValueChanged += this.Event_PlayerUpDown2Ppq;
     }
     
     public List<MidiControlBase> ChildrenControls = new List<MidiControlBase>();
     
     void InitializeEnumerable(IEnumerable<MasterViewContainer> tasks)
     {
-      foreach (MasterViewContainer view in tasks) {
+      foreach (MasterViewContainer view in tasks)
+      {
         MidiControlBase control = view.GetView();
         control.SuspendLayout();
         this.ChildrenControls.Add(control);
@@ -161,9 +136,10 @@ namespace SMFIOViewer
       // btn_pick_track.Image = Icons.midi_in;
       // btn_pick_track.Image = fam3.famfam_silky.cursor;
       #if !DEBUG
-      //      toolStripProgressBar1.Visible = false;
+      toolStripProgressBar1.Visible = false;
       #endif
     }
+    
     public void ShowElement(object sender, EventArgs e)
     {
       foreach (Control ctl in ChildrenControls) {
@@ -174,10 +150,14 @@ namespace SMFIOViewer
       ((sender as ToolStripMenuItem).Tag as Control).Invalidate();
     }
     
-    
     #region Thread Helpers for MIDI Track Loader
     
+    /// <summary>
+    /// This is a placeholder for midiFile.TrackSelectAction
+    /// </summary>
+    /// <seealso cref="on.smfio.MidiReader.TrackSelectAction()">on.smfio.MidiReader.TrackSelectAction()</seealso>
     Func<string> LoadTracks = null;
+    
     System.Threading.Thread thread;
     
     void StartLoad()
@@ -197,8 +177,6 @@ namespace SMFIOViewer
     }
     
     #endregion
-
-    
     
   }
   

@@ -16,12 +16,21 @@ namespace SMFIOViewer
   {
     OpenFileDialog MidiFileDialog = new OpenFileDialog();
     
-    int trackLen { get { return this.midiFile.SmfFileHandle[midiFile.SelectedTrackNumber].track.Length; } }
+    public IMidiParser MidiParser {
+      get { return midiFile; }
+    } protected internal on.smfio.MidiReader midiFile;
+    
+    /// <inheritdoc/>
+    public ITimeConfiguration Settings {
+      get { return TimeConfiguration.Instance; }
+    }
     
     // don't know what this was for any more!
     // nor do I get why it is causing an exception
     // (hence the try/catch-block in SetProgress(int))
     int cycles = 0, cycle = 12;
+    
+    int trackLen { get { return this.midiFile.SmfFileHandle[midiFile.SelectedTrackNumber].track.Length; } }
     
     void SetProgress(int offset)
     {
@@ -31,28 +40,6 @@ namespace SMFIOViewer
       } catch {
       }
     }
-    
-    delegate void ProcessInt(int param);
-    ProcessInt SetProgressDelegate;
-    
-    void ShowProgress(MidiMsgType t, int track, int offset, int imsg, byte bmsg, ulong ppq, int rse, bool isrse)
-    {
-      if (CanRaiseEvents) SetProgress(offset);
-      try {
-        Invoke(SetProgressDelegate, new object[]{offset});
-      } catch {
-        MessageBox.Show("Error invoking...");
-      }
-    }
-
-    
-    public IMidiParser MidiParser {
-      get { return midiFile; }
-    }
-    
-    protected internal on.smfio.MidiReader midiFile;
-    /// <inheritdoc/>
-    public ITimeConfiguration Settings { get { return TimeConfiguration.Instance; } }
     
     #region MIDI FILE event
     
@@ -74,19 +61,19 @@ namespace SMFIOViewer
     
     #endregion
     
-    // internal event EventHandler Event_MidiClearMemory;
-    // internal event EventHandler Event_MidiFileLoaded;
     void Event_MidiFileLoaded(object sender, EventArgs e)
     {
       TracksToToolStripMenu();
       TracksToListBox();
       TracksToListBoxContext();
       MidiTree.TracksToTreeView(this);
+      
       LoadTracks = midiFile.TrackSelectAction;
     }
     
     #region MIDI ListBox (Event_MidiChangeTrack_MenuItemSelected,Event_FormToggleMidiListBox)
-    void Event_MidiChangeTrack_MenuItemSelected(object sender, EventArgs e)
+    
+    void Event_MidiChangeTrack(object sender, EventArgs e)
     {
       cycles = 0;
       cycle = trackLen > 230 ? 1 : (int)(trackLen * 0.07f);
@@ -94,33 +81,41 @@ namespace SMFIOViewer
       this.toolStripProgressBar1.Enabled = true;
       
       OnClearMidiTrack();
+      
       if (midiFile == null)
         return;
-      if (sender is ToolStripMenuItem)
-        midiFile.SelectedTrackNumber = (int)(sender as ToolStripMenuItem).Tag;
+      
+      var toolStripMenuItem = sender as ToolStripMenuItem;
+      if (toolStripMenuItem != null)
+        midiFile.SelectedTrackNumber = (int)toolStripMenuItem.Tag;
+      
       else if (sender is ListBox && listBox1.SelectedIndex > -1)
         midiFile.SelectedTrackNumber = listBox1.SelectedIndex;
+      
     }
+    
+    // FIXME: not used
     void Event_FormToggleMidiListBox(object sender, EventArgs e)
     {
       this.splitContainer1.Panel1Collapsed = !this.splitContainer1.Panel1Collapsed;
     }
+    
     #endregion
-    #region MIDI ListBox (TracksToListBox,TracksToToolStripMenu)
+    
     void TracksToToolStripMenu()
     {
       foreach (KeyValuePair<int,string> track in midiFile.GetMidiTrackNameDictionary()) {
-        var tn = new ToolStripMenuItem(track.Value, null, Event_MidiChangeTrack_MenuItemSelected);
+        var tn = new ToolStripMenuItem(track.Value, null, Event_MidiChangeTrack);
         tn.Tag = track.Key;
         btn_pick_track.DropDownItems.Add(tn);
       }
     }
+    
     void TracksToListBox()
     {
       listBox1.DataSource = btn_pick_track.DropDownItems;
       listBox1.DisplayMember = "Text";
     }
-    #endregion
     
     public void Action_MidiFileOpen()
     {
@@ -179,6 +174,25 @@ namespace SMFIOViewer
       Action_MidiFileOpen();
       //      this.midiPianoView1.ParserUI = this;
     }
+    
+    #region Progress --- is this working?
+    
+    delegate void ProcessInt(int param);
+    ProcessInt SetProgressDelegate;
+    
+    void ShowProgress(MidiMsgType t, int track, int offset, int imsg, byte bmsg, ulong ppq, int rse, bool isrse)
+    {
+      if (CanRaiseEvents) SetProgress(offset);
+      try {
+        Invoke(SetProgressDelegate, new object[]{offset});
+      } catch {
+        MessageBox.Show("Error invoking...");
+      }
+    }
+
+    #endregion
+
+
   }
   
 }
