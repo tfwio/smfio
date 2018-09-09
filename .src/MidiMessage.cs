@@ -20,7 +20,7 @@ namespace on.smfio
 		/// <returns>True if delta-time is contained within sample ranges min and max</returns>
 		public bool IsContained(SampleClock c, Loop b, double min, double max)
 		{
-			double samplePos = c.SolveSamples(DeltaTime).GetSamples32();
+			double samplePos = c.SolveSamples(DeltaTime).Samples32;
 			return samplePos >= min && samplePos < max && samplePos < b.End;
 		}
 		/// <summary>
@@ -31,7 +31,7 @@ namespace on.smfio
 		/// <returns>True if delta-time is contained within sample ranges min and max</returns>
 		public bool IsContained(SampleClock c, Loop b)
 		{
-			double samplePos = c.SolveSamples(DeltaTime).GetSamples32();
+			double samplePos = c.SolveSamples(DeltaTime).Samples32;
 			return samplePos >= b.Begin && samplePos < b.End;
 		}
 		#endregion

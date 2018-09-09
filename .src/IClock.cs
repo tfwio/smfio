@@ -85,14 +85,14 @@ namespace on.smfio.util
     /// </remarks>
     double Samples { get; set; }
 
-    /// <summary>Convert.ToInt32; Why don't we Floor the samples here?</summary>
+    /// <summary>Number of elapsed samples.</summary>
     /// <seealso cref="Samples"/>
     /// <seealso cref="Samples32Floor"/>
-    int GetSamples32();
-
+    int Samples32 { get; }
+    
     /// <summary>Floored</summary>
     /// <seealso cref="Samples"/>
-    /// <seealso cref="GetSamples32()"/>
+    /// <seealso cref="Samples32"/>
     int Samples32Floor { get; }
 		
     /// <summary>SecondsPerQuarter * Rate</summary>

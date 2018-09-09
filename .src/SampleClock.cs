@@ -38,12 +38,22 @@ namespace on.smfio.util
       set { pulses = (samples = value) / (60 / Tempo * Rate) * Division; }
     } double samples;
     
+    
+    #if TESTFLOAT
+    /// <inheritdoc/>
+    public int Samples32 { get { return Convert.ToInt32(samples+0.5f); } }
+    
+    // I see no reason for this to be asserted considering the general 
+    // result *should* yield the same human experience.
+    // this section is here for a example test-plot.
+    public int Samples32Floor { get { return Convert.ToInt32(Math.Floor(samples+0.5f)); } }
+    #else
+    
     /// <inheritdoc/>
     public int Samples32 { get { return Convert.ToInt32(samples); } }
     
-    /// <inheritdoc/>
     public int Samples32Floor { get { return Convert.ToInt32(Math.Floor(samples)); } }
-
+    #endif
     // =========================================
     // IMidiClock
     // =========================================
@@ -213,12 +223,6 @@ namespace on.smfio.util
     }
     
     // Samples
-    
-    /// <inheritdoc/>
-    public int GetSamples32()
-    {
-      throw new NotImplementedException();
-    }
     
     /// <inheritdoc/>
     public SampleClock SolveSamples(double pulses)
