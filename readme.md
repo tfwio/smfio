@@ -8,14 +8,20 @@ Reads normative [SMF-1.0] of ~1996.
 ALPHA NOTES
 ----------------
 
+**BIG VS LITTLE ENDIAN**
+
 big-endian works (Windows architectures), little-endian has
 yet to be looked at on such an architecture.  
-*Help is welcome in this area! –as notes will be prepared for to assist tackling
-this simple issue.*
+*Help is welcome in this area! –as notes will be prepared to assist tackling
+this simple matter.*
 
 More consolidation, documentation and examples are needed geared towards read,
 write and export of MIDI (smf) Formats 1-3 in addition to 'filtering' or applying
 effects to a given channel/range.
+
+**SET TEMPO**
+
+Needs tempo changes to project proper sample positions `HH:MM:SS.TTTTT`.
 
 Usage
 ------
