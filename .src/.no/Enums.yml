@@ -1,0 +1,75 @@
+MidiHexTypes:
+    - Type: Text
+      Hex: 00
+      Int: 0
+
+    - Type: Text
+      Hex: 01
+      Int: 1
+
+    - Type: Copyright
+      Hex: 02
+      Int: 2
+
+    - Type: SequenceName
+      Hex: 03
+      Int: 3
+
+    - Type: InstrumentName
+      Hex: 04
+      Int: 4
+
+    - Type: Lyric
+      Hex: 05
+      Int: 5
+
+    - Type: Marker
+      Hex: 06
+      Int: 6
+
+    - Type: Cue
+      Hex: 07
+      Int: 7
+
+    - Type: Chanel
+      Hex: 08
+      Int: 8
+
+    - Type: Port
+      Hex: 09
+      Int: 9
+
+    - Type: Tempo
+      Hex: 51
+      Int: 81
+
+    - Type: SMPTE
+      Hex: 54
+      Int: 84
+
+    - Type: TimeSignature
+      Hex: 58
+      Int: 88
+
+    - Type: KeySignature
+      Hex: 59
+      Int: 89
+
+    - Type: EndOfTrack
+      Hex: 2f
+      Int: 47
+
+    - Type: SystemExclusive
+      Hex: f0
+      Int: 240
+
+    - Type: SystemSpecific
+      Hex: 7f
+      Int: 127
+
+    - Type: Unknown
+      Hex: a0
+      Int: 160
+      Optional: true
+
+
