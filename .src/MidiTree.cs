@@ -10,18 +10,22 @@ namespace SMFIOViewer
 {
 	static class MidiTree
 	{
-		static TreeNode NodeMidi;
+		internal static TreeNode NodeMidi, NodeTempo;
 		static public void InitializeTreeNodes(TreeView tree, IMidiParserUI ui)
 		{
 			WindowsInterop.WindowsTheme.HandleTheme(tree,true);
 			tree.Nodes.Clear();
-			NodeMidi=new TreeNode("MIDI");
-			
-			tree.Nodes.Add(NodeMidi);
+      NodeMidi=new TreeNode("MIDI");
+      NodeTempo=new TreeNode("TEMPO");
+      NodeTempo.ToolTipText = "set tempo events";
+      tree.Nodes.Add(NodeMidi);
+			tree.Nodes.Add(NodeTempo);
 		}
 		static public void TracksToTreeView(IMidiParserUI ui)
 		{
-			NodeMidi.Nodes.Clear();
+      NodeMidi.Nodes.Clear();
+			NodeTempo.Nodes.Clear();
+			
 			if (ui.MidiParser==null) return;
 			if (ui.MidiParser.SmfFileHandle==null) return;
 			if (ui.MidiParser.SmfFileHandle.NumberOfTracks==0) return;
@@ -31,6 +35,18 @@ namespace SMFIOViewer
 				var tn = new TreeNode(string.Format("{0}",/*Strings.Filter_MidiTrack*/ i )); //Event_MidiChangeTrack_MenuItemSelected
 				tn.Tag = i;
 				NodeMidi.Nodes.Add( tn );
+			}
+			
+			for (int i = 0; i < ui.MidiParser.TempoChanges.Count; i++)
+			{
+			  var T = ui.MidiParser.TempoChanges[i];
+			  var C = new on.smfio.util.SampleClock(0,44100,T.TempoValue,ui.MidiParser.SmfFileHandle.Division){Rate=44100};
+			  // C.SolveSamples();
+			  string F = string.Format(
+			    "TK: {0}, TPQ: {1}, BPM: ~{2:0.00000}, MSPQ: {3}",
+			    T.TrackID, T.TPQ, T.TempoValue, T.ReferenceValue
+			   );
+			  NodeTempo.Nodes.Add(new TreeNode(F));
 			}
 		}
 		
