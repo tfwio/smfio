@@ -20,7 +20,7 @@ namespace on.smfio
 		/// <returns>True if delta-time is contained within sample ranges min and max</returns>
 		public bool IsContained(SampleClock c, Loop b, double min, double max)
 		{
-			double samplePos = c.SolveSamples(Frame).Samples32;
+			double samplePos = c.SolveSamples(Pulse).Samples32;
 			return samplePos >= min && samplePos < max && samplePos < b.End;
 		}
 		/// <summary>
@@ -31,7 +31,7 @@ namespace on.smfio
 		/// <returns>True if delta-time is contained within sample ranges min and max</returns>
 		public bool IsContained(SampleClock c, Loop b)
 		{
-			double samplePos = c.SolveSamples(Frame).Samples32;
+			double samplePos = c.SolveSamples(Pulse).Samples32;
 			return samplePos >= b.Begin && samplePos < b.End;
 		}
 		#endregion
@@ -48,7 +48,7 @@ namespace on.smfio
     public int Message { get; set; } 
 		
     /// <summary>Not quite sure this is the best name for this guy.</summary>
-    public ulong Frame { get; set; } 
+    public ulong Pulse { get; set; } 
 		
     public byte[] Data { get; set; } 
 
@@ -57,12 +57,12 @@ namespace on.smfio
 		/// <summary>
 		/// </summary>
     /// <param name="pMsgType">Typically 8, 9, A, B and C</param>
-		/// <param name="pFrame"></param>
+		/// <param name="pPulse">Pulses (timing foundation)</param>
     /// <param name="pIntMessage">Must be a length of 4 bytes.</param>
 		/// <param name="pMsgData">Must be a length of 4 bytes.</param>
-		public MidiMessage(MidiMsgType pMsgType, ulong pFrame, int pIntMessage, params byte[] pMsgData)
+		public MidiMessage(MidiMsgType pMsgType, ulong pPulse, int pIntMessage, params byte[] pMsgData)
 		{
-			this.Frame = pFrame;
+			this.Pulse = pPulse;
 			this.messageFlag = pMsgType;
       this.Message = pIntMessage;
       this.Data = pMsgData;
