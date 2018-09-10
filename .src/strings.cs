@@ -1,6 +1,7 @@
 using System;
 namespace on.smfio {
   class StringRes {
+    internal const string STRING_APP_NAME = "smfio";
     // used
     internal const string STRING_MTHD_TOSTRING = "‘{0}’ — size “{1:##,###,###}” — fmt: “{2}” — div : {3} | 0x{3:X} ] — ntk : {4}";
     internal const string STRING_META_FF58_FMT = "{0}/{1}, clocks: {2}, 32nds:{3}";

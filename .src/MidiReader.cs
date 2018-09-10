@@ -611,23 +611,13 @@ namespace on.smfio
           break;
         case MidiMsgType.MetaInf:
           var midiMsg = new MidiMetaMessage(ppq,imsg,GetMetaData(offset));
-          // if (imsg == (int)MetaMsg32.Tempo)
-          // {
-          //   this.tempoChanges.Insert(0, midiMsg);
-          // }
           midiDataList.AddV(SelectedTrackNumber,midiMsg);
           break;
         case MidiMsgType.System:
         case MidiMsgType.SysCommon:
-          if (imsg==0xFF7F)
-          {
-            midiDataList.AddV(SelectedTrackNumber,new MidiSysexMessage(ppq,imsg,GetMetaValue(offset)));
-          }
-          else if (imsg==0xF0)
-          {
-            Debug.Print("0xF0 {0} {1}",isrse, GetEventValue(offset).StringifyHex());
-            midiDataList.AddV(SelectedTrackNumber,new MidiSysexMessage(ppq,imsg,GetEventValue(offset)));
-          }
+          if (imsg==0xFF7F) midiDataList.AddV(SelectedTrackNumber,new MidiSysexMessage(ppq,imsg,GetMetaValue(offset)));
+          else if (imsg==0xF0) midiDataList.AddV(SelectedTrackNumber,new MidiSysexMessage(ppq,imsg,GetEventValue(offset)));
+          else ErrorMessage("Improper MidiMsgType classification?");
           break;
         default:
           if (isrse) MidiDataList.AddV(SelectedTrackNumber,new MidiChannelMessage(ppq,rse,GetRseEventValue(offset)));
@@ -669,7 +659,7 @@ namespace on.smfio
         totlen = ParseTrack();
         return StringTrackInfo;
       } else
-        return "InterMIDI"; // FIXME: "InterMIDI"?
+        return StringRes.STRING_APP_NAME;
     }
 
     #endregion
@@ -740,7 +730,7 @@ namespace on.smfio
     #region STR track info, reader status (caption/tooltip)
 
     public const string Resource_TrackLoaded =
-      "smfio track — Format: v{11}, " +
+      "{13} MIDI Track — Format: v{11}, " +
       "Track: {0,3:000},  PPQ: {3}, Tempo: {4}\n" +
       "TSig: {5}/{6} Clocks: {7}, {8} 32nds, KeySig: {9} {10}";
 
@@ -760,7 +750,8 @@ namespace on.smfio
           /*  9 */ TimeSignature.ThirtySeconds,
           /* 10 */ KeySignature.KeyType,
           /* 11 */ KeySignature.IsMajor ? "Major" : "Minor",
-          /* 12 */ SmfFileHandle.Format
+          /* 12 */ SmfFileHandle.Format,
+          /* 13 */ StringRes.STRING_APP_NAME
          );
       }
     }
