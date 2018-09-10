@@ -1,5 +1,4 @@
-﻿#region User/License
-// oio * 2005-11-12 * 4:19 PM
+﻿// oio * 2005-11-12 * 4:19 PM
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
@@ -17,12 +16,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-#endregion
-#region Using
-using System;
-using MetaMsg32 = on.smfio.Common.MetaMsg32;
 
-#endregion
 namespace on.smfio.Common
 {
 	public enum KeySignatureType : byte

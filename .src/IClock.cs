@@ -39,23 +39,29 @@ namespace on.smfio.util
     /// Calculated by way of the number of <see cref="Division">divisions</see>
     /// in a given quarter-note segment (<see cref="PulsesPerPPQDivision"/>).
     /// </summary>
-    /// <seealso cref="IClock.SamplesFromPulses(double,double,int,int)" />
+    /// <seealso cref="IAudioClock.SamplesFromPulses(double,double,int,int)" />
     double MSPQN                { get; }
   }
   /// <summary>
-  /// Clock: Measure, bar, quarter, tick, pulse & frame
+  /// Clock: Measure, bar, quarter, tick, pulse &amp; frame
   /// </summary>
   public interface IMidiClock_MBQTPF
   {
-    /// <summary><code>(QuartersOffset / 16).Floor() + 1</code></summary>
+    /// <summary>
+    /// M:B:T (Measure);
+    /// <code>(QuartersOffset / 16).Floor() + 1</code>
+    /// </summary>
     double Measure  { get; }
     
-    /// <summary>V/4%4 … +1</summary>
+    /// <summary>
+    /// M:B:T (Bar);
+    /// <code>V / 4 % 4 … +1</code></summary>
     double Bar      { get; }
     
     /// <summary>
     /// <code>( D * ( ( ( ( S / ( ( 60.0 / T ) * R ) ) % 4 )  / D) * D ) ) % D</code>
     /// <para>
+    /// M:B:T (Ticks);
     /// Value is S; where S=Samples, D=Division, T=Tempo, R=Rate
     /// </para>
     /// </summary>
@@ -77,7 +83,7 @@ namespace on.smfio.util
     /// provided sample position;
     /// Set explicity or indirectly by <see cref="IMidiClock_MBQTPF.Pulses"/>.
     /// </summary>
-    /// <seealso cref="GetSamples32()"/>
+    /// <seealso cref="Samples32"/>
     /// <seealso cref="Samples32Floor"/>
     /// <remarks>
     /// When setting samples, we immediately use it so solve

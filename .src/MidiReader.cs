@@ -59,7 +59,7 @@ namespace on.smfio
     public ulong TicksPerQuarterNote {
       get { return ticksPerQuarterNote; }
       set { ticksPerQuarterNote = value; }
-    } internal ulong ticksPerQuarterNote = 0;
+    } ulong ticksPerQuarterNote = 0;
     #endregion
 
     #region TIME
@@ -144,7 +144,7 @@ namespace on.smfio
     {
       tempoChanges.Clear();
       this.SmfFileHandle = MidiUtil.GetMthd(MidiFileName);
-      midiTimeInfo.Division = this.smfFileHandle.Division;
+      midiTimeInfo.Division = SmfFileHandle.Division;
       Parse(0);
     }
     
@@ -197,11 +197,11 @@ namespace on.smfio
     }
     /// MESSAGE PARSER
     /// get track (specific) message
-    public virtual int GetNTrackMessage(int ntrack, int position, int delta)
+    public virtual int GetNTrackMessage(int ntrack, int offset, int delta)
     {
       int DELTA_Returned = delta;
-      byte CurrentByte = SmfFileHandle.Get8Bit(ntrack, position);
-      int CurrentIntMessage = SmfFileHandle.Get16BitInt32(ntrack, position);
+      byte CurrentByte = SmfFileHandle.Get8Bit(ntrack, offset);
+      int CurrentIntMessage = SmfFileHandle.Get16BitInt32(ntrack, offset);
       switch (CurrentIntMessage) {
         case (int)MetaMsgU16FF.Text:            // FF01
         case (int)MetaMsgU16FF.Copyright:       // FF02
@@ -211,9 +211,9 @@ namespace on.smfio
         case (int)MetaMsgU16FF.Marker:          // FF06
         case (int)MetaMsgU16FF.Cue:             // FF07
         case (int)MetaMsgU16FF.Port:            // FF08
-          this.MessageHandler(MidiMsgType.MetaStr, ntrack, position, CurrentIntMessage, CurrentByte, TicksPerQuarterNote, RunningStatus32, false);
+          this.MessageHandler(MidiMsgType.MetaStr, ntrack, offset, CurrentIntMessage, CurrentByte, TicksPerQuarterNote, RunningStatus32, false);
           //lve.AddItem( c4, MeasureBarTick( TicksPerQuarterNote ), TicksPerQuarterNote.ToString(), ""/*(RunningStatus32 & 0x0F)+1*/, MetaHelpers.MetaNameFF( CurrentIntMessage ) , GetMetaString( position ) );
-          DELTA_Returned = GetMetaNextPos(position);
+          DELTA_Returned = GetMetaNextPos(offset);
           break;
         case (int)MetaMsgU16FF.SequenceNo:      // FF00
         case (int)MetaMsgU16FF.Chanel:          // FF20
@@ -223,14 +223,14 @@ namespace on.smfio
         case (int)MetaMsgU16FF.TimeSignature:   // FF58
         case (int)MetaMsgU16FF.KeySignature:    // FF59
           // why is this filtered and no others ? see gettrackmessage
-          this.MessageHandler(MidiMsgType.MetaInf, ntrack, position, CurrentIntMessage, CurrentByte, TicksPerQuarterNote, RunningStatus32, false);
-          DELTA_Returned = GetMetaNextPos(position);
+          this.MessageHandler(MidiMsgType.MetaInf, ntrack, offset, CurrentIntMessage, CurrentByte, TicksPerQuarterNote, RunningStatus32, false);
+          DELTA_Returned = GetMetaNextPos(offset);
           break;
         case (int)MetaMsgU16FF.SystemSpecific:  // FF7F
         case (int)MetaMsgU16FF.SystemExclusive: // FF7F
           Debug.Print("?---------sys");
-          this.MessageHandler(MidiMsgType.System, ntrack, position, CurrentIntMessage, CurrentByte, TicksPerQuarterNote, RunningStatus32, false);
-          DELTA_Returned = GetMetaNextPos(position);
+          this.MessageHandler(MidiMsgType.System, ntrack, offset, CurrentIntMessage, CurrentByte, TicksPerQuarterNote, RunningStatus32, false);
+          DELTA_Returned = GetMetaNextPos(offset);
           break;
         default:
           {
@@ -238,23 +238,23 @@ namespace on.smfio
               // Running Status
               int ExpandedRSE = RunningStatus32 << 8;
               int delta1 = -1;
-              if ((delta1 = GetNextRsePosition(position)) == -1)
+              if ((delta1 = GetNextRsePosition(offset)) == -1)
               {
-                int test = GetOffset(position);
+                int test = GetOffset(offset);
                 Debug.Assert(false, string.Format("warning… {0:X2}, {1:X}|{1:N0}", ExpandedRSE, test));
               }
               else
               {
                 DELTA_Returned = delta1;
-                this.MessageHandler(GetMsgTyp(RunningStatus32), ntrack, position, RunningStatus32, (byte)RunningStatus32, TicksPerQuarterNote, RunningStatus32, true);
+                this.MessageHandler(GetMsgTyp(RunningStatus32), ntrack, offset, RunningStatus32, (byte)RunningStatus32, TicksPerQuarterNote, RunningStatus32, true);
               }
             }
             else if (MidiMessageInfo.IsMidiMessage(CurrentIntMessage))
             {
-              RunningStatus32 = (SmfFileHandle[ntrack, position]);
-              DELTA_Returned = GetNextPosition(position);
+              RunningStatus32 = (SmfFileHandle[ntrack, offset]);
+              DELTA_Returned = GetNextPosition(offset);
               // Debug.Print("{0:X}",runningStatus32);
-              this.MessageHandler(GetMsgTyp(RunningStatus32), ntrack, position, RunningStatus32, (byte)RunningStatus32, TicksPerQuarterNote, RunningStatus32, false);
+              this.MessageHandler(GetMsgTyp(RunningStatus32), ntrack, offset, RunningStatus32, (byte)RunningStatus32, TicksPerQuarterNote, RunningStatus32, false);
               DELTA_Returned++;
               return DELTA_Returned;
             }
@@ -293,7 +293,7 @@ namespace on.smfio
           DELTA_Returned = GetMetaNextPos(position);
           break;
         case (int)MetaMsgU16FF.Tempo:
-          uint tValue = Convert.ToUInt32(SmfFileHandle[ntrack].Get24Bit(position + 3));
+          uint tValue = SmfFileHandle[ntrack].Get24Bit(position + 3);
           double vTempo = 60000000.0 / tValue;
           MidiTimeInfo.Tempo = vTempo;
           tempoChanges.Add(
@@ -479,8 +479,8 @@ namespace on.smfio
     void ClearAll()
     {
       ResetTiming();
-      smfFileHandle = default(smf_mthd);
-      midiFileName = null;
+      SmfFileHandle = default(smf_mthd);
+      MidiFileName = null;
       selectedTrackNumber = -1;
       GC.Collect();
     }
@@ -491,8 +491,7 @@ namespace on.smfio
     
     #region READ VAR INT
     
-    int GetIntVar(int offset, out long result)
-    {
+    int GetIntVar(int offset, out long result) {
       return GetIntVar(SelectedTrackNumber, offset, out result);
     }
     
@@ -518,6 +517,8 @@ namespace on.smfio
     
     #endregion
     #region READ META TRACK
+
+    smf_mtrk NTrack { get { return SmfFileHandle[SelectedTrackNumber]; } }
     
     /// <inheritdoc/>
     public void ParseTrackMeta(int tk)
@@ -525,7 +526,7 @@ namespace on.smfio
       long delta;
       int i = 0;
       selectedTrackNumber = tk;
-      while (i < SmfFileHandle.Tracks[selectedTrackNumber].track.Length)
+      while (i < NTrack.track.Length)
       {
         i = GetIntVar(i, out delta);
         TicksPerQuarterNote += Convert.ToUInt64(delta);
@@ -548,7 +549,7 @@ namespace on.smfio
       int i = 0;
       TicksPerQuarterNote = 0;
       
-      while (i < SmfFileHandle.Tracks[SelectedTrackNumber].track.Length)
+      while (i < NTrack.track.Length)
       {
         i = GetIntVar(i, out delta);
         TicksPerQuarterNote += Convert.ToUInt64(delta);
@@ -558,7 +559,7 @@ namespace on.smfio
       
       OnAfterTrackLoaded(EventArgs.Empty);
       
-      return SmfFileHandle.Tracks[SelectedTrackNumber].track.Length;
+      return NTrack.track.Length;
     }
     #endregion
     #region READ (PARSE) ALL TRACKS
@@ -596,7 +597,7 @@ namespace on.smfio
         }
       }
 //			OnAfterTrackLoaded(EventArgs.Empty);
-//			return SmfFileHandle.Tracks[SelectedTrackNumber].track.Length;
+//			return NTrack.track.Length;
     }
 
     #region PARSER_MidiDataList (DEFAULT PARSER!)
@@ -675,16 +676,9 @@ namespace on.smfio
     
     #region FILE
 
-    public string MidiFileName {
-      get { return midiFileName; }
-      set { midiFileName = value; }
-    } string midiFileName = string.Empty;
+    public string MidiFileName { get; set; }
 
-    public smf_mthd SmfFileHandle {
-      get { return smfFileHandle; }
-      set { smfFileHandle = value; }
-    } internal smf_mthd smfFileHandle = null;
-
+    public smf_mthd SmfFileHandle { get; set; }
 
     #endregion
     
@@ -727,7 +721,6 @@ namespace on.smfio
         AfterTrackLoaded(this, e);
       }
     }
-
     /// <summary>
     /// This is triggered after a track number is selected,
     /// and before the track is parsed.
@@ -741,10 +734,16 @@ namespace on.smfio
       }
     }
     #endregion
-    
+
     // -----------------------------------------------
-    
+
     #region STR track info, reader status (caption/tooltip)
+
+    public const string Resource_TrackLoaded =
+      "smfio track — Format: v{11}, " +
+      "Track: {0,3:000},  PPQ: {3}, Tempo: {4}\n" +
+      "TSig: {5}/{6} Clocks: {7}, {8} 32nds, KeySig: {9} {10}";
+
     string StringTrackInfo
     {
       get {
@@ -760,7 +759,8 @@ namespace on.smfio
           TimeSignature.Clocks,
           TimeSignature.ThirtySeconds,
           KeySignature.KeyType,
-          KeySignature.IsMajor ? "Major" : "Minor"
+          KeySignature.IsMajor ? "Major" : "Minor",
+          SmfFileHandle.Format
          );
       }
     }

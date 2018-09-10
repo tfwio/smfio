@@ -10,14 +10,10 @@ ALPHA NOTES
 
 **BIG VS LITTLE ENDIAN**
 
-big-endian works (Windows architectures), little-endian has
-yet to be looked at on such an architecture.  
-*Help is welcome in this area! –as notes will be prepared to assist tackling
-this simple matter.*
-
-More consolidation, documentation and examples are needed geared towards read,
-write and export of MIDI (smf) Formats 1-3 in addition to 'filtering' or applying
-effects to a given channel/range.
+Endian-ness has not been tested on LE architecture.  
+Its assumed to work while possible that some strings (for humans)
+may print in-correctly.  
+*Help in this matter would be appreciated.*
 
 **SET TEMPO**
 
@@ -30,6 +26,34 @@ Usage
 
 See [branch: smfio.view](https://github.com/tfwio/smfio/tree/smfio.view) for
 the current list-view example.
+
+Version History
+------------------
+
+0.1.1
+
+- Removed a lot of un-used code
+- Application of more comprehensive Endian utility
+- Slight change of (interface) IMidiParser and its impl,
+  and possibly other interfaces/impl.
+- Tempo changes are collected (albeit it needs work)
+  to `List<TempoChange>`.  
+  TODO: changes are expected to soon reflect in `MidiReader`'s
+  (`DictionaryList<int,MidiMessage> MidiDataList`)
+  or perhaps some kind of wrapper that is more
+  user-friendly when it comes to yielding adequate
+  timing in Samples or Seconds.  
+  Or at the very least there will be examples
+  showing how to obtain adequate time info.
+
+0.1.0
+
+- Initial Dump
+- Semantic versioning starts here.
+- namespace (title) and other refactoring.
+- The project is from around 2005, reworked
+  into a prototypical VSTHost to test the engine.
+- lacking feature: lacking SetTempo message support.
 
 <!-- See or checkout branch: [smfio.view] for the current example scenario -->
 
@@ -46,5 +70,5 @@ allowing for manual handling of such as the following scenarios.
     - Timings work the same as Format 0.
 - MIDI Format 2:
     - One or more tracks.
-    - Timings are exclusive per track.
+    - A collection of different songs.
 -->

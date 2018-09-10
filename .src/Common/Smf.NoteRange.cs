@@ -19,8 +19,6 @@ namespace on.smfio.Common
 		/// </summary>
 		public int Min, Max, Value;
 		
-		public ChMessageU16 Message16 { get { return (ChMessageU16)Value; } }
-		
 		public int MinDown { get { return Min >> 8; } }
 		public int MaxDown { get { return Max >> 8; } }
 		public int Down { get { return Value >> 8; } }

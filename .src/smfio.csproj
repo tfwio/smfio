@@ -78,7 +78,7 @@
     <Compile Include="c3\StringByteExtension.cs" />
     <Compile Include="c3\StringHelper.cs" />
     <Compile Include="c3\SuperOld.cs" />
-    <Compile Include="ck.smf_head.cs" />
+    <!-- <Compile Include="ck.smf_head.cs" /> -->
     <Compile Include="ck.smf_mthd.cs" />
     <Compile Include="ck.smf_mtrk.cs" />
     <Compile Include="Common\ChMessage8.cs" />
@@ -88,7 +88,7 @@
     <Compile Include="Common\MetaMsg32.cs" />
     <Compile Include="Common\MetaMsg8.cs" />
     <Compile Include="Common\MetaMsgU16FF.cs" />
-    <Compile Include="Common\MidiHelper.cs" />
+    <!-- <Compile Include="Common\MidiHelper.cs" /> -->
     <Compile Include="Common\MidiKeySignature.cs" />
     <Compile Include="Common\MidiTimeSignature.cs" />
     <Compile Include="Common\Smf.Meta.ChannelType.cs" />
@@ -110,7 +110,6 @@
     <Compile Include="MidiMessage.Meta.cs" />
     <Compile Include="MidiMessage.Sysex.cs" />
     <Compile Include="MidiMessageEvent.cs" />
-    <Compile Include="MidiMessagePacket.cs" />
     <Compile Include="MidiMsgType.cs" />
     <Compile Include="MidiReader.cs" />
     <Compile Include="MidiReader.Helper.cs" />
@@ -122,6 +121,7 @@
     <Compile Include="TempoChange.cs" />
     <Compile Include="TempoChangedEventArgs.cs" />
     <Compile Include="xg\XgNrpn.cs" />
+    <Compile Include="strings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="c3" />

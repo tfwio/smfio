@@ -91,15 +91,6 @@ namespace on.smfio
 		/// </returns>
 		string chRseV(int v);
 		
-		/// <summary>
-		/// Valid on one track after or during parse operation;
-		/// Parse runningstatus channel bit.
-		/// </summary>
-		/// <remarks>
-		/// For messages that support this.
-		/// </remarks>
-		string ch { get; }
-		
 		// =================================
 		// NEXT.POS
 		// =================================
@@ -109,19 +100,6 @@ namespace on.smfio
 		
     /// <summary>Next Position (rse)</summary>
 		int GetNextPosition(int offset);
-		
-		// =================================
-		// VALUE.LEN
-		// =================================
-		
-		/// <summary>Documentation needed</summary>
-		int GetRseEventLength(int offset);
-		
-		/// <summary>Documentation needed</summary>
-		int GetEventLength(int offset);
-		
-		// /// <summary>Documentation needed</summary>
-		// int GetEventLength(int offset, int plus);
 		
 		// =================================
 		// VALUE.EVENT
@@ -153,7 +131,5 @@ namespace on.smfio
 		/// <summary>Documentation needed</summary>
 		string GetEventValueString(int offset);
 		
-		// /// <summary>Documentation needed</summary>
-		// string GetEventValueString(int offset, int plus);
 	}
 }

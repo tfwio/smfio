@@ -27,29 +27,29 @@ namespace on.smfio.Common
 	/// <summary>Channel Helper Class</summary>
 	static public class ChannelType
 	{
-		static public string GetString08(MetaMsg8 id)
-		{
-			switch (id)
-			{
-					case MetaMsg8.EndOfTrack: return on.smfio.Common.ChannelType.EndTrack;
-					case MetaMsg8.SequenceNo: return on.smfio.Common.ChannelType.SequenceNumber;
-					case MetaMsg8.Text: return on.smfio.Common.ChannelType.TextEvent;
-					case MetaMsg8.Copyright: return on.smfio.Common.ChannelType.Copyright;
-					case MetaMsg8.SequenceName: return on.smfio.Common.ChannelType.SequenceName;
-					case MetaMsg8.InstrumentName: return on.smfio.Common.ChannelType.InstrumentName;
-					case MetaMsg8.Lyric: return on.smfio.Common.ChannelType.LyricMarker;
-					case MetaMsg8.Marker: return on.smfio.Common.ChannelType.Marker;
-					case MetaMsg8.Cue: return on.smfio.Common.ChannelType.CuePoint;
-					case MetaMsg8.Chanel: return on.smfio.Common.ChannelType.Channel;
-					case MetaMsg8.Port: return on.smfio.Common.ChannelType.Port;
-					case MetaMsg8.Tempo: return on.smfio.Common.ChannelType.Tempo;
-					case MetaMsg8.SMPTE: return on.smfio.Common.ChannelType.SMPTE;
-					case MetaMsg8.TimeSignature: return on.smfio.Common.ChannelType.TimeSignature;
-					case MetaMsg8.KeySignature: return on.smfio.Common.ChannelType.KeySignature;
-					case MetaMsg8.SystemExclusive: return on.smfio.Common.ChannelType.SYSEX;
-					default: return "UNKNOWN MESSAGE";
-			}
-		}
+		// static public string GetString08(MetaMsg8 id)
+		// {
+		// 	switch (id)
+		// 	{
+		// 			case MetaMsg8.EndOfTrack: return on.smfio.Common.ChannelType.EndTrack;
+		// 			case MetaMsg8.SequenceNo: return on.smfio.Common.ChannelType.SequenceNumber;
+		// 			case MetaMsg8.Text: return on.smfio.Common.ChannelType.TextEvent;
+		// 			case MetaMsg8.Copyright: return on.smfio.Common.ChannelType.Copyright;
+		// 			case MetaMsg8.SequenceName: return on.smfio.Common.ChannelType.SequenceName;
+		// 			case MetaMsg8.InstrumentName: return on.smfio.Common.ChannelType.InstrumentName;
+		// 			case MetaMsg8.Lyric: return on.smfio.Common.ChannelType.LyricMarker;
+		// 			case MetaMsg8.Marker: return on.smfio.Common.ChannelType.Marker;
+		// 			case MetaMsg8.Cue: return on.smfio.Common.ChannelType.CuePoint;
+		// 			case MetaMsg8.Chanel: return on.smfio.Common.ChannelType.Channel;
+		// 			case MetaMsg8.Port: return on.smfio.Common.ChannelType.Port;
+		// 			case MetaMsg8.Tempo: return on.smfio.Common.ChannelType.Tempo;
+		// 			case MetaMsg8.SMPTE: return on.smfio.Common.ChannelType.SMPTE;
+		// 			case MetaMsg8.TimeSignature: return on.smfio.Common.ChannelType.TimeSignature;
+		// 			case MetaMsg8.KeySignature: return on.smfio.Common.ChannelType.KeySignature;
+		// 			case MetaMsg8.SystemExclusive: return on.smfio.Common.ChannelType.SYSEX;
+		// 			default: return "UNKNOWN MESSAGE";
+		// 	}
+		// }
 		// 
 		// -------------------
 		#region Message Byte
