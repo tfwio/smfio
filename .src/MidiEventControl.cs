@@ -20,9 +20,11 @@ namespace SMFIOViewer
 	{
 		// FIXME: we should be using the master clock; not this.
     SampleClock timing = new SampleClock(){Rate=44100};
-		
-		#region Registry
-		const string regpath = @"Software\tfoxo\smfio";
+
+    IMidiParser Reader { get { return UserInterface.MidiParser; } }
+
+    #region ListView/Registry
+    const string regpath = @"Software\tfoxo\smfio";
 		const string reg_list_columns 	= "EventList2.Columns[]";
 		const string reg_list_fontsize 	= "EventList2.FontSize";
 		
@@ -68,7 +70,52 @@ namespace SMFIOViewer
 		{
 			Reg.SetControlFontSize(lve,9);
 			ListFontSize = "9";
-		}
+    }
+    public override void ApplyRegistrySettings()
+    {
+      Debug.Print("Loading Settings for MidiListView");
+      try
+      {
+        if (!string.IsNullOrEmpty(ListFontSize))
+        {
+          Reg.SetControlFontSize(this.lve, float.Parse(ListFontSize));
+        }
+      }
+      catch
+      {
+        Debug.Print("Error updating font size");
+      }
+      try
+      {
+        Debug.Print("got value: {0}", ListColumns);
+        if (string.IsNullOrEmpty(ListColumns))
+        {
+          Debug.Print("got error!: {0}", ListColumns);
+        }
+        var vals = Reg.TranslateString(ListColumns);
+        if (vals != null) this.ListColSize = vals;
+      }
+      catch
+      {
+        Debug.Print("Error updating list-col size");
+      }
+      Debug.Print("Adding Col-Resized Event");
+
+      this.lve.ColumnWidthChanged += new System.Windows.Forms.ColumnWidthChangedEventHandler(this.LveColumnWidthChanged);
+    }
+    void SaveColumnSetting()
+    {
+      string v = Reg.TranslateString(ListColSize);
+      Debug.Print("Saving Col Sizes");
+      Debug.Print(v);
+      if (!string.IsNullOrEmpty(v)) ListColumns = v;
+      ListFontSize = lve.Font.SizeInPoints.ToString();
+    }
+
+    void LveColumnWidthChanged(object sender, ColumnWidthChangedEventArgs e)
+    {
+      SaveColumnSetting();
+    }
 
 		#endregion
 		
@@ -99,8 +146,8 @@ namespace SMFIOViewer
 		{
 			base.FileLoaded(sender, e);
 			
-			if (!UserInterface.MidiParser.MessageHandlers.Contains(GotMidiEventD))
-				UserInterface.MidiParser.MessageHandlers.Add(GotMidiEventD);
+			if (!Reader.MessageHandlers.Contains(GotMidiEventD))
+        Reader.MessageHandlers.Add(GotMidiEventD);
 		}
 		public override void BeforeTrackLoaded(object sender, EventArgs e)
 		{
@@ -114,35 +161,6 @@ namespace SMFIOViewer
 			base.AfterTrackLoaded(sender, e);
 			this.lve.Visible = true;
 		}
-		public override void ApplyRegistrySettings()
-		{
-			Debug.Print("Loading Settings for MidiListView");
-			try
-			{
-				if (!string.IsNullOrEmpty(ListFontSize)) {
-					Reg.SetControlFontSize(this.lve,float.Parse(ListFontSize));
-				}
-			}
-			catch {
-				Debug.Print("Error updating font size");
-			}
-			try
-			{
-				Debug.Print("got value: {0}",ListColumns);
-				if (string.IsNullOrEmpty(ListColumns))
-				{
-					Debug.Print("got error!: {0}",ListColumns);
-				}
-				var vals = Reg.TranslateString(ListColumns);
-				if (vals!=null) this.ListColSize = vals;
-			}
-			catch {
-				Debug.Print("Error updating list-col size");
-			}
-			Debug.Print("Adding Col-Resized Event");
-			
-			this.lve.ColumnWidthChanged += new System.Windows.Forms.ColumnWidthChangedEventHandler(this.LveColumnWidthChanged);
-		}
 		
 		#endregion
 		
@@ -151,44 +169,32 @@ namespace SMFIOViewer
 			timing.SolveSamples(
 				ppq,
 				timing.Rate,
-				UserInterface.MidiParser.MidiTimeInfo.Tempo,
-				UserInterface.MidiParser.SmfFileHandle.Division,
+				Reader.MidiTimeInfo.Tempo,
+        Reader.SmfFileHandle.Division,
 				true
 			);
-		  
-			switch (t)
+		  string timeString = string.Empty;
+
+      switch (t)
 			{
 				case MidiMsgType.MetaStr:
-					lve.AddItem( MidiReader.c4, UserInterface.MidiParser.GetMbtString( ppq ), string.Empty, string.Empty, MetaHelpers.MetaNameFF( imsg ), UserInterface.MidiParser.GetMetaString( offset ) );
+					lve.AddItem( MidiReader.c4, Reader.GetMbtString( ppq ), timeString, string.Empty, MetaHelpers.MetaNameFF( imsg ), Reader.GetMetaString( offset ) );
 					break;
 				case MidiMsgType.MetaInf:
-					lve.AddItem( UserInterface.MidiParser.GetEventColor(imsg,MidiReader.cR), UserInterface.MidiParser.GetMbtString( ppq ), string.Empty, string.Empty, MetaHelpers.MetaNameFF( imsg ), UserInterface.MidiParser.GetMetaSTR( offset ) );
+					if (imsg == (int)MetaMsgU16FF.Tempo) { timeString = timing.TimeString; }
+					lve.AddItem( Reader.GetEventColor(imsg,MidiReader.cR), Reader.GetMbtString( ppq ), timeString, string.Empty, MetaHelpers.MetaNameFF( imsg ), Reader.GetMetaSTR( offset ) );
 					break;
 				case MidiMsgType.SysCommon:
 				case MidiMsgType.System:
-					lve.AddItem( UserInterface.MidiParser.GetEventColor(imsg,MidiReader.cR), UserInterface.MidiParser.GetMbtString( ppq ), string.Empty, string.Empty, MetaHelpers.MetaNameFF( imsg ), UserInterface.MidiParser.GetMetaSTR( offset ) );
+					lve.AddItem( Reader.GetEventColor(imsg,MidiReader.cR), Reader.GetMbtString( ppq ), timeString, string.Empty, MetaHelpers.MetaNameFF( imsg ), Reader.GetMetaSTR( offset ) );
 					break;
 				default:
-//				case MsgType.Channel:
-					if (isrse) lve.AddItem( UserInterface.MidiParser.GetRseEventColor( UserInterface.MidiParser.Colors["225"] ), UserInterface.MidiParser.GetMbtString( ppq ), timing.TimeString, bmsg==0xF0?"":(rse & 0x0F).ToString(),UserInterface.MidiParser.GetRseEventString( offset ), UserInterface.MidiParser.chRseV( offset ) );
-					else       lve.AddItem( UserInterface.MidiParser.GetEventColor   ( UserInterface.MidiParser.Colors["225"] ), UserInterface.MidiParser.GetMbtString( ppq ), timing.TimeString, bmsg==0xF0?"":(rse & 0x0F).ToString(),UserInterface.MidiParser.GetEventString   ( offset ), UserInterface.MidiParser.chV   ( offset ) );
-//				if (t== MsgType.NoteOn||t== MsgType.NoteOff) UserInterface.MidiParser.CheckNote(t,ppq,Convert.ToByte((rse) & 0x0F),offset,bmsg,isrse);
-					break;
+          //	case MsgType.Channel:
+          if (isrse) lve.AddItem( Reader.GetRseEventColor( Reader.Colors["225"] ), Reader.GetMbtString( ppq ), timing.TimeString, bmsg==0xF0?"":(rse & 0x0F).ToString(),Reader.GetRseEventString( offset ), Reader.chRseV( offset ) );
+					else       lve.AddItem( Reader.GetEventColor   ( Reader.Colors["225"] ), Reader.GetMbtString( ppq ), timing.TimeString, bmsg==0xF0?"":(rse & 0x0F).ToString(),Reader.GetEventString   ( offset ), Reader.chV   ( offset ) );
+          //				if (t== MsgType.NoteOn||t== MsgType.NoteOff) Reader.CheckNote(t,ppq,Convert.ToByte((rse) & 0x0F),offset,bmsg,isrse);
+          break;
 			}
-		}
-		
-		void SaveColumnSetting()
-		{
-			string v = Reg.TranslateString(ListColSize);
-			Debug.Print("Saving Col Sizes");
-			Debug.Print(v);
-			if (!string.IsNullOrEmpty(v)) ListColumns = v;
-			ListFontSize = lve.Font.SizeInPoints.ToString();
-		}
-		
-		void LveColumnWidthChanged(object sender, ColumnWidthChangedEventArgs e)
-		{
-			SaveColumnSetting();
 		}
 		
 		#region Design
