@@ -10,13 +10,13 @@ namespace on.smfio
     public int TrackOffset { get; set; }
     
     /// <summary>The delta time</summary>
-    public ulong TPQ { get; set; }
+    public ulong Pulses { get; set; }
     
     /// <summary>This is the actual tempo value as translated from the ReferenceValue.</summary>
     public double TempoValue { get; set; }
     
     /// <summary>The raw 24-bit byte value out of the track's byte-stream.</summary>
-    public uint ReferenceValue { get; set; }
+    public uint MSPQ { get; set; }
   }
 }
 

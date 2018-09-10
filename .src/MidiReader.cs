@@ -23,6 +23,7 @@ namespace on.smfio
     const int default_Division = 480;
     
     
+    
     #region INotifyPropertyChanged
     
     public event PropertyChangedEventHandler PropertyChanged;
@@ -142,7 +143,7 @@ namespace on.smfio
     /// <inheritdoc/>
     public void GetMemory()
     {
-      tempoChanges.Clear();
+      TempoChanges.Clear();
       this.SmfFileHandle = MidiUtil.GetMthd(MidiFileName);
       midiTimeInfo.Division = SmfFileHandle.Division;
       Parse(0);
@@ -296,13 +297,13 @@ namespace on.smfio
           uint tValue = SmfFileHandle[ntrack].Get24Bit(position + 3);
           double vTempo = 60000000.0 / tValue;
           MidiTimeInfo.Tempo = vTempo;
-          tempoChanges.Add(
+          TempoChanges.Add(
             new TempoChange()
             {
-              TPQ = TicksPerQuarterNote,
+              Pulses = TicksPerQuarterNote,
               TrackOffset = position,
               TrackID = ntrack,
-              ReferenceValue = tValue,
+              MSPQ = tValue,
               TempoValue = vTempo,
             });
           OnTempoChanged(DELTA_Returned, tValue);
@@ -498,10 +499,10 @@ namespace on.smfio
     /// <summary>
     /// Use offset - result to get your length.
     /// </summary>
-    /// <param name="ntrack"></param>
-    /// <param name="offset"></param>
-    /// <param name="result"></param>
-    /// <returns>the int position after reading data.</returns>
+    /// <param name="ntrack">track index.</param>
+    /// <param name="offset">offset in bytes into the track</param>
+    /// <param name="result">The current running number of elapsed pulses.</param>
+    /// <returns>next byte offset (read) position.</returns>
     int GetIntVar(int ntrack, int offset, out long result)
     {
       byte tempBit;
@@ -574,7 +575,6 @@ namespace on.smfio
     public void ParseAll()
     {
       MidiDataList.Clear();
-      // tempoChanges.Clear();
       for (int i = 0; i < SmfFileHandle.NumberOfTracks; i++) MidiDataList.CreateKey(i);
       TicksPerQuarterNote = 0;
       lock (ParseAllLock)
