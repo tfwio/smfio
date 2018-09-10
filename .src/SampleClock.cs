@@ -29,7 +29,6 @@ namespace on.smfio.util
     // IAudioClock
     // =========================================
 
-    // FIXME: RATE SHOULD NOT BE SET HERE!    
     /// <inheritdoc/>
     public int Rate { get; set; }
     
@@ -114,7 +113,7 @@ namespace on.smfio.util
       {
         TimeSpan t = Time;
         return string.Format(
-          "{0:00}:{1:00}:{2:00}.{3:000}",
+          "{0:00}:{1:00}:{2:00}.{3:00000}",
           t.Hours,
           t.Minutes,
           t.Seconds,
