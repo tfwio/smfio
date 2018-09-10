@@ -92,10 +92,6 @@ namespace on.smfio.Common
 		/// Seq No (0xFF00)
 		static public string meta_FF00(byte one, byte two) { return string.Format( "Sequence Number: {0} or {0:X2}", Convert.ToUInt16(one << 8 | two)); }
 		
-		/// ?
-		// static public string meta_FF20(smf_mtrk track, int pos1) { return string.Format("{0}",track.track[pos1]); }
-		
-		
 		/// string format milliseconds per quarter
 		static public string meta_FF51(int num) { return string.Format(StringRes.msg_time_ms_pqn, 60000000, num, 60000000/num ); }
 		
@@ -122,11 +118,6 @@ namespace on.smfio.Common
 		/// <returns>End Of Track“FIN”</returns>
 		static public string meta_FF2F() { return string.Format("FIN"); }
 		
-		/// sysex
-		// static public string meta_FF7F() { return string.Format("{0}",null); }
-		
-		/// ?
-		// static public string meta_FFA() { return string.Empty; }
 		#endregion
 
 		#endregion

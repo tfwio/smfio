@@ -33,10 +33,10 @@ namespace on.smfio.util
     /// </summary>
     /// <seealso cref="MSPQN"/>
     double PulsesPerPPQDivision { get; }
-    
+
     /// <summary>
     /// <strong>Milliseconds per quarter-note</strong>
-    /// Calculated by way of the number of <see cref="Division">divisions</see>
+    /// Calculated by way of the number of <see cref="IMidiTiming.Division">divisions</see>
     /// in a given quarter-note segment (<see cref="PulsesPerPPQDivision"/>).
     /// </summary>
     /// <seealso cref="IAudioClock.SamplesFromPulses(double,double,int,int)" />

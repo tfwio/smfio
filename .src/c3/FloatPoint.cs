@@ -199,8 +199,8 @@ namespace System.Drawing
     /// The relation of most transforms should be provided via
     /// the context of the window or container.
     /// </summary>
-    /// <param name="offset"></param>
-    /// <param name="zoom"></param>
+    /// <param name="translateOffset"></param>
+    /// <param name="translateZoom"></param>
     /// <returns></returns>
     public FloatPoint Translate(FloatPoint translateOffset, FloatPoint translateZoom)
     {

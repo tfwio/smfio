@@ -1,6 +1,4 @@
-﻿/**
- * oIo * 2/23/2011 3:15 AM
- **/
+﻿/* oIo * 2/23/2011 3:15 AM */
 
 namespace System
 {
@@ -59,7 +57,7 @@ namespace System
 			return BitConverter.ToInt32(intv,0);
 		}
 		/// <summary>Reverses a Byte Array</summary>
-		/// <param name="bits">
+		/// <param name="value">
 		/// the result is reversed (for little-endian/big-endian swapping)
 		/// </param>
 		/// <returns>Reversed array of bytes as unsigned short.</returns>
