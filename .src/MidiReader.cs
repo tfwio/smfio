@@ -748,19 +748,19 @@ namespace on.smfio
     {
       get {
         return string.Format(
-          Resource_TrackLoaded,
-          SelectedTrackNumber,
-          totlen,
-          SmfFileHandle[SelectedTrackNumber].Size,
-          Convert.ToInt32(SmfFileHandle.Division),
-          Convert.ToSingle(MidiTimeInfo.Tempo),
-          TimeSignature.Numerator,
-          TimeSignature.Denominator,
-          TimeSignature.Clocks,
-          TimeSignature.ThirtySeconds,
-          KeySignature.KeyType,
-          KeySignature.IsMajor ? "Major" : "Minor",
-          SmfFileHandle.Format
+          /*  0 */ Resource_TrackLoaded,
+          /*  1 */ SelectedTrackNumber,
+          /*  2 */ totlen,
+          /*  3 */ SmfFileHandle[SelectedTrackNumber].Size,
+          /*  4 */ Convert.ToInt32(SmfFileHandle.Division),
+          /*  5 */ Convert.ToSingle(MidiTimeInfo.Tempo),
+          /*  6 */ TimeSignature.Numerator,
+          /*  7 */ TimeSignature.Denominator,
+          /*  8 */ TimeSignature.Clocks,
+          /*  9 */ TimeSignature.ThirtySeconds,
+          /* 10 */ KeySignature.KeyType,
+          /* 11 */ KeySignature.IsMajor ? "Major" : "Minor",
+          /* 12 */ SmfFileHandle.Format
          );
       }
     }
