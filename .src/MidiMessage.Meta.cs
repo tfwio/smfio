@@ -11,14 +11,10 @@ namespace on.smfio
 	/// </summary>
 	public class MidiMetaMessage : MidiMessage
 	{
-		#region Properties
 		
 		public string MetaString { get { return System.Text.Encoding.UTF8.GetString(Data); } }
-		public int MessageLength {
-			get { return messageLength; } set { messageLength = value; }
-		} int messageLength;
-	
-		#endregion
+		public int MessageLength { get; set; }
+
 		public MidiMetaMessage(ulong delta, int message, params byte[] data) : this(MidiMsgType.MetaInf,delta,message,data) {}
 		public MidiMetaMessage(MidiMsgType t, ulong delta, int message, params byte[] data) : base(t,delta,message,data)
 		{
