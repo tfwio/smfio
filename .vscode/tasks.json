@@ -16,8 +16,7 @@
         "isDefault": true
       },
       "problemMatcher": []
-    },
-    {
+    }, {
       "label": "Build: cli35 debug",
       "type": "process",
       "command": "cmd.exe",
@@ -30,8 +29,20 @@
         "isDefault": true
       },
       "problemMatcher": []
-    },
-    {
+    }, {
+      "label": "Build: CLEAN",
+      "type": "process",
+      "command": "cmd.exe",
+      "args": [
+        "/c",
+        "${workspaceFolder}\\Build-dotnet-cli35-Clean_ALL.bat"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    }, {
       "label": "Run: Release",
       "type": "process",
       "command": "cmd.exe",
@@ -41,6 +52,31 @@
       "args": [
         "/c",
         "${workspaceFolder}\\build\\AnyCPU-Release\\smfio.view.exe"
+      ],
+      "problemMatcher": []
+    }, {
+      "label": "Run: Debug",
+      "type": "process",
+      "command": "cmd.exe",
+      "options": {
+        "cwd": "${workspaceFolder}\\build\\AnyCPU-Debug"
+      },
+      "args": [
+        "/c",
+        "${workspaceFolder}\\build\\AnyCPU-Debug\\smfio.view.exe",
+      ],
+      "problemMatcher": []
+    }, {
+      "label": "Run: Debug (MIDI File Input) — add full path to a midi file for me to work",
+      "type": "process",
+      "command": "cmd.exe",
+      "options": {
+        "cwd": "${workspaceFolder}\\build\\AnyCPU-Debug"
+      },
+      "args": [
+        "/c",
+        "${workspaceFolder}\\build\\AnyCPU-Debug\\smfio.view.exe",
+        "F:\\home\\oio\\Muse\\[pgm]\\mid\\MIDI Collection\\goodns\\Around.mid"
       ],
       "problemMatcher": []
     }
