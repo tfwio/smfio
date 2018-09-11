@@ -43,8 +43,8 @@ namespace SMFIOViewer
 			  var C = new on.smfio.util.SampleClock(0,44100,T.TempoValue,ui.MidiParser.SmfFileHandle.Division){Rate=44100};
 			  // C.SolveSamples();
 			  string F = string.Format(
-			    "TK: {0}, TPQ: {1}, BPM: ~{2:0.00000}, MSPQ: {3}",
-			    T.TrackID, T.TPQ, T.TempoValue, T.ReferenceValue
+			    "TK: {0}, Pulses: {1}, BPM: ~{2:0.00000}, MSPQ: {3}",
+			    T.TrackID, T.Pulses, T.TempoValue, T.MSPQ
 			   );
 			  NodeTempo.Nodes.Add(new TreeNode(F));
 			}
