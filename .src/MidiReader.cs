@@ -24,7 +24,7 @@ namespace on.smfio
     
     
     
-    #region INotifyPropertyChanged
+    #region INotifyPropertyChanged (isn't used)
     
     public event PropertyChangedEventHandler PropertyChanged;
     void Notify(string property)
@@ -91,32 +91,19 @@ namespace on.smfio
     #region TIME (int) DivMeasure, DivBar, DivNote, FileDivision
     
     /// <summary>Bar x4</summary>
-    public static int DivMeasure {
-      get { return divMeasure; }
-      set { divMeasure = value; }
-    } static int divMeasure;
+    public static int DivMeasure { get; private set; }
     
     /// <summary>Quarter x4</summary>
-    public static int DivBar {
-      get { return divBar; }
-      set { divBar = value; }
-    } static int divBar;
+    public int DivBar { get; private set; }
     
     /// <summary>PPQ (division) x4</summary>
-    public static int DivQuarter {
-      get { return divQuarter; }
-      set { divQuarter = value; }
-    } static int divQuarter;
+    public int DivQuarter { get; private set; }
     
     /// <summary>Midi header-&gt;Division.</summary>
-    public static int FileDivision {
-      get { return fileDivision; }
-      set { fileDivision = value; }
-    } static int fileDivision;
+    public short FileDivision { get { return SmfFileHandle.Division; } }
 
     public void GetDivision()
     {
-      FileDivision = SmfFileHandle.Division;
       DivQuarter = FileDivision * 4;
       DivBar = DivQuarter * 4;
       DivMeasure = DivBar * 4;
@@ -730,7 +717,7 @@ namespace on.smfio
     #region STR track info, reader status (caption/tooltip)
 
     public const string Resource_TrackLoaded =
-      "{13} MIDI Track — Format: v{11}, " +
+      "{12} MIDI Track — Format: v{11}, " +
       "Track: {0,3:000},  PPQ: {3}, Tempo: {4}\n" +
       "TSig: {5}/{6} Clocks: {7}, {8} 32nds, KeySig: {9} {10}";
 
@@ -738,20 +725,20 @@ namespace on.smfio
     {
       get {
         return string.Format(
-          /*  0 */ Resource_TrackLoaded,
-          /*  1 */ SelectedTrackNumber,
-          /*  2 */ totlen,
-          /*  3 */ SmfFileHandle[SelectedTrackNumber].Size,
-          /*  4 */ Convert.ToInt32(SmfFileHandle.Division),
-          /*  5 */ Convert.ToSingle(MidiTimeInfo.Tempo),
-          /*  6 */ TimeSignature.Numerator,
-          /*  7 */ TimeSignature.Denominator,
-          /*  8 */ TimeSignature.Clocks,
-          /*  9 */ TimeSignature.ThirtySeconds,
-          /* 10 */ KeySignature.KeyType,
-          /* 11 */ KeySignature.IsMajor ? "Major" : "Minor",
-          /* 12 */ SmfFileHandle.Format,
-          /* 13 */ StringRes.STRING_APP_NAME
+                   Resource_TrackLoaded,
+          /*  0 */ SelectedTrackNumber,
+          /*  1 */ totlen,
+          /*  2 */ SmfFileHandle[SelectedTrackNumber].Size,
+          /*  3 */ Convert.ToInt32(SmfFileHandle.Division),
+          /*  4 */ Convert.ToSingle(MidiTimeInfo.Tempo),
+          /*  5 */ TimeSignature.Numerator,
+          /*  6 */ TimeSignature.Denominator,
+          /*  7 */ TimeSignature.Clocks,
+          /*  8 */ TimeSignature.ThirtySeconds,
+          /*  9 */ KeySignature.KeyType,
+          /* 10 */ KeySignature.IsMajor ? "Major" : "Minor",
+          /* 11 */ SmfFileHandle.Format,
+          /* 12 */ StringRes.STRING_APP_NAME
          );
       }
     }

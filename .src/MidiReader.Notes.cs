@@ -76,7 +76,7 @@ namespace on.smfio
 		{
 			var note = GetNote(k, -1) as MidiNote;
 			if (note == null) {
-				Console.WriteLine("note wasn't found: {0} {1}:{2}", MBT.GetString(ppq, MidiReader.FileDivision), k, v);
+				Console.WriteLine("note wasn't found: {0} {1}:{2}", MBT.GetString(ppq, FileDivision), k, v);
 				return;
 			}
 			note.Len = Convert.ToInt32(ppq - note.Start);

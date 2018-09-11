@@ -16,9 +16,7 @@ namespace on.smfio
 		
 		public string MetaString { get { return System.Text.Encoding.UTF8.GetString(Data); } }
 		
-		public int MessageLength {
-			get { return messageLength; } set { messageLength = value; }
-		} int messageLength;
+		public int MessageLength { get; set; }
 		
 		public byte[] SystemData { get { return GetSystemMessage(); } }
 		

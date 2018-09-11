@@ -38,11 +38,11 @@ namespace on.smfio
 			this.V2 = v2;
 			this.Len = 0;
 		}
-		public string GetMbtLen(int division)
+		public string GetMbtLen(short division)
 		{
 			return MBT.GetString(Convert.ToUInt64(Len),division);
 		}
-		public string GetMbtLen2(int division)
+		public string GetMbtLen2(short division)
 		{
 			return MBT.GetString(Convert.ToUInt64(Len),division,false);
 		}

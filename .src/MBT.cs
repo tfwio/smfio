@@ -12,13 +12,13 @@ namespace on.smfio
 		
 		#region (Global) Division Multipliers
 		/// #4
-		static int MthdMeasure { get { return MidiReader.DivMeasure; } }
-		/// #3
-		static int MthdBar { get { return MidiReader.DivBar; } }
-		/// #2
-		static int MthdNote { get { return MidiReader.DivQuarter; } }
-		/// #1 (the most significant)
-		static int MthdDivision { get { return MidiReader.FileDivision; } }
+		// static int MthdMeasure { get { return MidiReader.DivMeasure; } }
+		// /// #3
+		// static int MthdBar { get { return MidiReader.DivBar; } }
+		// /// #2
+		// static int MthdNote { get { return MidiReader.DivQuarter; } }
+		// /// #1 (the most significant)
+		// static int MthdDivision { get { return MidiReader.FileDivision; } }
 		#endregion
 		
 		#region Property: Value
@@ -42,14 +42,10 @@ namespace on.smfio
 		#endregion
 		
 		#region Property: Division
-		public int Division {
-			get { return div??MthdDivision; }
-			set { div = value; }
-		} int? div = null;
+		public short Division { get; internal set; }
 		#endregion
 		
-		public MBT(ulong value) : this(value,MthdDivision) { }
-		public MBT(ulong value, int division)
+		public MBT(ulong value, short division)
 		{
 			this.Division = division;
 			this.Value = Convert.ToUInt64(value);
@@ -77,34 +73,37 @@ namespace on.smfio
 		{
 			return value / division;
 		}
-		static public float GetTicksF(int value) { return GetTicksF(value,MthdDivision); }
 		#endregion
 		#region Static: GetString(ulong value, int division)
-		static public string GetString(ulong value, int division, bool plusOne=true)
+		static public string GetString(ulong value, short division, bool plusOne=true, string strFormat="{0:##,###,###,000}:{1:0#}:{2:00#}")
 		{
 		  double orig = Convert.ToDouble(value).Floor();
-			int quarter = Convert.ToInt32(value) % MidiReader.FileDivision;
+			
+			int divQuarter = division * 4;
 			//double part = (double)value / MidiReader.FileDivision;
-			double part1 = (orig / MidiReader.FileDivision).Floor() % 4 + (plusOne ? 1 : 0);
-			double part2 = (orig / MidiReader.DivQuarter).Floor() + (plusOne ? 1 : 0);
-			return string.Format("{0:##,###,###,000}:{1:0#}:{2:00#}",  part2, part1, quarter);
+			double mBar = (orig / division).Floor() % 4 + (plusOne ? 1 : 0);
+			double mMeasure = (orig / divQuarter).Floor() + (plusOne ? 1 : 0);
+			int mTicks = Convert.ToInt32(value) % division;
+			return string.Format(strFormat,  mMeasure, mBar, mTicks);
 		}
 
 		#endregion
 		#region Static:Operators
-		static public implicit operator MBT(byte value) { return new MBT(Convert.ToUInt64(value)); }
-		static public implicit operator MBT(sbyte value) { return new MBT(Convert.ToUInt64(value)); }
-		static public implicit operator MBT(int value) { return new MBT(Convert.ToUInt64(value)); }
-		static public implicit operator MBT(uint value) { return new MBT(Convert.ToUInt64(value)); }
-		static public implicit operator MBT(short value) { return new MBT(Convert.ToUInt64(value)); }
-		static public implicit operator MBT(double value) { return new MBT(Convert.ToUInt64(value)); }
-		static public implicit operator MBT(float value) { return new MBT(Convert.ToUInt64(value)); }
+		
+		// Division isn't set so it appears that we would have to provide a division of 120 by default.
+		// static public implicit operator MBT(byte value)   { return new MBT(Convert.ToUInt64(value)); }
+		// static public implicit operator MBT(sbyte value)  { return new MBT(Convert.ToUInt64(value)); }
+		// static public implicit operator MBT(int value)    { return new MBT(Convert.ToUInt64(value)); }
+		// static public implicit operator MBT(uint value)   { return new MBT(Convert.ToUInt64(value)); }
+		// static public implicit operator MBT(short value)  { return new MBT(Convert.ToUInt64(value)); }
+		// static public implicit operator MBT(double value) { return new MBT(Convert.ToUInt64(value)); }
+		// static public implicit operator MBT(float value)  { return new MBT(Convert.ToUInt64(value)); }
 		
 //	static public bool operator >(MBT a, int b) { return a.Int32Value > b; }
 //	static public bool operator <(MBT a, int b) { return a.Int32Value < b; }
 		
-		static public bool operator >(MBT a, MBT b) { return a.Value > b.Value; }
-		static public bool operator <(MBT a, MBT b) { return a.Value < b.Value; }
+		static public bool operator >(MBT a, MBT b)  { return a.Value > b.Value; }
+		static public bool operator <(MBT a, MBT b)  { return a.Value < b.Value; }
 		static public bool operator >=(MBT a, MBT b) { return a.Value >= b.Value; }
 		static public bool operator <=(MBT a, MBT b) { return a.Value <= b.Value; }
 		
