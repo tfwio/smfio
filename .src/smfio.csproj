@@ -96,7 +96,6 @@
     <Compile Include="Common\Smf.NoteRange.cs" />
     <Compile Include="IClock.cs" />
     <Compile Include="IMidiParser.cs" />
-    <Compile Include="IMidiParser.Notes.cs" />
     <Compile Include="IMidiParser.Parser.cs" />
     <Compile Include="IMidiParser.Resources.cs" />
     <Compile Include="ITimeConfiguration.cs" />
@@ -113,7 +112,6 @@
     <Compile Include="MidiMsgType.cs" />
     <Compile Include="MidiReader.cs" />
     <Compile Include="MidiReader.Helper.cs" />
-    <Compile Include="MidiReader.Notes.cs" />
     <Compile Include="MidiReader.Parse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleClock.cs" />
@@ -121,6 +119,8 @@
     <Compile Include="TempoChangedEventArgs.cs" />
     <Compile Include="xg\XgNrpn.cs" />
     <Compile Include="strings.cs" />
+    <Compile Include="TempoState.cs" />
+    <Compile Include="TimeUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="c3" />

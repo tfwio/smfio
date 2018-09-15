@@ -21,7 +21,7 @@ namespace on.smfio
 	
 	public interface IMidiParser:
 		IMidiParser_Parser /* normative */,
-		IMidiParser_Notes /* optional */,
+		// IMidiParser_Notes /* optional */,
 		INotifyPropertyChanged
   {
     // =============================================

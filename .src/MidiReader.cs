@@ -11,13 +11,15 @@ using CliHandler = System.EventHandler;
 
 namespace on.smfio
 {
-  
   /// <summary>
   /// Internally, we load three text files from a subdirectory named ‘ext’.
   /// Controller change values, drum kit names and instrument names.
   /// </summary>
   public partial class MidiReader : IDisposable, IMidiParser
   {
+    byte this[int track, int index] {
+      get { return SmfFileHandle[track, index]; }
+    }
     const int default_Fs = 44100;
     const int default_Tempo = 120;
     const int default_Division = 480;
@@ -100,11 +102,11 @@ namespace on.smfio
     public int DivQuarter { get; private set; }
     
     /// <summary>Midi header-&gt;Division.</summary>
-    public short FileDivision { get { return SmfFileHandle.Division; } }
+    public short Division { get { return SmfFileHandle.Division; } }
 
     public void GetDivision()
     {
-      DivQuarter = FileDivision * 4;
+      DivQuarter = Division * 4;
       DivBar = DivQuarter * 4;
       DivMeasure = DivBar * 4;
     }
@@ -262,7 +264,7 @@ namespace on.smfio
     public virtual int GetTrackTiming(int ntrack, int position, int delta)
     {
       int	DELTA_Returned		= delta;
-      byte CurrentByte			 = SmfFileHandle.Get8Bit(ntrack, position);
+      byte CurrentByte			= SmfFileHandle.Get8Bit(ntrack, position);
       int	CurrentIntMessage = SmfFileHandle.Get16BitInt32(ntrack, position);
       
       switch (CurrentIntMessage) {
@@ -613,13 +615,13 @@ namespace on.smfio
       }
     }
     #endregion
-    
+
     #endregion
 
     #region TRACK
     /// <summary>
-    /// Get/Set Selected Track Number;
-    /// Setting the track number triggers the TrackChanged event!
+    /// <para>Get/Set Selected Track Number;</para>
+    /// <para>Setting the track number triggers the TrackChanged event!</para>
     /// </summary>
     public int SelectedTrackNumber {
       get { return selectedTrackNumber; }
@@ -640,7 +642,6 @@ namespace on.smfio
     {
       GetDivision();
       ResetTiming();
-      this.Notes.Clear();
       if (SelectedTrackNumber >= 0)
       {
         totlen = ParseTrack();
@@ -747,10 +748,10 @@ namespace on.smfio
       get { return string.Format("{0} No Tracks Selected", class_id); }
     } readonly string class_id = "midi reader";
 
-    public override string ToString()
-    {
-      return IsTrackSelected ? string.Format(Resource_TrackLoaded, SelectedTrackNumber, SelectedTrackTickCount, SmfFileHandle[SelectedTrackNumber].Size, Convert.ToInt32(SmfFileHandle.Division)) : DefaultMidiString;
-    }
+    // public override string ToString()
+    // {
+    //   return IsTrackSelected ? string.Format(Resource_TrackLoaded, SelectedTrackNumber, SelectedTrackTickCount, SmfFileHandle[SelectedTrackNumber].Size, Convert.ToInt32(SmfFileHandle.Division)) : DefaultMidiString;
+    // }
 
     #endregion
 

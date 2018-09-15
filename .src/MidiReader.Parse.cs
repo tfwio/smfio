@@ -35,7 +35,7 @@ namespace on.smfio
     }
     
     /// <inheritdoc/>
-    public string GetMbtString(ulong value) { return MBT.GetString(value, FileDivision); }
+    public string GetMbtString(ulong value) { return TimeUtil.GetMBT(value, Division); }
 
     //
     // TIME

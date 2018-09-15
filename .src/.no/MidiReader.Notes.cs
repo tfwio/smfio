@@ -11,9 +11,6 @@ namespace on.smfio
 {
 	partial class MidiReader : IMidiParser_Notes
 	{
-		byte this[int track, int index] {
-			get { return SmfFileHandle[track, index]; }
-		}
 		
 		public List<MidiData> Notes {
 			get { return notes; } set { notes = value; }
@@ -76,11 +73,11 @@ namespace on.smfio
 		{
 			var note = GetNote(k, -1) as MidiNote;
 			if (note == null) {
-				Console.WriteLine("note wasn't found: {0} {1}:{2}", MBT.GetString(ppq, FileDivision), k, v);
+				Console.WriteLine("note wasn't found: {0} {1}:{2}", TimeUtil.GetMBT(ppq, Division), k, v);
 				return;
 			}
-			note.Len = Convert.ToInt32(ppq - note.Start);
-			note.V2 = v;
+			note.PulseWidth = Convert.ToInt32(ppq - note.Pulse);
+			note.noteOffVelocity = v;
 		}
 		
 		/// <inheritdoc/>
@@ -92,7 +89,7 @@ namespace on.smfio
 		bool CheckNote(MidiData d, byte k, short v)
 		{
 			if (d is MidiNote) // check for key and velocity?
-				return (d as MidiNote).K == k && (d as MidiNote).V2 == v;
+				return (d as MidiNote).K == k && (d as MidiNote).noteOffVelocity == v;
 			return false;
 		}
 	}

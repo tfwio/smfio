@@ -6,24 +6,20 @@ using System;
 
 namespace on.smfio
 {
-  /// <summary>
-  /// Currently, we're not bothering to store the Midi Track Offset because
-  /// this is used primarily for memory and writing.
-  /// 
-  /// </summary>
   /// <seealso cref="IMidiParser_Notes"/>
   public class MidiData
 	{
-		public byte? Ch;
-		public ulong Start;
-		public MidiData(byte? c, ulong s)
+		// TODO: Validate actually channel byte?
+		public byte? Channel;
+		public ulong Pulse;
+		public MidiData(byte? c, ulong pulse)
 		{
-			this.Ch = c;
-			this.Start = s;
+			this.Channel = c;
+			this.Pulse = pulse;
 		}
-		public string GetMBT(short division)
+		public string GetMBTString(short division)
 		{
-			return MBT.GetString(Start,division);
-		}
+      return TimeUtil.GetMBT(Pulse, division);
+    }
 	}
 }
