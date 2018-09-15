@@ -10,7 +10,7 @@ namespace on.smfio
 	/// I do believe that I've come across RSE Sysex messages, but I guess I'll have
 	/// to find out the hard way if this data is getting collected.
 	/// </summary>
-	public class MidiSysexMessage : MidiMessage
+	public class SysExMessage : MIDIMessage
 	{
 		#region Properties
 		
@@ -29,7 +29,7 @@ namespace on.smfio
 		}
 	
 		#endregion
-		public MidiSysexMessage(ulong delta, int message, params byte[] data) : base(MidiMsgType.System,delta,message,data)
+		public SysExMessage(ulong delta, int message, params byte[] data) : base(MidiMsgType.System,delta,message,data)
 		{
 			MessageLength = data.Length-1;
 		}

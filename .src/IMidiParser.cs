@@ -46,7 +46,7 @@ namespace on.smfio
 		
 		#region DATA (DictionaryList<int,MidiMessage>)
 		
-		DictionaryList<int,MidiMessage> MidiDataList { get; }
+		DictionaryList<int,MIDIMessage> MidiDataList { get; }
 		
 		#endregion
 		

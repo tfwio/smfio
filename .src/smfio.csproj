@@ -96,7 +96,6 @@
     <Compile Include="Common\Smf.NoteRange.cs" />
     <Compile Include="IClock.cs" />
     <Compile Include="IMidiParser.cs" />
-    <Compile Include="IMidiParserUI_Lite.cs" />
     <Compile Include="IMidiParser.Notes.cs" />
     <Compile Include="IMidiParser.Parser.cs" />
     <Compile Include="IMidiParser.Resources.cs" />
@@ -105,10 +104,10 @@
     <Compile Include="MBT.cs" />
     <Compile Include="MidiData.cs" />
     <Compile Include="MidiData.Note.cs" />
-    <Compile Include="MidiMessage.Ch.cs" />
-    <Compile Include="MidiMessage.cs" />
-    <Compile Include="MidiMessage.Meta.cs" />
-    <Compile Include="MidiMessage.Sysex.cs" />
+    <Compile Include="MidiMessage/ChannelMessage.cs" />
+    <Compile Include="MidiMessage/MidiMessage.cs" />
+    <Compile Include="MidiMessage/MetaMessage.cs" />
+    <Compile Include="MidiMessage/SysexMessage.cs" />
     <Compile Include="MidiMessageEvent.cs" />
     <Compile Include="MidiMsgType.cs" />
     <Compile Include="MidiReader.cs" />

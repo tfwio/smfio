@@ -20,10 +20,15 @@ namespace on.smfio.util
   /// <code>Dictionary&lt;long,ushort></code>
   /// <code>Dictionary&lt;ticks,tempo></code>
   /// </summary>
-  public partial class SampleClock : IClock
+  public partial class SampleClock //: IClock
   {
 
     const double Minute_Hex = 60000000.0;
+    /// <summary>
+    /// This allows us to set the tempo to a default
+    /// 120.00000 bpm = 60000000.0 / 500000
+    /// </summary>
+    const int DefaultMusPerQuarterNote = 500000;
     
     // =========================================
     // IAudioClock
@@ -35,7 +40,7 @@ namespace on.smfio.util
     /// <inheritdoc/>
     public double Samples {
       get { return samples; }
-      set { pulses = (samples = value) / (60 / Tempo * Rate) * Division; }
+      set { pulses = (samples = value) / (60.0 / Tempo * Rate) * Division; }
     } double samples;
     
     

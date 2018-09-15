@@ -41,10 +41,10 @@ namespace on.smfio
       
     } int selectedTrackChannel	= -1;
     /// <inheritdoc/>
-    public DictionaryList<int,MidiMessage> MidiDataList {
+    public DictionaryList<int,MIDIMessage> MidiDataList {
       get { return midiDataList; }
       set { midiDataList = value; }
-    } DictionaryList<int,MidiMessage> midiDataList = new DictionaryList<int,MidiMessage>();
+    } DictionaryList<int,MIDIMessage> midiDataList = new DictionaryList<int,MIDIMessage>();
     
     /// <inheritdoc/>
     public List<int> ChannelFilter {
@@ -594,21 +594,21 @@ namespace on.smfio
       switch (t)
       {
         case MidiMsgType.MetaStr:
-          midiDataList.AddV(SelectedTrackNumber, new MidiMetaMessage(MidiMsgType.MetaStr,ppq,imsg,GetMetaBString(offset)));
+          midiDataList.AddV(SelectedTrackNumber, new MetaMessage(MidiMsgType.MetaStr,ppq,imsg,GetMetaBString(offset)));
           break;
         case MidiMsgType.MetaInf:
-          var midiMsg = new MidiMetaMessage(ppq,imsg,GetMetaData(offset));
+          var midiMsg = new MetaMessage(ppq,imsg,GetMetaData(offset));
           midiDataList.AddV(SelectedTrackNumber,midiMsg);
           break;
         case MidiMsgType.System:
         case MidiMsgType.SysCommon:
-          if (imsg==0xFF7F) midiDataList.AddV(SelectedTrackNumber,new MidiSysexMessage(ppq,imsg,GetMetaValue(offset)));
-          else if (imsg==0xF0) midiDataList.AddV(SelectedTrackNumber,new MidiSysexMessage(ppq,imsg,GetEventValue(offset)));
+          if (imsg==0xFF7F) midiDataList.AddV(SelectedTrackNumber,new SysExMessage(ppq,imsg,GetMetaValue(offset)));
+          else if (imsg==0xF0) midiDataList.AddV(SelectedTrackNumber,new SysExMessage(ppq,imsg,GetEventValue(offset)));
           else ErrorMessage("Improper MidiMsgType classification?");
           break;
         default:
-          if (isrse) MidiDataList.AddV(SelectedTrackNumber,new MidiChannelMessage(ppq,rse,GetRseEventValue(offset)));
-          else MidiDataList.AddV(SelectedTrackNumber,new MidiChannelMessage(ppq,rse,GetEventValue(offset)));
+          if (isrse) MidiDataList.AddV(SelectedTrackNumber,new ChannelMessage(ppq,rse,GetRseEventValue(offset)));
+          else MidiDataList.AddV(SelectedTrackNumber,new ChannelMessage(ppq,rse,GetEventValue(offset)));
           break;
       }
     }
