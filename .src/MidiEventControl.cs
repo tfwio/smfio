@@ -178,7 +178,7 @@ namespace SMFIOViewer
       switch (t)
 			{
 				case MidiMsgType.MetaStr:
-					lve.AddItem( ColorResources.c4, Reader.GetMbtString( ppq ), timeString, string.Empty, MetaHelpers.MetaNameFF( imsg ), Reader.GetMetaString( offset ) );
+					lve.AddItem( ColorResources.c4, TimeUtil.GetMBT( ppq, Reader.SmfFileHandle.Division ), timeString, string.Empty, MetaHelpers.MetaNameFF( imsg ), Reader.GetMetaString( offset ) );
 					break;
 				case MidiMsgType.MetaInf:
 					if (imsg == (int)MetaMsgU16FF.Tempo) { timeString = timing.TimeString; }
