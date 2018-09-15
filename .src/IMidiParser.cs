@@ -11,57 +11,58 @@ using on.smfio.util;
 
 namespace on.smfio
 {
-	#region DELEGATES
-	public delegate void HandleMidiMessage();
-	public delegate void MidiMessageHandler(object sender, MidiMessageEvent e);
+  // =============================================
+  // DELEGATES
+  // =============================================
+
+  public delegate void MidiMessageHandler(object sender, MidiMessageEvent e);
 	public delegate int MidiReaderLoadTrackDelegate(int track, int offset);
 	public delegate void MidiEventDelegate(MidiMsgType t, int track, int offset, int imsg, byte bmsg, ulong ppq, int rse, bool isrse);
-	#endregion
 	
 	public interface IMidiParser:
 		IMidiParser_Parser /* normative */,
 		IMidiParser_Notes /* optional */,
 		INotifyPropertyChanged
-	{
-		#region INotifyPropertyChanged
+  {
+    // =============================================
+    // CHANNEL
+    // =============================================
 
-//		event PropertyChangedEventHandler PropertyChanged;
-		
-		#endregion
-		
-		#region CH
-		
-		/// <summary>
-		/// if not -1, the Midi Track @SelectedTrackNumber will contain data primary to a view.
-		/// </summary>
-		int SelectedTrackChannel { get; }
+    /// <summary>
+    /// if not -1, the Midi Track @SelectedTrackNumber will contain data primary to a view.
+    /// </summary>
+    int SelectedTrackChannel { get; }
 		
 		/// <summary>
 		/// A set of midi data channels (not track-number) used for filtering data for ui.
 		/// </summary>
 		List<int> ChannelFilter { get; }
-		
-		#endregion
-		
-		#region DATA (DictionaryList<int,MidiMessage>)
+
+    // =============================================
+    // DATA (DictionaryList<int,MidiMessage>)
+    // =============================================
 		
 		DictionaryList<int,MIDIMessage> MidiDataList { get; }
-		
-		#endregion
-		
-		#region DATA standard global
-		
-		List<TempoChange> TempoChanges { get; }
+
+    // =============================================
+    // DATA (Back-Reference)
+    // =============================================
+
+		/// <summary>
+		/// This is useless in its current form, and will be converted
+		/// to a TempoMap.
+		/// </summary>
+    List<TempoChange> TempoChanges { get; }
 		
 		MidiKeySignature KeySignature { get;set; }
 		
 		MidiTimeSignature TimeSignature { get;set; }
-		
-		#endregion
-		
-		#region TIME
-		
-		ulong TicksPerQuarterNote { get; set; }
+
+    // =============================================
+    // TIMING
+    // =============================================
+
+    ulong TicksPerQuarterNote { get; set; }
 		
 		int RunningStatus32 { get; set; }
 		
@@ -70,13 +71,13 @@ namespace on.smfio
 		void ResetTiming();
 		
 		void GetDivision();
-		
-		#endregion
-		
-		void OnMidiMessage(MidiMsgType t, int track, int offset, int imsg, byte bmsg, ulong ppq, int rse, bool isrse);
 
-		#region PARSE (handlers)
-		
+    // =============================================
+    // MIDIEVENT MESSAGE (HANDLERS)
+    // =============================================
+
+    void OnMidiMessage(MidiMsgType t, int track, int offset, int imsg, byte bmsg, ulong ppq, int rse, bool isrse);
+
 		bool UseEventHandler { get; }
 		
 		bool HasTrackReaderDelegate { get; }
@@ -90,12 +91,12 @@ namespace on.smfio
 		/// A set of delegates
 		/// </summary>
 		List<MidiEventDelegate> MessageHandlers { get; }
-		
-		#endregion
-		
-		#region PARSE TRACK
-		
-		int SelectedTrackNumber { get; set; }
+
+    // =============================================
+    // PARSE TRACK
+    // =============================================
+
+    int SelectedTrackNumber { get; set; }
 		
 		bool IsTrackSelected { get; }
 		
@@ -119,24 +120,17 @@ namespace on.smfio
 		void ParseTrackMeta(int trackNo);
 		
 		int GetTrackMessage(int position, int delta);
-		
-		#endregion
-		
-		#region PARSE TRACK event
-		
+
+    // =============================================
+    // PARSE TRACK (EVENT)
+    // =============================================
+
     event EventHandler<TempoChangedEventArgs> TempoChangedEvent;
-		
 		event EventHandler<MidiMessageEvent> ProcessMidiMessage;
-		
 		event EventHandler<ProgressChangedEventArgs> TrackLoadProgressChanged;
-		
 		event EventHandler AfterTrackLoaded;
-		
 		event EventHandler BeforeTrackLoaded;
-		
 		event EventHandler TrackChanged;
-		
-		#endregion
 		
 		#region FILE
 		
@@ -164,18 +158,6 @@ namespace on.smfio
 		
 		string ToString();
 
-		#region NO
-		#if no
-		/// <summary>
-		/// This is just a test.
-		/// I Never implemented and varified a File-Position (offset)
-		/// calculation from within a track.  This is a minor attempt.
-		/// </summary>
-		/// <param name="offset"></param>
-		/// <returns></returns>
-		int GetOffset(int offset);
-		#endif
-		#endregion
 	}
 	
 }
