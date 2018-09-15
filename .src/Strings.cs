@@ -21,9 +21,9 @@ namespace SMFIOViewer
 
 		public const string DeltaArgumentException = "Expected: DeltaType.Samples and DeltaType.Pulses";
 
-		public const string Dialog_Title_0 = "cs midi/smf";
+		public const string Dialog_Title_0 = "SMFIO";
 
-		public const string Dialog_Title_1 = "cs midi/smf [{0}]";
+		public const string Dialog_Title_1 = "SMFIO [{0}]";
 
 		public const string DictionaryList_ErrorMessage = "Argument ‘{0}’ as allready been added to the Dictionary.";
 
