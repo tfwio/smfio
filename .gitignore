@@ -4,3 +4,4 @@
 /.paket
 /.src/paket.dependencies
 /.src/paket.lock
+/.vscode/.ropeproject/*
