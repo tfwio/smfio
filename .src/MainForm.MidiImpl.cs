@@ -161,7 +161,7 @@ namespace SMFIOViewer
       midiFile.FileLoaded += Event_MidiFileLoaded;
       midiFile.TrackChanged += Event_MidiActiveTrackChanged_ListBoxItemSelected;
       //#if !DEBUG
-      midiFile.MessageHandlers.Add(ShowProgress);
+      // midiFile.MessageHandlers.Add(ShowProgress);
       //#endif
       
       midiFile.Read();
