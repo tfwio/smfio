@@ -25,7 +25,7 @@ namespace SMFIOViewer
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
       ViewMaster<MasterViewContainer,MidiControlBase> Viewer = new ViewMaster<MasterViewContainer,MidiControlBase>(System.Reflection.Assembly.GetExecutingAssembly());
-      Application.Run(new MainForm(Viewer.ViewCollection));
+      Application.Run(new MainForm(Viewer.ViewCollection, args));
       Application.Exit();
     }
     

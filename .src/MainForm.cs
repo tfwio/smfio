@@ -12,14 +12,26 @@ using on.smfio;
 
 namespace SMFIOViewer
 {
-  
+
   /// <summary>
   /// Description of MainForm.
   /// </summary>
   public partial class MainForm : Form
   {
-    public MainForm() { InitializeComponent(); }
-    public MainForm(IList<MasterViewContainer> tasks)
+    string startupfile = null;
+    static bool CheckFile(params string[] args)
+    {
+      foreach (var arg in args)
+      {
+        var ext = Path.GetExtension(args[0]).ToLower();
+        if (!File.Exists(args[0])) return false;
+        if (!(ext == ".mid" || ext == ".midi")) return false;
+      }
+      return true;
+    }
+
+    // public MainForm(params string[] args) { InitializeComponent(); }
+    public MainForm(IList<MasterViewContainer> tasks, params string[] args)
     {
       mSettings = new TimeConfiguration() {
         // AUDIO
@@ -34,11 +46,21 @@ namespace SMFIOViewer
         IsSingleZeroChannel = false
       };
       InitializeComponent();
-      SetProgressDelegate = SetProgress;
+      
+      // SetProgressDelegate = SetProgress;
+      
       numPpq.NumericUpDownControl.Increment = 24;
       this.InitializeModestForm(tasks);
       numPpq.NumericUpDownControl.ReadOnly = true;
       numTempo.NumericUpDownControl.ReadOnly = true;
+
+      if ((args.Length > 0) && CheckFile(args[0]))
+        startupfile = args[0];
+    }
+
+    protected override void OnLoad(EventArgs e)
+    {
+      Action_MidiFileOpen(startupfile, 0);
     }
     
     #region Action_PlayerUpDown2Ppq
@@ -69,19 +91,25 @@ namespace SMFIOViewer
     
     #endregion
     
+    void DoTrackSelect()
+    {
+      //#if DEBUG
+      StartLoad();
+      //#else
+      //KillThread();
+      //thread = new System.Threading.Thread(StartLoad);
+      //thread.Priority = System.Threading.ThreadPriority.Highest;
+      //thread.Start();
+      ////#endif
+      //this.toolStripProgressBar1.Value = 0;
+      //this.toolStripProgressBar1.Maximum = 0;
+      //this.toolStripProgressBar1.Enabled = false;
+      //this.toolStripProgressBar1.Visible = true;
+    }
+
     void Event_MidiActiveTrackChanged_ListBoxItemSelected(object o, EventArgs e)
     {
-      #if DEBUG
-      StartLoad();
-      #else
-      KillThread();
-      thread = new System.Threading.Thread(StartLoad);
-      thread.Priority = System.Threading.ThreadPriority.Highest;
-      thread.Start();
-      #endif
-      this.toolStripProgressBar1.Value = 0;
-      this.toolStripProgressBar1.Maximum = 0;
-      this.toolStripProgressBar1.Enabled = false;
+      DoTrackSelect();
     }
     
     void TracksToListBoxContext()
@@ -149,9 +177,9 @@ namespace SMFIOViewer
       }
       // btn_pick_track.Image = Icons.midi_in;
       // btn_pick_track.Image = fam3.famfam_silky.cursor;
-      #if !DEBUG
-      toolStripProgressBar1.Visible = false;
-      #endif
+      // #if !DEBUG
+      // toolStripProgressBar1.Visible = false;
+      // #endif
     }
     
     public void ShowElement(object sender, EventArgs e)

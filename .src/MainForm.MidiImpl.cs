@@ -69,6 +69,9 @@ namespace SMFIOViewer
       MidiTree.TracksToTreeView(this);
       
       LoadTracks = midiFile.TrackSelectAction;
+
+      midiFile.SelectedTrackNumber = 0;
+      DoTrackSelect();
     }
     
     #region MIDI ListBox (Event_MidiChangeTrack_MenuItemSelected,Event_FormToggleMidiListBox)
@@ -157,16 +160,16 @@ namespace SMFIOViewer
       midiFile.ClearView += Event_MidiClearMemory;
       midiFile.FileLoaded += Event_MidiFileLoaded;
       midiFile.TrackChanged += Event_MidiActiveTrackChanged_ListBoxItemSelected;
-      #if DEBUG
+      //#if !DEBUG
       midiFile.MessageHandlers.Add(ShowProgress);
-      #endif
+      //#endif
       
       midiFile.Read();
       Settings.FromMidi(midiFile);
       //foreach (Action a in afteropen) a();
       
       OnGotMidiFile();
-      
+
     }
     
     void Event_MidiFileOpen(object sender, EventArgs e)
@@ -182,9 +185,10 @@ namespace SMFIOViewer
     
     void ShowProgress(MidiMsgType t, int track, int offset, int imsg, byte bmsg, ulong ppq, int rse, bool isrse)
     {
-      if (CanRaiseEvents) SetProgress(offset);
+      return;
+      if (InvokeRequired) Invoke(SetProgressDelegate, new object[] { offset }); 
       try {
-        Invoke(SetProgressDelegate, new object[]{offset});
+        SetProgress(offset);
       } catch {
         MessageBox.Show("Error invoking...");
       }
