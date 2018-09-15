@@ -100,6 +100,7 @@
     <Compile Include="IMidiParser.Parser.cs" />
     <Compile Include="IMidiParser.Resources.cs" />
     <Compile Include="ITimeConfiguration.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="Loop.cs" />
     <Compile Include="MBT.cs" />
     <Compile Include="MidiData.cs" />
@@ -114,7 +115,6 @@
     <Compile Include="MidiReader.Helper.cs" />
     <Compile Include="MidiReader.Notes.cs" />
     <Compile Include="MidiReader.Parse.cs" />
-    <Compile Include="MidiReader.Resources.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleClock.cs" />
     <Compile Include="TempoChange.cs" />

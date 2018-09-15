@@ -89,17 +89,6 @@ namespace on.smfio
       }
     }
 
-    void ErrorMessage(string format, params object[] arg)
-    {
-      #if CONSOLE
-      MessageBox.Show(string.Format(format, arg), "Press OK to continue", MessageBoxButtons.OK);
-      #else
-      Console.WriteLine("Unknown Message: {0}", arg);
-      Console.WriteLine("Press a key to continue...");
-      Console.ReadKey();
-      #endif
-    }
-    
     /// <inheritdoc/>
     public byte[] GetMetaBString(int offset)
     {
@@ -125,7 +114,7 @@ namespace on.smfio
         /* 0xff7f */ case MetaMsgU16FF.SystemSpecific:  return SmfFileHandle[SelectedTrackNumber, offset, 3];
         /* 0xff7f */ case MetaMsgU16FF.SystemExclusive: return SmfFileHandle[SelectedTrackNumber, offset, 4];
         default:
-          ErrorMessage(StringRes.String_Unknown_Message, RunningStatus32, SmfFileHandle[SelectedTrackNumber, offset + 1]);
+          Log.ErrorMessage(StringRes.String_Unknown_Message, RunningStatus32, SmfFileHandle[SelectedTrackNumber, offset + 1]);
           return SmfFileHandle[SelectedTrackNumber, offset, SmfFileHandle[SelectedTrackNumber, offset + 2] + 3];
       }
     }

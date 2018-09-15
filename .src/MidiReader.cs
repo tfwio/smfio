@@ -604,7 +604,7 @@ namespace on.smfio
         case MidiMsgType.SysCommon:
           if (imsg==0xFF7F) midiDataList.AddV(SelectedTrackNumber,new SysExMessage(ppq,imsg,GetMetaValue(offset)));
           else if (imsg==0xF0) midiDataList.AddV(SelectedTrackNumber,new SysExMessage(ppq,imsg,GetEventValue(offset)));
-          else ErrorMessage("Improper MidiMsgType classification?");
+          else Log.ErrorMessage("Improper MidiMsgType classification?");
           break;
         default:
           if (isrse) MidiDataList.AddV(SelectedTrackNumber,new ChannelMessage(ppq,rse,GetRseEventValue(offset)));

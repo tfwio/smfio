@@ -64,27 +64,6 @@ namespace on.smfio.Common
 			return MetaName((MetaMsg32)((int)id & 0x00FF));
 		}
 		
-		static public Dictionary<string,Color> Colors
-		{
-			get
-			{
-				Dictionary<string,Color> dic = new Dictionary<string,Color>();
-				dic.Add("red",Color.Red);
-				dic.Add("meta",Color.Red);
-				dic.Add("white",Color.White);
-				dic.Add("chanel",Color.Red);
-				dic.Add("225",Color.FromArgb(225,255,225));
-				dic.Add("rse1",Color.FromArgb(225,255,225));
-				dic.Add("rse2",Color.FromArgb(0,127,255));
-				dic.Add("rse3",Color.FromArgb(125,225,125));
-				dic.Add("tempo",Color.FromArgb(225,235,225));
-				dic.Add("tsig",Color.FromArgb(225,235,225));
-				dic.Add("ksig",Color.FromArgb(225,235,225));
-				dic.Add("end",Color.FromArgb(125,135,125));
-				dic.Add("ssx",Color.FromArgb(125,135,125));
-				return dic;
-			}
-		}
 
 		#region Moved
 		#region Meta helpers
