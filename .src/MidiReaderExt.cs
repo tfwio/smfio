@@ -36,15 +36,15 @@ namespace SMFIOViewer
 		/// <param name="parser"></param>
 		/// <param name="trackid"></param>
 		/// <returns></returns>
-		static public IEnumerable<MidiMessage> MidiTrackDistinctChannels(this IMidiParser parser, int trackid)
+		static public IEnumerable<MIDIMessage> MidiTrackDistinctChannels(this IMidiParser parser, int trackid)
 		{
       return parser.MidiDataList[trackid].Distinct(ChannelComparer);
 		}
 		
-    class MidiChannelComparer : IEqualityComparer<MidiMessage>
+    class MidiChannelComparer : IEqualityComparer<MIDIMessage>
     {
-      public bool Equals(MidiMessage x, MidiMessage y) { return x.ChannelBit == y.ChannelBit; }
-      public int GetHashCode(MidiMessage obj) { return base.GetHashCode(); }
+      public bool Equals(MIDIMessage x, MIDIMessage y) { return x.ChannelBit == y.ChannelBit; }
+      public int GetHashCode(MIDIMessage obj) { return base.GetHashCode(); }
     } readonly static MidiChannelComparer ChannelComparer = new MidiChannelComparer();
 
 	}

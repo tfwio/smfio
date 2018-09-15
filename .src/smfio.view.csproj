@@ -65,6 +65,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="IMidiParserUI_Lite.cs" />
+    <Compile Include="ColorResources.cs" />
     <Compile Include="IMidiParserUI.cs" />
     <Compile Include="IUi.cs" />
     <Compile Include="MainForm.cs" />

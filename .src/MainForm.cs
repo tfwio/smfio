@@ -123,8 +123,8 @@ namespace SMFIOViewer
         tn.Tag = track.Key;
         listBoxContextMenuStrip.Items.Add(tn);
         
-        foreach (MidiMessage i in midiFile.MidiTrackDistinctChannels(track.Key))
-          if (i is MidiChannelMessage)
+        foreach (MIDIMessage i in midiFile.MidiTrackDistinctChannels(track.Key))
+          if (i is ChannelMessage)
             channels.Add(i.ChannelBit);
         // foreach (int i in channels) {
         //   tn.DropDownItems.Add(i.ToString(), null, Event_ListBoxContextMenuItem)

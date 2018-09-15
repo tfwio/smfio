@@ -18,7 +18,7 @@ namespace SMFIOViewer
 {
   public class MidiEventControl : MidiControlBase
 	{
-		// FIXME: we should be using the master clock; not this.
+		// FIXME: we should be using the (or a) master clock; not this.
     SampleClock timing = new SampleClock(){Rate=44100};
 
     IMidiParser Reader { get { return UserInterface.MidiParser; } }
@@ -178,20 +178,20 @@ namespace SMFIOViewer
       switch (t)
 			{
 				case MidiMsgType.MetaStr:
-					lve.AddItem( MidiReader.c4, Reader.GetMbtString( ppq ), timeString, string.Empty, MetaHelpers.MetaNameFF( imsg ), Reader.GetMetaString( offset ) );
+					lve.AddItem( ColorResources.c4, Reader.GetMbtString( ppq ), timeString, string.Empty, MetaHelpers.MetaNameFF( imsg ), Reader.GetMetaString( offset ) );
 					break;
 				case MidiMsgType.MetaInf:
 					if (imsg == (int)MetaMsgU16FF.Tempo) { timeString = timing.TimeString; }
-					lve.AddItem( Reader.GetEventColor(imsg,MidiReader.cR), Reader.GetMbtString( ppq ), timeString, string.Empty, MetaHelpers.MetaNameFF( imsg ), Reader.GetMetaSTR( offset ) );
-					break;
+          lve.AddItem(ColorResources.GetEventColor(imsg, ColorResources.cR, Reader.RunningStatus32), Reader.GetMbtString(ppq), timeString, string.Empty, MetaHelpers.MetaNameFF(imsg), Reader.GetMetaSTR(offset));
+          break;
 				case MidiMsgType.SysCommon:
 				case MidiMsgType.System:
-					lve.AddItem( Reader.GetEventColor(imsg,MidiReader.cR), Reader.GetMbtString( ppq ), timeString, string.Empty, MetaHelpers.MetaNameFF( imsg ), Reader.GetMetaSTR( offset ) );
+					lve.AddItem( ColorResources.GetEventColor(imsg,ColorResources.cR, Reader.RunningStatus32), Reader.GetMbtString( ppq ), timeString, string.Empty, MetaHelpers.MetaNameFF( imsg ), Reader.GetMetaSTR( offset ) );
 					break;
 				default:
           //	case MsgType.Channel:
-          if (isrse) lve.AddItem( Reader.GetRseEventColor( Reader.Colors["225"] ), Reader.GetMbtString( ppq ), timing.TimeString, bmsg==0xF0?"":(rse & 0x0F).ToString(),Reader.GetRseEventString( offset ), Reader.chRseV( offset ) );
-					else       lve.AddItem( Reader.GetEventColor   ( Reader.Colors["225"] ), Reader.GetMbtString( ppq ), timing.TimeString, bmsg==0xF0?"":(rse & 0x0F).ToString(),Reader.GetEventString   ( offset ), Reader.chV   ( offset ) );
+          if (isrse) lve.AddItem( ColorResources.GetRseEventColor( ColorResources.Colors["225"], Reader.RunningStatus32 ), Reader.GetMbtString( ppq ), timing.TimeString, bmsg==0xF0?"":(rse & 0x0F).ToString(),Reader.GetRseEventString( offset ), Reader.chRseV( offset ) );
+					else       lve.AddItem( ColorResources.GetEventColor   ( ColorResources.Colors["225"], Reader.RunningStatus32 ), Reader.GetMbtString( ppq ), timing.TimeString, bmsg==0xF0?"":(rse & 0x0F).ToString(),Reader.GetEventString   ( offset ), Reader.chV   ( offset ) );
           //				if (t== MsgType.NoteOn||t== MsgType.NoteOff) Reader.CheckNote(t,ppq,Convert.ToByte((rse) & 0x0F),offset,bmsg,isrse);
           break;
 			}
