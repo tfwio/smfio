@@ -97,7 +97,7 @@
     <Compile Include="IClock.cs" />
     <Compile Include="IMidiParser.cs" />
     <Compile Include="IMidiParser.Parser.cs" />
-    <Compile Include="IMidiParser.Resources.cs" />
+    <!-- <Compile Include="IMidiParser.Resources.cs" /> -->
     <Compile Include="ITimeConfiguration.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Loop.cs" />
