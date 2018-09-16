@@ -74,7 +74,7 @@ namespace SMFIOViewer
       DoTrackSelect();
     }
     
-    #region MIDI ListBox (Event_MidiChangeTrack_MenuItemSelected,Event_FormToggleMidiListBox)
+    #region MIDI ListBox (Event_MidiChangeTrack_MenuItemSelected)
     
     void Event_MidiChangeTrack(object sender, EventArgs e)
     {
@@ -95,12 +95,6 @@ namespace SMFIOViewer
       else if (sender is ListBox && listBox1.SelectedIndex > -1)
         midiFile.SelectedTrackNumber = listBox1.SelectedIndex;
       
-    }
-    
-    // FIXME: not used
-    void Event_FormToggleMidiListBox(object sender, EventArgs e)
-    {
-      this.splitContainer1.Panel1Collapsed = !this.splitContainer1.Panel1Collapsed;
     }
     
     #endregion
@@ -142,7 +136,7 @@ namespace SMFIOViewer
       if (string.IsNullOrEmpty(filename))
         return;
       if (!System.IO.File.Exists(filename)) {
-        MessageBox.Show(filename, "Error loading file.");
+        Log.ErrorMessage(filename, "Error loading file.");
         return;
       }
       
@@ -160,9 +154,6 @@ namespace SMFIOViewer
       midiFile.ClearView += Event_MidiClearMemory;
       midiFile.FileLoaded += Event_MidiFileLoaded;
       midiFile.TrackChanged += Event_MidiActiveTrackChanged_ListBoxItemSelected;
-      //#if !DEBUG
-      // midiFile.MessageHandlers.Add(ShowProgress);
-      //#endif
       
       midiFile.Read();
       Settings.FromMidi(midiFile);

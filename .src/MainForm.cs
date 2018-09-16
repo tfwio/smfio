@@ -93,18 +93,7 @@ namespace SMFIOViewer
     
     void DoTrackSelect()
     {
-      //#if DEBUG
       StartLoad();
-      //#else
-      //KillThread();
-      //thread = new System.Threading.Thread(StartLoad);
-      //thread.Priority = System.Threading.ThreadPriority.Highest;
-      //thread.Start();
-      ////#endif
-      //this.toolStripProgressBar1.Value = 0;
-      //this.toolStripProgressBar1.Maximum = 0;
-      //this.toolStripProgressBar1.Enabled = false;
-      //this.toolStripProgressBar1.Visible = true;
     }
 
     void Event_MidiActiveTrackChanged_ListBoxItemSelected(object o, EventArgs e)
@@ -126,18 +115,6 @@ namespace SMFIOViewer
         foreach (MIDIMessage i in midiFile.MidiTrackDistinctChannels(track.Key))
           if (i is ChannelMessage)
             channels.Add(i.ChannelBit);
-        // foreach (int i in channels) {
-        //   tn.DropDownItems.Add(i.ToString(), null, Event_ListBoxContextMenuItem)
-        //     .Tag = new KeyValuePair<int,int>(track.Key, i);
-        //
-        // }
-        //        if (channels.Count > 0) tn.DropDownItems.Insert(0, new ToolStripSeparator());
-        // if (channels.Count > 0) // all channels node // only added to tracks that have channels
-        // {
-        //   ToolStripItem another = new ToolStripMenuItem("All Channels", null, Event_ListBoxContextMenuItem);
-        //   another.Tag = new KeyValuePair<int,int>(track.Key, -1);
-        //   tn.DropDownItems.Insert(0, another);
-        // }
       }
       channels.Clear();
       channels = null;
@@ -150,9 +127,6 @@ namespace SMFIOViewer
       
       MidiTree.InitializeTreeNodes(this.tree, this);
       
-      // there is however no player.
-      // this.numTempo.ValueChanged += Event_PlayerUpDown2Tempo;
-      // this.numPpq.ValueChanged += this.Event_PlayerUpDown2Ppq;
     }
     
     public List<MidiControlBase> ChildrenControls = new List<MidiControlBase>();
@@ -175,11 +149,6 @@ namespace SMFIOViewer
         item.Tag = control;
         viewToolStripMenuItem.DropDownItems.Add(item);
       }
-      // btn_pick_track.Image = Icons.midi_in;
-      // btn_pick_track.Image = fam3.famfam_silky.cursor;
-      // #if !DEBUG
-      // toolStripProgressBar1.Visible = false;
-      // #endif
     }
     
     public void ShowElement(object sender, EventArgs e)
@@ -192,33 +161,16 @@ namespace SMFIOViewer
       ((sender as ToolStripMenuItem).Tag as Control).Invalidate();
     }
     
-    #region Thread Helpers for MIDI Track Loader
-    
     /// <summary>
     /// This is a placeholder for midiFile.TrackSelectAction
     /// </summary>
     /// <seealso cref="on.smfio.MidiReader.TrackSelectAction()">on.smfio.MidiReader.TrackSelectAction()</seealso>
     Func<string> LoadTracks = null;
     
-    System.Threading.Thread thread; // FIXME: Is this never used?
-    
     void StartLoad()
     {
       label1.Text = LoadTracks();
     }
-    void KillThread()
-    {
-      if (thread != null) {
-        if (thread.IsAlive)
-          try {
-          thread.Abort();
-        } catch {
-        }
-        thread = null;
-      }
-    }
-    
-    #endregion
     
   }
   
