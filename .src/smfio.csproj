@@ -94,6 +94,7 @@
     <Compile Include="Common\Smf.Meta.ChannelType.cs" />
     <Compile Include="Common\Smf.MidiMessageInfo.cs" />
     <Compile Include="Common\Smf.NoteRange.cs" />
+    <Compile Include="EnumFile.cs" />
     <Compile Include="IClock.cs" />
     <Compile Include="IMidiParser.cs" />
     <Compile Include="IMidiParser.Parser.cs" />
@@ -111,10 +112,12 @@
     <Compile Include="MidiMessageEvent.cs" />
     <Compile Include="MidiMsgType.cs" />
     <Compile Include="MidiReader.cs" />
-    <Compile Include="MidiReader.Helper.cs" />
     <Compile Include="MidiReader.Parse.cs" />
+    <Compile Include="MidiSystem.cs" />
+    <Compile Include="MidiUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleClock.cs" />
+    <Compile Include="SmfStringFormatter.cs" />
     <Compile Include="TempoChange.cs" />
     <Compile Include="TempoChangedEventArgs.cs" />
     <Compile Include="xg\XgNrpn.cs" />

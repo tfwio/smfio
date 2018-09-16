@@ -1,4 +1,4 @@
-﻿// oio * 2005-11-12 * 4:19 PM
+// oio * 2005-11-12 * 4:19 PM
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
@@ -16,37 +16,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-using System;
-
-namespace on.smfio.Common
+namespace on.smfio
 {
-	public enum ChMessage8 : byte
-	{
-		/// 0x80
-		NoteOff = 0x80,
-		/// 0x90
-		NoteOn = 0x90,
-		/// 0xA0
-		KeyAftertouch = 0xA0,
-		/// 0xB0
-		ControlChange = 0xB0,
-		/// 0xC0
-		ProgramChange = 0xC0,
-		/// 0xD0
-		ChannelAftertouch = 0xD0,
-		/// 0xE0
-		PitchBend = 0xE0,
-		/// 0xF0
-		SystemMessage = 0xF0,
-		/// 0xF1
-		SystemCommonLo = 0xF1,
-		/// 0xF7
-		SystemCommonHi = 0xF7,
-		/// 0xF8
-		SystemRealtimeLo = 0xF8,
-		/// 0xFF
-		SystemRealtimeHi = 0xFF,
-		// 0xFF
-		SystemMessageMax = SystemRealtimeHi,
-	}
+  /// <summary>
+  /// Perhaps supplied with SMPTE/MTC Offset.
+  /// </summary>
+  public enum SmpteMtcFrameCount
+  {
+    F24,
+    F25,
+    F30d,
+    F30
+  }
 }

@@ -369,7 +369,7 @@ namespace on.smfio
     public event EventHandler<TempoChangedEventArgs> TempoChangedEvent;
     
     /// <summary>
-    /// This delta may not be correct.
+    /// ¡This delta may not be correct? Wha? Why delta and not the RunningStatus?
     /// </summary>
     /// <param name="delta"></param>
     /// <param name="tValue"></param>
@@ -400,26 +400,12 @@ namespace on.smfio
     #region Boolean Handler-Flags
     
     /// <inheritdoc/>
-    public bool UseEventHandler {
-      get { return propogateEvents; }
-    } readonly bool propogateEvents;
+    public bool UseEventHandler { get; private set; }
     
     /// <inheritdoc/>
-    public bool HasTrackReaderDelegate {
-      get { return MessageHandler != null; }
-    }
+    public bool HasTrackReaderDelegate { get { return MessageHandler != null; } }
 
     #endregion
-    
-    static MidiReader()
-    {
-      try {
-        SmfStringFormatter.cc = MidiUtil.LoadEnumerationFile("ext/cc.map");
-        SmfStringFormatter.patches = MidiUtil.LoadEnumerationFile("ext/inst.map");
-        SmfStringFormatter.drums = MidiUtil.LoadEnumerationFile("ext/dk.map");
-      } catch {
-      }
-    }
     
     #region .ctor
     
@@ -429,11 +415,11 @@ namespace on.smfio
     }
     public MidiReader(bool useEventHandler)
     {
-      if (this.propogateEvents = useEventHandler)
+      if (UseEventHandler == useEventHandler)
         this.MessageHandler = this.OnMidiMessage;
     }
     
-    public MidiReader(MidiMessageHandler handler) : this(true) {}
+    // public MidiReader(MidiMessageHandler handler) : this(true) {}
     public MidiReader(MidiEventDelegate handler) : this(false) { this.MessageHandler = handler; }
     public MidiReader( string fileName ) : this(true)
     {
@@ -481,8 +467,8 @@ namespace on.smfio
     
     #region READ VAR INT
     
-    int GetIntVar(int offset, out long result) {
-      return GetIntVar(SelectedTrackNumber, offset, out result);
+    int NextDelta(int offset, out long result) {
+      return NextDelta(SelectedTrackNumber, offset, out result);
     }
     
     /// <summary>
@@ -492,7 +478,7 @@ namespace on.smfio
     /// <param name="offset">offset in bytes into the track</param>
     /// <param name="result">The current running number of elapsed pulses.</param>
     /// <returns>next byte offset (read) position.</returns>
-    int GetIntVar(int ntrack, int offset, out long result)
+    int NextDelta(int ntrack, int offset, out long result)
     {
       byte tempBit;
       int i = offset;
@@ -518,7 +504,7 @@ namespace on.smfio
       selectedTrackNumber = tk;
       while (i < NTrack.track.Length)
       {
-        i = GetIntVar(i, out delta);
+        i = NextDelta(tk, i, out delta);
         TicksPerQuarterNote += Convert.ToUInt64(delta);
         i = GetTrackTiming(selectedTrackNumber,i, Convert.ToInt32(delta));
       }
@@ -541,7 +527,7 @@ namespace on.smfio
       
       while (i < NTrack.track.Length)
       {
-        i = GetIntVar(i, out delta);
+        i = NextDelta(i, out delta);
         TicksPerQuarterNote += Convert.ToUInt64(delta);
         i = GetTrackMessage(i, Convert.ToInt32(delta));
         OnTrackLoadProgressChanged(i);
@@ -578,7 +564,7 @@ namespace on.smfio
             int i = 0;
             while (i < SmfFileHandle.Tracks[TrackToParse].track.Length)
             {
-              i = GetIntVar(TrackToParse, i, out delta);
+              i = NextDelta(TrackToParse, i, out delta);
               TicksPerQuarterNote += Convert.ToUInt64(delta);
               i = GetNTrackMessage(TrackToParse, i, Convert.ToInt32(delta));
             }

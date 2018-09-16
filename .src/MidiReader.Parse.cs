@@ -45,7 +45,7 @@ namespace on.smfio
     public int GetMetaNextPos(int offset)
     {
       long result = 0;
-      return GetIntVar(offset + 2, out result) + Convert.ToInt32(result) - 1;
+      return NextDelta(offset + 2, out result) + Convert.ToInt32(result) - 1;
     }
     
     // 
@@ -56,7 +56,7 @@ namespace on.smfio
     public string GetMetaString(int offset)
     {
       long result = 0;
-      int nextOffset = GetIntVar(offset + 2, out result);
+      int nextOffset = NextDelta(offset + 2, out result);
       return System.Text.Encoding.UTF8.GetString(SmfFileHandle[SelectedTrackNumber, nextOffset, Convert.ToInt32(result)]);
     }
     
@@ -73,13 +73,13 @@ namespace on.smfio
         case MetaMsgU16FF.TimeSignature:   /* 0xff58 */ return MetaHelpers.meta_FF58(SmfFileHandle[SelectedTrackNumber], offset);
         case MetaMsgU16FF.KeySignature:    /* 0xff59 */ return MetaHelpers.meta_FF59(SmfFileHandle[SelectedTrackNumber], offset);
         case MetaMsgU16FF.EndOfTrack:      /* 0xff2f */ return MetaHelpers.meta_FF2F();
-        case MetaMsgU16FF.SystemSpecific:  /* 0xff7f */ long result = 0;  int nextOffset  = GetIntVar(offset + 2, out result)  - offset; return SmfFileHandle[SelectedTrackNumber, offset, Convert.ToInt32(result) + 3].StringifyHex();
-        case MetaMsgU16FF.SystemExclusive:              long result1 = 0; int nextOffset1 = GetIntVar(offset + 1, out result1) - offset; return SmfFileHandle[SelectedTrackNumber, offset, Convert.ToInt32(result1) + 4].StringifyHex();
+        case MetaMsgU16FF.SystemSpecific:  /* 0xff7f */ long result = 0;  int nextOffset  = NextDelta(offset + 2, out result)  - offset; return SmfFileHandle[SelectedTrackNumber, offset, Convert.ToInt32(result) + 3].StringifyHex();
+        case MetaMsgU16FF.SystemExclusive:              long result1 = 0; int nextOffset1 = NextDelta(offset + 1, out result1) - offset; return SmfFileHandle[SelectedTrackNumber, offset, Convert.ToInt32(result1) + 4].StringifyHex();
         default: // check for a channel message
           if (RunningStatus32==0xF0)
           {
             long ro = 0;
-            int no = GetIntVar(offset + 1, out ro) - offset;
+            int no = NextDelta(offset + 1, out ro) - offset;
             return SmfFileHandle[SelectedTrackNumber, offset, Convert.ToInt32(ro)+2].StringifyHex();
           }
           string msg = string.Format(StringRes.String_Unknown_Message, RunningStatus32, SmfFileHandle[SelectedTrackNumber, offset,2].StringifyHex() );
@@ -93,7 +93,7 @@ namespace on.smfio
     public byte[] GetMetaBString(int offset)
     {
       long result = 0;
-      int nextOffset = GetIntVar(offset + 2, out result);
+      int nextOffset = NextDelta(offset + 2, out result);
       return SmfFileHandle[SelectedTrackNumber, nextOffset, Convert.ToInt32(result)];
     }
 
@@ -238,8 +238,8 @@ namespace on.smfio
         return GetNoteMsg(0, offset + plus, StringRes.m9); else if (MidiMessageInfo.IsNoteOff(ExpandedRSE))
         return GetNoteMsg(0, offset + plus, StringRes.m8); else if (MidiMessageInfo.IsKeyAftertouch(ExpandedRSE))
         return string.Format(StringRes.mA, SmfFileHandle[SelectedTrackNumber, offset + plus], SmfFileHandle[SelectedTrackNumber, offset + plus + 1]); else if (MidiMessageInfo.IsControlChange(ExpandedRSE))
-        return string.Format(StringRes.mB, SmfStringFormatter.cc[SmfFileHandle.Get8Bit(SelectedTrackNumber, offset + plus)].Replace((char)0xa, (char)0x20).Trim(), SmfFileHandle.Get8Bit(SelectedTrackNumber, offset + plus + 1)); else if (MidiMessageInfo.IsProgramChange(ExpandedRSE))
-        return SmfStringFormatter.patches[SmfFileHandle[SelectedTrackNumber, offset + plus]].Replace((char)0xa, (char)0x20).Trim(); else if (MidiMessageInfo.IsChannelAftertouch(ExpandedRSE))
+        return string.Format(StringRes.mB, SmfString.ControlMap[SmfFileHandle.Get8Bit(SelectedTrackNumber, offset + plus)].Replace((char)0xa, (char)0x20).Trim(), SmfFileHandle.Get8Bit(SelectedTrackNumber, offset + plus + 1)); else if (MidiMessageInfo.IsProgramChange(ExpandedRSE))
+        return SmfString.PatchMap[SmfFileHandle[SelectedTrackNumber, offset + plus]].Replace((char)0xa, (char)0x20).Trim(); else if (MidiMessageInfo.IsChannelAftertouch(ExpandedRSE))
         return MidiMessageInfo.ChannelAftertouchRange.Name; else if (MidiMessageInfo.IsPitchBend(ExpandedRSE))
         return MidiMessageInfo.PitchBendRange.Name; else if (MidiMessageInfo.IsSystemMessage(ExpandedRSE))
         return MidiMessageInfo.SystemExclusiveMessageRange.Name; else if (MidiMessageInfo.IsSystemCommon(ExpandedRSE))
@@ -253,7 +253,7 @@ namespace on.smfio
     // ---------------------------------
 
     /// <inheritdoc/>
-    string GetNoteMsg(int shift, int offset, string format) { return string.Format(format, SmfFileHandle[SelectedTrackNumber, offset + shift], SmfFileHandle[SelectedTrackNumber, offset + shift + 1], SmfStringFormatter.GetKeySharp(SmfFileHandle[SelectedTrackNumber, offset + shift]), SmfStringFormatter.GetOctave(SmfFileHandle[SelectedTrackNumber, offset + shift])); }
+    string GetNoteMsg(int shift, int offset, string format) { return string.Format(format, SmfFileHandle[SelectedTrackNumber, offset + shift], SmfFileHandle[SelectedTrackNumber, offset + shift + 1], SmfString.GetKeySharp(SmfFileHandle[SelectedTrackNumber, offset + shift]), SmfString.GetOctave(SmfFileHandle[SelectedTrackNumber, offset + shift])); }
 
     /// <inheritdoc/>
     public string chV(int v) { return string.Format("{0} {1}", string.Format("{0:X2}", RunningStatus32), GetEventValueString(v)); }
