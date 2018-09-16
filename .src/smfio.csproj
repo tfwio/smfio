@@ -102,8 +102,8 @@
     <Compile Include="Log.cs" />
     <Compile Include="Loop.cs" />
     <Compile Include="MBT.cs" />
-    <Compile Include="MidiData.cs" />
-    <Compile Include="MidiData.Note.cs" />
+    <!-- <Compile Include="MidiData.cs" /> -->
+    <!-- <Compile Include="MidiData.Note.cs" /> -->
     <Compile Include="MidiMessage/ChannelMessage.cs" />
     <Compile Include="MidiMessage/MidiMessage.cs" />
     <Compile Include="MidiMessage/MetaMessage.cs" />

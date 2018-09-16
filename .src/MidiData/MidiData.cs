@@ -6,7 +6,7 @@ using System;
 
 namespace on.smfio
 {
-  /// <seealso cref="IMidiParser_Notes"/>
+  // /// <seealso cref="IMidiParser_Notes"/>
   public class MidiData
 	{
 		// TODO: Validate actually channel byte?
