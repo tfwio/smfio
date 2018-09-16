@@ -11,17 +11,8 @@ using on.smfio.util;
 
 namespace on.smfio
 {
-  // =============================================
-  // DELEGATES
-  // =============================================
-
-  public delegate void MidiMessageHandler(object sender, MidiMessageEvent e);
-	public delegate int MidiReaderLoadTrackDelegate(int track, int offset);
-	public delegate void MidiEventDelegate(MidiMsgType t, int track, int offset, int imsg, byte bmsg, ulong ppq, int rse, bool isrse);
-	
 	public interface IMidiParser:
-		IMidiParser_Parser /* normative */,
-		// IMidiParser_Notes /* optional */,
+		IMidiParser_Parser,
 		INotifyPropertyChanged
   {
     // =============================================
@@ -62,11 +53,11 @@ namespace on.smfio
     // TIMING
     // =============================================
 
-    ulong TicksPerQuarterNote { get; set; }
+    ulong CurrentTrackPulse { get; }
 		
-		int RunningStatus32 { get; set; }
+		int CurrentTrackRunningStatus { get; }
 		
-		SampleClock MidiTimeInfo { get;set; }
+		SampleClock MidiTimeInfo { get; set; }
 		
 		void ResetTiming();
 		
@@ -78,7 +69,7 @@ namespace on.smfio
 
     void OnMidiMessage(MidiMsgType t, int track, int offset, int imsg, byte bmsg, ulong ppq, int rse, bool isrse);
 
-		bool UseEventHandler { get; }
+    bool UseEventHandler { get; }
 		
 		bool HasTrackReaderDelegate { get; }
 
@@ -97,8 +88,6 @@ namespace on.smfio
     // =============================================
 
     int SelectedTrackNumber { get; set; }
-		
-		bool IsTrackSelected { get; }
 		
 		MidiReaderLoadTrackDelegate LoadTrack { get; set; }
 		

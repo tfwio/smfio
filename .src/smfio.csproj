@@ -95,6 +95,7 @@
     <Compile Include="Common\Smf.MidiMessageInfo.cs" />
     <Compile Include="Common\Smf.NoteRange.cs" />
     <Compile Include="EnumFile.cs" />
+    <Compile Include="Events.cs" />
     <Compile Include="IClock.cs" />
     <Compile Include="IMidiParser.cs" />
     <Compile Include="IMidiParser.Parser.cs" />

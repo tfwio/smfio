@@ -6,6 +6,7 @@ using System.Diagnostics;
 using on.smfio.Common;
 using on.smfio.chunk;
 using on.smfio.util;
+
 using CliEvent = System.EventArgs;
 using CliHandler = System.EventHandler;
 
@@ -55,15 +56,13 @@ namespace on.smfio
     
     #endregion
     
-    #region POSITION
 
-    public int RunningStatus32 { get; set; }
+    public int CurrentTrackRunningStatus { get; private set; }
 
-    public ulong TicksPerQuarterNote {
-      get { return ticksPerQuarterNote; }
-      set { ticksPerQuarterNote = value; }
-    } ulong ticksPerQuarterNote = 0;
-    #endregion
+    /// <summary>
+    /// Current Track's pulse ocunt in ticks per quarter-note.
+    /// </summary>
+    public ulong CurrentTrackPulse { get; private set; }
 
     #region TIME
     /// <inheritdoc/>
@@ -115,8 +114,8 @@ namespace on.smfio
     
     public virtual void ResetTiming()
     {
-      RunningStatus32 = -1;
-      ticksPerQuarterNote = 0;
+      CurrentTrackRunningStatus = -1;
+      CurrentTrackPulse = 0;
 //			Notify("Timing");
     }
     
@@ -201,7 +200,7 @@ namespace on.smfio
         case (int)MetaMsgU16FF.Marker:          // FF06
         case (int)MetaMsgU16FF.Cue:             // FF07
         case (int)MetaMsgU16FF.Port:            // FF08
-          this.MessageHandler(MidiMsgType.MetaStr, ntrack, offset, CurrentIntMessage, CurrentByte, TicksPerQuarterNote, RunningStatus32, false);
+          this.MessageHandler(MidiMsgType.MetaStr, ntrack, offset, CurrentIntMessage, CurrentByte, CurrentTrackPulse, CurrentTrackRunningStatus, false);
           //lve.AddItem( c4, MeasureBarTick( TicksPerQuarterNote ), TicksPerQuarterNote.ToString(), ""/*(RunningStatus32 & 0x0F)+1*/, MetaHelpers.MetaNameFF( CurrentIntMessage ) , GetMetaString( position ) );
           DELTA_Returned = GetMetaNextPos(offset);
           break;
@@ -213,20 +212,20 @@ namespace on.smfio
         case (int)MetaMsgU16FF.TimeSignature:   // FF58
         case (int)MetaMsgU16FF.KeySignature:    // FF59
           // why is this filtered and no others ? see gettrackmessage
-          this.MessageHandler(MidiMsgType.MetaInf, ntrack, offset, CurrentIntMessage, CurrentByte, TicksPerQuarterNote, RunningStatus32, false);
+          this.MessageHandler(MidiMsgType.MetaInf, ntrack, offset, CurrentIntMessage, CurrentByte, CurrentTrackPulse, CurrentTrackRunningStatus, false);
           DELTA_Returned = GetMetaNextPos(offset);
           break;
         case (int)MetaMsgU16FF.SystemSpecific:  // FF7F
         case (int)MetaMsgU16FF.SystemExclusive: // FF7F
           Debug.Print("?---------sys");
-          this.MessageHandler(MidiMsgType.System, ntrack, offset, CurrentIntMessage, CurrentByte, TicksPerQuarterNote, RunningStatus32, false);
+          this.MessageHandler(MidiMsgType.System, ntrack, offset, CurrentIntMessage, CurrentByte, CurrentTrackPulse, CurrentTrackRunningStatus, false);
           DELTA_Returned = GetMetaNextPos(offset);
           break;
         default:
           {
             if (CurrentByte < 0x80) {
               // Running Status
-              int ExpandedRSE = RunningStatus32 << 8;
+              int ExpandedRSE = CurrentTrackRunningStatus << 8;
               int delta1 = -1;
               if ((delta1 = GetNextRsePosition(offset)) == -1)
               {
@@ -236,15 +235,15 @@ namespace on.smfio
               else
               {
                 DELTA_Returned = delta1;
-                this.MessageHandler(GetMsgTyp(RunningStatus32), ntrack, offset, RunningStatus32, (byte)RunningStatus32, TicksPerQuarterNote, RunningStatus32, true);
+                this.MessageHandler(GetMsgTyp(CurrentTrackRunningStatus), ntrack, offset, CurrentTrackRunningStatus, (byte)CurrentTrackRunningStatus, CurrentTrackPulse, CurrentTrackRunningStatus, true);
               }
             }
             else if (MidiMessageInfo.IsMidiMessage(CurrentIntMessage))
             {
-              RunningStatus32 = (SmfFileHandle[ntrack, offset]);
+              CurrentTrackRunningStatus = (SmfFileHandle[ntrack, offset]);
               DELTA_Returned = GetNextPosition(offset);
               // Debug.Print("{0:X}",runningStatus32);
-              this.MessageHandler(GetMsgTyp(RunningStatus32), ntrack, offset, RunningStatus32, (byte)RunningStatus32, TicksPerQuarterNote, RunningStatus32, false);
+              this.MessageHandler(GetMsgTyp(CurrentTrackRunningStatus), ntrack, offset, CurrentTrackRunningStatus, (byte)CurrentTrackRunningStatus, CurrentTrackPulse, CurrentTrackRunningStatus, false);
               DELTA_Returned++;
               return DELTA_Returned;
             }
@@ -289,7 +288,7 @@ namespace on.smfio
           TempoChanges.Add(
             new TempoChange()
             {
-              Pulses = TicksPerQuarterNote,
+              Pulses = CurrentTrackPulse,
               TrackOffset = position,
               TrackID = ntrack,
               MSPQ = tValue,
@@ -320,7 +319,7 @@ namespace on.smfio
           {
             if (CurrentByte < 0x80) {
               // Running Status
-              int ExpandedRSE = RunningStatus32 << 8;
+              int ExpandedRSE = CurrentTrackRunningStatus << 8;
               int delta1 = -1;
               if ((delta1 = GetNextRsePosition(position)) == -1) {
                 int test = GetOffset(position);
@@ -329,7 +328,7 @@ namespace on.smfio
                 DELTA_Returned = delta1;
               }
             } else if (MidiMessageInfo.IsMidiMessage(CurrentIntMessage)) {
-              RunningStatus32 = (SmfFileHandle[ntrack, position]);
+              CurrentTrackRunningStatus = (SmfFileHandle[ntrack, position]);
               DELTA_Returned = GetNextPosition(position);
               DELTA_Returned++;
               return DELTA_Returned;
@@ -415,11 +414,11 @@ namespace on.smfio
     }
     public MidiReader(bool useEventHandler)
     {
-      if (UseEventHandler == useEventHandler)
+      if (UseEventHandler = useEventHandler)
         this.MessageHandler = this.OnMidiMessage;
     }
     
-    // public MidiReader(MidiMessageHandler handler) : this(true) {}
+    public MidiReader(MidiMessageHandler handler) : this(true) {}
     public MidiReader(MidiEventDelegate handler) : this(false) { this.MessageHandler = handler; }
     public MidiReader( string fileName ) : this(true)
     {
@@ -433,8 +432,6 @@ namespace on.smfio
     /// <inheritdoc/>
     public int GetOffset(int offset)
     {
-      #if no
-      #endif
       int result = 14;
       for (int i = 0; i <= SelectedTrackNumber; i++) {
         result += SmfFileHandle[i].track.Length + 8; // if not 8, this will be 4
@@ -494,6 +491,10 @@ namespace on.smfio
     #endregion
     #region READ META TRACK
 
+    /// <summary>
+    /// Retruns the SMF Track at <see cref="SelectedTrackNumber"/>
+    /// </summary>
+    /// <value></value>
     smf_mtrk NTrack { get { return SmfFileHandle[SelectedTrackNumber]; } }
     
     /// <inheritdoc/>
@@ -505,7 +506,7 @@ namespace on.smfio
       while (i < NTrack.track.Length)
       {
         i = NextDelta(tk, i, out delta);
-        TicksPerQuarterNote += Convert.ToUInt64(delta);
+        CurrentTrackPulse += Convert.ToUInt64(delta);
         i = GetTrackTiming(selectedTrackNumber,i, Convert.ToInt32(delta));
       }
     }
@@ -523,12 +524,12 @@ namespace on.smfio
       
       long delta;
       int i = 0;
-      TicksPerQuarterNote = 0;
+      CurrentTrackPulse = 0;
       
       while (i < NTrack.track.Length)
       {
         i = NextDelta(i, out delta);
-        TicksPerQuarterNote += Convert.ToUInt64(delta);
+        CurrentTrackPulse += Convert.ToUInt64(delta);
         i = GetTrackMessage(i, Convert.ToInt32(delta));
         OnTrackLoadProgressChanged(i);
       }
@@ -551,7 +552,7 @@ namespace on.smfio
     {
       MidiDataList.Clear();
       for (int i = 0; i < SmfFileHandle.NumberOfTracks; i++) MidiDataList.CreateKey(i);
-      TicksPerQuarterNote = 0;
+      CurrentTrackPulse = 0;
       lock (ParseAllLock)
       {
         for (int TrackToParse = 0; TrackToParse < this.SmfFileHandle.NumberOfTracks; TrackToParse++)
@@ -565,18 +566,25 @@ namespace on.smfio
             while (i < SmfFileHandle.Tracks[TrackToParse].track.Length)
             {
               i = NextDelta(TrackToParse, i, out delta);
-              TicksPerQuarterNote += Convert.ToUInt64(delta);
+              CurrentTrackPulse += Convert.ToUInt64(delta);
               i = GetNTrackMessage(TrackToParse, i, Convert.ToInt32(delta));
             }
           }
         }
       }
-//			OnAfterTrackLoaded(EventArgs.Empty);
-//			return NTrack.track.Length;
+    // OnAfterTrackLoaded(EventArgs.Empty);
+    // return NTrack.track.Length;
     }
 
-    #region PARSER_MidiDataList (DEFAULT PARSER!)
-
+    // public delegate void MidiEventDelegate(
+    //   MidiMsgType msgType,
+    //   int nTrackIndex,
+    //   int nTrackOffset,
+    //   int midiMsg32,
+    //   byte midiMsg8,
+    //   ulong pulse,
+    //   int runningStatusOrDelta,
+    //   bool isRunningStatus);
     void PARSER_MidiDataList(MidiMsgType t, int track, int offset, int imsg, byte bmsg, ulong ppq, int rse, bool isrse)
     {
       switch (t)
@@ -600,7 +608,6 @@ namespace on.smfio
           break;
       }
     }
-    #endregion
 
     #endregion
 
@@ -616,12 +623,6 @@ namespace on.smfio
         OnTrackChanged(EventArgs.Empty);
       }
     } internal int selectedTrackNumber;
-    
-    public bool IsTrackSelected {
-      get { return SelectedTrackNumber >= 0; }
-    }
-    
-    int SelectedTrackTickCount = -1;
     
     ///<summary>a track is selected</summary>
     public virtual string TrackSelectAction()
@@ -729,15 +730,6 @@ namespace on.smfio
          );
       }
     }
-
-    internal string DefaultMidiString {
-      get { return string.Format("{0} No Tracks Selected", class_id); }
-    } readonly string class_id = "midi reader";
-
-    // public override string ToString()
-    // {
-    //   return IsTrackSelected ? string.Format(Resource_TrackLoaded, SelectedTrackNumber, SelectedTrackTickCount, SmfFileHandle[SelectedTrackNumber].Size, Convert.ToInt32(SmfFileHandle.Division)) : DefaultMidiString;
-    // }
 
     #endregion
 

@@ -19,7 +19,7 @@ namespace on.smfio
     /// <summary>Next Position (rse)</summary>
     int Increment(int offset, int plus)
     {
-      int ExpandedRSE = RunningStatus32 << 8;
+      int ExpandedRSE = CurrentTrackRunningStatus << 8;
       if (MidiMessageInfo.IsNoteOff(ExpandedRSE))           return offset + plus + 1;
       if (MidiMessageInfo.IsNoteOn(ExpandedRSE))            return offset + plus + 1;
       if (MidiMessageInfo.IsKeyAftertouch(ExpandedRSE))     return offset + plus + 1;
@@ -30,7 +30,7 @@ namespace on.smfio
       if (MidiMessageInfo.IsSystemMessage(ExpandedRSE))     return offset + plus + SmfFileHandle[SelectedTrackNumber, offset + plus];
       if (MidiMessageInfo.IsSystemCommon(ExpandedRSE))      return offset + plus + SmfFileHandle[SelectedTrackNumber, offset + plus];
       if (MidiMessageInfo.IsSystemRealtime(ExpandedRSE))    return offset + plus;
-      if (!MidiMessageInfo.IsMidiBMessage(RunningStatus32)) return -1;
+      if (!MidiMessageInfo.IsMidiBMessage(CurrentTrackRunningStatus)) return -1;
       return -1;
     }
     
@@ -76,13 +76,13 @@ namespace on.smfio
         case MetaMsgU16FF.SystemSpecific:  /* 0xff7f */ long result = 0;  int nextOffset  = NextDelta(offset + 2, out result)  - offset; return SmfFileHandle[SelectedTrackNumber, offset, Convert.ToInt32(result) + 3].StringifyHex();
         case MetaMsgU16FF.SystemExclusive:              long result1 = 0; int nextOffset1 = NextDelta(offset + 1, out result1) - offset; return SmfFileHandle[SelectedTrackNumber, offset, Convert.ToInt32(result1) + 4].StringifyHex();
         default: // check for a channel message
-          if (RunningStatus32==0xF0)
+          if (CurrentTrackRunningStatus==0xF0)
           {
             long ro = 0;
             int no = NextDelta(offset + 1, out ro) - offset;
             return SmfFileHandle[SelectedTrackNumber, offset, Convert.ToInt32(ro)+2].StringifyHex();
           }
-          string msg = string.Format(StringRes.String_Unknown_Message, RunningStatus32, SmfFileHandle[SelectedTrackNumber, offset,2].StringifyHex() );
+          string msg = string.Format(StringRes.String_Unknown_Message, CurrentTrackRunningStatus, SmfFileHandle[SelectedTrackNumber, offset,2].StringifyHex() );
           
 
           return System.Text.Encoding.UTF8.GetString(SmfFileHandle[SelectedTrackNumber, offset, SmfFileHandle[SelectedTrackNumber, offset + 2] + 3]);
@@ -114,7 +114,7 @@ namespace on.smfio
         /* 0xff7f */ case MetaMsgU16FF.SystemSpecific:  return SmfFileHandle[SelectedTrackNumber, offset, 3];
         /* 0xff7f */ case MetaMsgU16FF.SystemExclusive: return SmfFileHandle[SelectedTrackNumber, offset, 4];
         default:
-          Log.ErrorMessage(StringRes.String_Unknown_Message, RunningStatus32, SmfFileHandle[SelectedTrackNumber, offset + 1]);
+          Log.ErrorMessage(StringRes.String_Unknown_Message, CurrentTrackRunningStatus, SmfFileHandle[SelectedTrackNumber, offset + 1]);
           return SmfFileHandle[SelectedTrackNumber, offset, SmfFileHandle[SelectedTrackNumber, offset + 2] + 3];
       }
     }
@@ -145,7 +145,7 @@ namespace on.smfio
     /// <inheritdoc/>
     string GetEventValueString(int offset, int plus)
     {
-      int ExpandedRSE = RunningStatus32 << 8;
+      int ExpandedRSE = CurrentTrackRunningStatus << 8;
       int delta = GetNextRsePosition(offset + plus);
       if (delta == -1)                                           Debug.Assert(false, string.Format("warning… {0:X2}", ExpandedRSE));
       else if (MidiMessageInfo.IsNoteOn(ExpandedRSE))            return (SmfFileHandle[SelectedTrackNumber, offset + plus, 2]).StringifyHex();
@@ -169,8 +169,8 @@ namespace on.smfio
     
     byte[] GetEventValue(int offset, int plus)
     {
-      List<byte> returned = new List<byte> { (byte)(RunningStatus32 & 0xff) };
-      int ExpandedRSE = RunningStatus32 << 8;
+      List<byte> returned = new List<byte> { (byte)(CurrentTrackRunningStatus & 0xff) };
+      int ExpandedRSE = CurrentTrackRunningStatus << 8;
       int delta = GetNextRsePosition(offset + plus);
       
       if (MidiMessageInfo.IsNoteOn(ExpandedRSE))                 returned.AddRange(SmfFileHandle[SelectedTrackNumber, offset + plus, 2]);
@@ -201,7 +201,7 @@ namespace on.smfio
     
     int GetEventLength(int offset, int plus)
     {
-      int ExpandedRSE = RunningStatus32 << 8;
+      int ExpandedRSE = CurrentTrackRunningStatus << 8;
       int delta = GetNextRsePosition(offset + plus);
       if (delta == -1) Debug.Assert(false, string.Format("warning… {0:X2}", ExpandedRSE));
       else if (MidiMessageInfo.IsNoteOn(ExpandedRSE))            return 2;
@@ -230,8 +230,8 @@ namespace on.smfio
 
     string GetEventString(int offset, int plus)
     {
-      int ExpandedRSE = RunningStatus32 << 8;
-      if (!MidiMessageInfo.IsMidiBMessage(RunningStatus32)) {
+      int ExpandedRSE = CurrentTrackRunningStatus << 8;
+      if (!MidiMessageInfo.IsMidiBMessage(CurrentTrackRunningStatus)) {
         Debug.Assert(false, string.Format("warning… {0:X2}", ExpandedRSE));
         return null;
       } else if (MidiMessageInfo.IsNoteOn(ExpandedRSE))
@@ -256,10 +256,10 @@ namespace on.smfio
     string GetNoteMsg(int shift, int offset, string format) { return string.Format(format, SmfFileHandle[SelectedTrackNumber, offset + shift], SmfFileHandle[SelectedTrackNumber, offset + shift + 1], SmfString.GetKeySharp(SmfFileHandle[SelectedTrackNumber, offset + shift]), SmfString.GetOctave(SmfFileHandle[SelectedTrackNumber, offset + shift])); }
 
     /// <inheritdoc/>
-    public string chV(int v) { return string.Format("{0} {1}", string.Format("{0:X2}", RunningStatus32), GetEventValueString(v)); }
+    public string chV(int v) { return string.Format("{0} {1}", string.Format("{0:X2}", CurrentTrackRunningStatus), GetEventValueString(v)); }
     
     /// <inheritdoc/>
-    public string chRseV(int v) { return string.Format("{0} {1}", string.Format("{0:X2}", RunningStatus32), GetRseEventValueString(v)); }
+    public string chRseV(int v) { return string.Format("{0} {1}", string.Format("{0:X2}", CurrentTrackRunningStatus), GetRseEventValueString(v)); }
 
   }
 }
