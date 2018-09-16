@@ -17,6 +17,7 @@ may print incorrectly.
 ### TODO
 
 - Tempo-Map
+- Make the reader capable of reading multiple tracks in tandem.
 
 Usage
 ------
