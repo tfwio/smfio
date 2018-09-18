@@ -15,7 +15,13 @@ namespace on.smfio
 {
 	class ColorResources
   {
-    /// <inheritdoc />
+    internal static readonly Color c0 = Color.FromArgb(235, 225, 225);
+    internal static readonly Color c1 = Color.FromArgb(149, 109, 177);
+    internal static readonly Color c2 = Color.FromArgb(109, 149, 177);
+    internal static readonly Color c3 = Color.FromArgb(107, 180, 131);
+    internal static readonly Color c4 = Color.FromArgb(225, 225, 235);
+    internal static readonly Color cR = Color.FromArgb(255, 0, 0);
+
     internal static Dictionary<string, Color> Colors
     {
       get
@@ -37,12 +43,13 @@ namespace on.smfio
         return dic;
       }
     }
-
     // 
     // Color Helper (For WinForms)
     // ---------------------------------
 
-    /// <inheritdoc />
+    /// <summary>
+    /// this method absolutely depends on RunningStatus32 value.
+    /// </summary>
     internal static Color GetRseEventColor(Color clr, int RunningStatus32)
 		{
 			int ExpandedRSE = RunningStatus32 << 8;
@@ -58,14 +65,12 @@ namespace on.smfio
 			else if (MidiMessageInfo.IsSystemCommon(ExpandedRSE))      return Colors["rse3"];
 			else if (MidiMessageInfo.IsSystemRealtime(ExpandedRSE))    return Colors["rse3"];
 			return ListView.DefaultBackColor;
-		}
-    internal static readonly Color c0 = Color.FromArgb(235, 225, 225);
-    internal static readonly Color c1 = Color.FromArgb(149, 109, 177);
-    internal static readonly Color c2 = Color.FromArgb(109, 149, 177);
-    internal static readonly Color c3 = Color.FromArgb(107, 180, 131);
-    internal static readonly Color c4 = Color.FromArgb(225, 225, 235);
-    internal static readonly Color cR = Color.FromArgb(255, 0, 0);
-    /// <inheritdoc />
+    }
+
+
+		/// <summary>
+		/// this method absolutely depends on RunningStatus32 value.
+		/// </summary>
     internal static Color GetEventColor(Color clr, int RunningStatus32)
 		{
 			int ExpandedRSE = RunningStatus32 << 8;
@@ -83,7 +88,10 @@ namespace on.smfio
 			else if (MidiMessageInfo.IsSystemRealtime(ExpandedRSE))    return c0;
 			return ListView.DefaultBackColor;
 		}
-    /// <inheritdoc />
+    /// <summary>
+    /// this method absolutely depends on RunningStatus32 value.
+		/// NOT.
+    /// </summary>
     internal static Color GetEventColor(int intMsg, Color clr, int RunningStatus32)
 		{
 			switch (intMsg) {
