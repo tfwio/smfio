@@ -33,18 +33,18 @@ namespace SMFIOViewer
     // public MainForm(params string[] args) { InitializeComponent(); }
     public MainForm(IList<MasterViewContainer> tasks, params string[] args)
     {
-      mSettings = new TimeConfiguration() {
-        // AUDIO
-        Rate = 44100,
-        Channels = 2,
-        // Latency = 8096,
-        // MIDI
-        Division = 480,
-        Tempo = 120,
-        TimeSignature = new MidiTimeSignature(4, 4, 24, 4),
-        KeySignature = new MidiKeySignature(on.smfio.Common.KeySignatureType.C, true),
-        IsSingleZeroChannel = false
-      };
+      // mSettings = new TimeConfiguration() {
+      //   // AUDIO
+      //   Rate = 44100,
+      //   Channels = 2,
+      //   // Latency = 8096,
+      //   // MIDI
+      //   Division = 480,
+      //   Tempo = 120,
+      //   TimeSignature = new MidiTimeSignature(4, 4, 24, 4),
+      //   KeySignature = new MidiKeySignature(on.smfio.Common.KeySignatureType.C, true),
+      //   IsSingleZeroChannel = false
+      // };
       InitializeComponent();
       
       // SetProgressDelegate = SetProgress;
@@ -66,7 +66,7 @@ namespace SMFIOViewer
     #region Action_PlayerUpDown2Ppq
     void Action_PlayerUpDown2Ppq()
     {
-      Settings.Division = Convert.ToInt32(numPpq.Value);
+      // Settings.Division = Convert.ToInt32(numPpq.Value);
     }
     void Event_PlayerUpDown2Ppq(object sender, EventArgs e)
     {

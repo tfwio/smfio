@@ -20,10 +20,10 @@ namespace SMFIOViewer
       get { return midiFile; }
     } protected internal on.smfio.MidiReader midiFile;
     
-    /// <inheritdoc/>
-    public ITimeConfiguration Settings {
-      get { return mSettings; }
-    } internal protected TimeConfiguration mSettings;
+    // /// <inheritdoc/>
+    //public ITimeConfiguration Settings {
+    //  get { return mSettings; }
+    //} internal protected TimeConfiguration mSettings;
     
     // don't know what this was for any more!
     // nor do I get why it is causing an exception
@@ -53,8 +53,8 @@ namespace SMFIOViewer
     public event EventHandler GotMidiFile;
     protected virtual void OnGotMidiFile()
     {
-      this.numPpq.Value = Settings.Division;
-      this.numTempo.Value = Convert.ToDecimal(Settings.Tempo);
+      numPpq.Value = midiFile.Division;
+      numTempo.Value = 120.0M;
       if (GotMidiFile != null)
         GotMidiFile(this, EventArgs.Empty);
     }
@@ -71,7 +71,10 @@ namespace SMFIOViewer
       LoadTracks = midiFile.TrackSelectAction;
 
       midiFile.SelectedTrackNumber = 0;
-      DoTrackSelect();
+      numTempo.Value = Convert.ToDecimal(midiFile.TempoMap.Top.Tempo);
+
+      midiFile.SelectedTrackNumber = midiFile.SmfFileHandle.Format % 2;
+      // DoTrackSelect();
     }
     
     #region MIDI ListBox (Event_MidiChangeTrack_MenuItemSelected)
@@ -156,8 +159,6 @@ namespace SMFIOViewer
       midiFile.TrackChanged += Event_MidiActiveTrackChanged_ListBoxItemSelected;
       
       midiFile.Read();
-      Settings.FromMidi(midiFile);
-      //foreach (Action a in afteropen) a();
       
       OnGotMidiFile();
 
@@ -169,25 +170,6 @@ namespace SMFIOViewer
       //      this.midiPianoView1.ParserUI = this;
     }
     
-    #region Progress --- is this working?
-    
-    delegate void ProcessInt(int param);
-    ProcessInt SetProgressDelegate;
-    
-    void ShowProgress(MidiMsgType t, int track, int offset, int imsg, byte bmsg, ulong ppq, int rse, bool isrse)
-    {
-      return;
-      if (InvokeRequired) Invoke(SetProgressDelegate, new object[] { offset }); 
-      try {
-        SetProgress(offset);
-      } catch {
-        MessageBox.Show("Error invoking...");
-      }
-    }
-
-    #endregion
-
-
   }
   
 }
