@@ -14,18 +14,6 @@ Its assumed to work while possible that some strings (for humans)
 may print incorrectly.  
 *Help (testing) in this matter would be appreciated.*
 
-### TODO
-
-- Tempo-Map
-
-Usage
-------
-
-[TODO: example use-case]
-
-See [branch: smfio.view](https://github.com/tfwio/smfio/tree/smfio.view) for
-the current list-view example.
-
 BUILDING on WINDOWS
 -------------------
 
