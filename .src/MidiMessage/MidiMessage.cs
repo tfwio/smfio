@@ -48,7 +48,7 @@ namespace on.smfio
     public int Message { get; set; } 
 		
     /// <summary>Not quite sure this is the best name for this guy.</summary>
-    public ulong Pulse { get; set; } 
+    public long Pulse { get; set; } 
 		
     public byte[] Data { get; set; } 
 
@@ -60,12 +60,12 @@ namespace on.smfio
 		/// <param name="pPulse">Pulses (timing foundation)</param>
     /// <param name="pIntMessage">Must be a length of 4 bytes.</param>
 		/// <param name="pMsgData">Must be a length of 4 bytes.</param>
-		public MIDIMessage(MidiMsgType pMsgType, ulong pPulse, int pIntMessage, params byte[] pMsgData)
+		public MIDIMessage(MidiMsgType pMsgType, long pPulse, int pIntMessage, params byte[] pMsgData)
 		{
-			this.Pulse = pPulse;
-			this.MessageFlag = pMsgType;
-      this.Message = pIntMessage;
-      this.Data = pMsgData;
+			Pulse = pPulse;
+			MessageFlag = pMsgType;
+      Message = pIntMessage;
+      Data = pMsgData;
 		}
 	}
 

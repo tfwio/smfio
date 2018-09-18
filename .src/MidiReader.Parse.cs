@@ -14,8 +14,6 @@ namespace on.smfio
 {
   public partial class MidiReader : IMidiParser_Parser
   {
-    System.Text.Encoding Encoding = System.Text.Encoding.UTF8;
-
     /// <summary>Next Position (rse)</summary>
     int Increment(int offset, int plus)
     {
@@ -57,7 +55,7 @@ namespace on.smfio
     {
       long result = 0;
       int nextOffset = NextDelta(offset + 2, out result);
-      return System.Text.Encoding.UTF8.GetString(SmfFileHandle[SelectedTrackNumber, nextOffset, Convert.ToInt32(result)]);
+      return Strings.Encoding.GetString(SmfFileHandle[SelectedTrackNumber, nextOffset, Convert.ToInt32(result)]);
     }
     
     /// <inheritdoc/>
@@ -85,7 +83,7 @@ namespace on.smfio
           string msg = string.Format(StringRes.String_Unknown_Message, CurrentTrackRunningStatus, SmfFileHandle[SelectedTrackNumber, offset,2].StringifyHex() );
           
 
-          return System.Text.Encoding.UTF8.GetString(SmfFileHandle[SelectedTrackNumber, offset, SmfFileHandle[SelectedTrackNumber, offset + 2] + 3]);
+          return Strings.Encoding.GetString(SmfFileHandle[SelectedTrackNumber, offset, SmfFileHandle[SelectedTrackNumber, offset + 2] + 3]);
       }
     }
 

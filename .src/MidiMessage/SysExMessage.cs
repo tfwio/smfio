@@ -14,7 +14,7 @@ namespace on.smfio
 	{
 		#region Properties
 		
-		public string MetaString { get { return System.Text.Encoding.UTF8.GetString(Data); } }
+		public string MetaString { get { return Strings.Encoding.GetString(Data); } }
 		
 		public int MessageLength { get; set; }
 		
@@ -29,7 +29,7 @@ namespace on.smfio
 		}
 	
 		#endregion
-		public SysExMessage(ulong delta, int message, params byte[] data) : base(MidiMsgType.System,delta,message,data)
+		public SysExMessage(long delta, int message, params byte[] data) : base(MidiMsgType.System,delta,message,data)
 		{
 			MessageLength = data.Length-1;
 		}
