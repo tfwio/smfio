@@ -53,6 +53,7 @@ namespace on.smfio
     // TIMING
     // =============================================
 
+    short Division { get; }
     long CurrentTrackPulse { get; }
 		
 		int CurrentTrackRunningStatus { get; }
