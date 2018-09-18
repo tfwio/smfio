@@ -7,7 +7,7 @@ namespace on.smfio
 {
 	public class ChannelMessage : MIDIMessage
 	{
-		public ChannelMessage(ulong delta, int message, params byte[] data) : base(MidiMsgType.Channel,delta,message,data)
+		public ChannelMessage(long delta, int message, params byte[] data) : base(MidiMsgType.Channel,delta,message,data)
 		{
 		}
 	}

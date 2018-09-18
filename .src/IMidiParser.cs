@@ -39,21 +39,21 @@ namespace on.smfio
     // DATA (Back-Reference)
     // =============================================
 
-		/// <summary>
-		/// This is useless in its current form, and will be converted
-		/// to a TempoMap.
-		/// </summary>
-    List<TempoChange> TempoChanges { get; }
-		
-		MidiKeySignature KeySignature { get;set; }
-		
-		MidiTimeSignature TimeSignature { get;set; }
+    List<long> TrackLength { get; }
+    /// <summary>
+    /// Contains TempoStates to help calculate event times.
+    /// </summary>
+    TempoMap TempoMap { get; }
+
+    MidiKeySignature KeySignature { get; set; }
+
+    MidiTimeSignature TimeSignature { get; set; }
 
     // =============================================
     // TIMING
     // =============================================
 
-    ulong CurrentTrackPulse { get; }
+    long CurrentTrackPulse { get; }
 		
 		int CurrentTrackRunningStatus { get; }
 		
@@ -67,7 +67,23 @@ namespace on.smfio
     // MIDIEVENT MESSAGE (HANDLERS)
     // =============================================
 
-    void OnMidiMessage(MidiMsgType t, int track, int offset, int imsg, byte bmsg, ulong ppq, int rse, bool isrse);
+    /// <param name="msgType"></param>
+    /// <param name="nTrackIndex"></param>
+    /// <param name="nTrackOffset"></param>
+    /// <param name="midiMsg32"></param>
+    /// <param name="midiMsg8"></param>
+    /// <param name="pulse"></param>
+    /// <param name="delta"></param>
+    /// <param name="isRunningStatus"></param>
+    void OnMidiMessage(
+			MidiMsgType msgType,
+			int nTrackIndex,
+			int nTrackOffset,
+			int midiMsg32,
+			byte midiMsg8,
+			long pulse,
+			int delta,
+			bool isRunningStatus);
 
     bool UseEventHandler { get; }
 		

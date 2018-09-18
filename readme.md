@@ -1,37 +1,41 @@
 
-SMF / MIDI Parser (reader) for DOTNET
+SMF / MIDI Parser/Reader in CSHARP
 =========================================
 
-[SMF-1.0]: https://www.midi.org/specifications/item/the-midi-1-0-specification
+[SMF]: https://www.midi.org/specifications/item/the-midi-1-0-specification
 
 ALPHA NOTES
 ----------------
 
 ### BIG VS LITTLE ENDIAN
 
-Endian-ness has not been tested on LE architecture.  
-Its assumed to work while possible that some strings (for humans)
-may print incorrectly.  
-*Help (testing) in this matter would be appreciated.*
+Hasn't been tested on little-endian architecture.
 
-### TODO
-
-- Tempo-Map
-- Make the reader capable of reading multiple tracks in tandem.
-
-Usage
+Usage Example
 ------
 
-See [branch: smfio.view](https://github.com/tfwio/smfio/tree/smfio.view) for the current list-view example.
+See branch: smfio.view
+
+- https://github.com/tfwio/smfio/tree/smfio.view
 
 Version History
 ------------------
 
 Goal(s)
 
-- Clean out any out-dated unused junk
-- Simplify time calculations (replace SampleClock.cs with as little code as possible)
-- Get the tempo-map working along with working example(s).
+- consolidate, refactor
+- simple(r) example(s)
+- MIDI Format 1 to Format 0 (in memory)
+- Writer (file export/write)
+
+0.1.2
+
+- tempo map & state
+- simplify time calculations  
+  Old SampleClock MTC and IClock classes are obsoleted.
+- refactor/rename params/props of what is now Events.cs  
+  see: MidiEventDelegate and MidiMessageEvent (and similarly derived functions)
+- using long (vs ulong) for delta pulse in reader & events
 
 0.1.1
 

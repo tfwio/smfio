@@ -88,7 +88,6 @@
     <Compile Include="Common\MetaMsg32.cs" />
     <Compile Include="Common\MetaMsg8.cs" />
     <Compile Include="Common\MetaMsgU16FF.cs" />
-    <!-- <Compile Include="Common\MidiHelper.cs" /> -->
     <Compile Include="Common\MidiKeySignature.cs" />
     <Compile Include="Common\MidiTimeSignature.cs" />
     <Compile Include="Common\Smf.Meta.ChannelType.cs" />
@@ -99,18 +98,13 @@
     <Compile Include="IClock.cs" />
     <Compile Include="IMidiParser.cs" />
     <Compile Include="IMidiParser.Parser.cs" />
-    <!-- <Compile Include="IMidiParser.Resources.cs" /> -->
     <Compile Include="ITimeConfiguration.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Loop.cs" />
-    <Compile Include="MBT.cs" />
-    <!-- <Compile Include="MidiData.cs" /> -->
-    <!-- <Compile Include="MidiData.Note.cs" /> -->
     <Compile Include="MidiMessage/ChannelMessage.cs" />
     <Compile Include="MidiMessage/MidiMessage.cs" />
     <Compile Include="MidiMessage/MetaMessage.cs" />
     <Compile Include="MidiMessage/SysexMessage.cs" />
-    <Compile Include="MidiMessageEvent.cs" />
     <Compile Include="MidiMsgType.cs" />
     <Compile Include="MidiReader.cs" />
     <Compile Include="MidiReader.Parse.cs" />
@@ -119,12 +113,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleClock.cs" />
     <Compile Include="SmfStringFormatter.cs" />
-    <Compile Include="TempoChange.cs" />
-    <Compile Include="TempoChangedEventArgs.cs" />
-    <Compile Include="xg\XgNrpn.cs" />
+    <Compile Include="TempoMap.cs" />
     <Compile Include="strings.cs" />
-    <Compile Include="TempoState.cs" />
     <Compile Include="TimeUtil.cs" />
+    <Compile Include="xg\XgNrpn.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="c3" />

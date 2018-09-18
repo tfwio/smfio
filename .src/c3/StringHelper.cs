@@ -7,6 +7,7 @@ namespace System
   /// </summary>
   static public class Strings
   {
+    internal static System.Text.Encoding Encoding = System.Text.Encoding.UTF8;
     public const string Filter_MidiTrack = "MTrk {0}";
     public const string AutomationUnitToString = "{{AutomationUnit: Value={0}, DeltaMode={1}}}";
     public const string DeltaArgumentException = "Expected: DeltaType.Samples and DeltaType.Pulses";
@@ -54,7 +55,7 @@ namespace System
 		/// <remarks>uses System.Text.Encoding.Default</remarks>
 		static public byte[] getBit(string inpoo)
 		{
-			return System.Text.Encoding.Default.GetBytes(inpoo);
+			return Strings.Encoding.GetBytes(inpoo);
 		}
 		/// <summary>byte[] to string conversion</summary>
 		static public byte[] getBit(string inpoo, System.Text.Encoding Enc)
