@@ -105,14 +105,14 @@ namespace SMFIOViewer
     {
       listBoxContextMenuStrip.Items.Clear();
       List<int> channels = new List<int>();
-      foreach (KeyValuePair<int,string> track in midiFile.GetMidiTrackNameDictionary())
+      foreach (KeyValuePair<int,string> track in MidiParser.GetMidiTrackNameDictionary())
       {
         channels.Clear();
         ToolStripMenuItem tn = new ToolStripMenuItem(track.Value);
         tn.Tag = track.Key;
         listBoxContextMenuStrip.Items.Add(tn);
         
-        foreach (MIDIMessage i in midiFile.MidiTrackDistinctChannels(track.Key))
+        foreach (MIDIMessage i in MidiParser.MidiTrackDistinctChannels(track.Key))
           if (i is ChannelMessage)
             channels.Add(i.ChannelBit);
       }
@@ -160,9 +160,9 @@ namespace SMFIOViewer
       ((sender as ToolStripMenuItem).Tag as Control).Show();
       ((sender as ToolStripMenuItem).Tag as Control).Invalidate();
     }
-    
+
     /// <summary>
-    /// This is a placeholder for midiFile.TrackSelectAction
+    /// This is a placeholder for MidiParser.TrackSelectAction
     /// </summary>
     /// <seealso cref="on.smfio.MidiReader.TrackSelectAction()">on.smfio.MidiReader.TrackSelectAction()</seealso>
     Func<string> LoadTracks = null;

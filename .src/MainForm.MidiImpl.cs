@@ -14,11 +14,13 @@ namespace SMFIOViewer
 {
   public partial class MainForm : IMidiParserUI
   {
-    OpenFileDialog MidiFileDialog = new OpenFileDialog();
+    OpenFileDialog MidiFileDialog = new OpenFileDialog(){
+      Filter=Strings.FileFilter_MidiFile
+    };
     
     public IMidiParser MidiParser {
-      get { return midiFile; }
-    } protected internal on.smfio.MidiReader midiFile;
+      get { return midiParser; }
+    } protected internal on.smfio.MidiReader midiParser;
     
     // /// <inheritdoc/>
     //public ITimeConfiguration Settings {
@@ -30,7 +32,7 @@ namespace SMFIOViewer
     // (hence the try/catch-block in SetProgress(int))
     int cycles = 0, cycle = 12;
     
-    int trackLen { get { return this.midiFile.SmfFileHandle[midiFile.SelectedTrackNumber].track.Length; } }
+    int trackLen { get { return this.MidiParser.SmfFileHandle[MidiParser.SelectedTrackNumber].track.Length; } }
     
     void SetProgress(int offset)
     {
@@ -53,7 +55,7 @@ namespace SMFIOViewer
     public event EventHandler GotMidiFile;
     protected virtual void OnGotMidiFile()
     {
-      numPpq.Value = midiFile.Division;
+      numPpq.Value = MidiParser.Division;
       numTempo.Value = 120.0M;
       if (GotMidiFile != null)
         GotMidiFile(this, EventArgs.Empty);
@@ -68,13 +70,10 @@ namespace SMFIOViewer
       TracksToListBoxContext();
       MidiTree.TracksToTreeView(this);
       
-      LoadTracks = midiFile.TrackSelectAction;
+      LoadTracks = MidiParser.TrackSelectAction;
 
-      midiFile.SelectedTrackNumber = 0;
-      numTempo.Value = Convert.ToDecimal(midiFile.TempoMap.Top.Tempo);
-
-      midiFile.SelectedTrackNumber = midiFile.SmfFileHandle.Format % 2;
-      // DoTrackSelect();
+      MidiParser.SelectedTrackNumber = 0;
+      numTempo.Value = Convert.ToDecimal(MidiParser.TempoMap.Top.Tempo);
     }
     
     #region MIDI ListBox (Event_MidiChangeTrack_MenuItemSelected)
@@ -88,15 +87,15 @@ namespace SMFIOViewer
       
       OnClearMidiTrack();
       
-      if (midiFile == null)
+      if (MidiParser == null)
         return;
       
       var toolStripMenuItem = sender as ToolStripMenuItem;
       if (toolStripMenuItem != null)
-        midiFile.SelectedTrackNumber = (int)toolStripMenuItem.Tag;
+        MidiParser.SelectedTrackNumber = (int)toolStripMenuItem.Tag;
       
       else if (sender is ListBox && listBox1.SelectedIndex > -1)
-        midiFile.SelectedTrackNumber = listBox1.SelectedIndex;
+        MidiParser.SelectedTrackNumber = listBox1.SelectedIndex;
       
     }
     
@@ -104,7 +103,7 @@ namespace SMFIOViewer
     
     void TracksToToolStripMenu()
     {
-      foreach (KeyValuePair<int,string> track in midiFile.GetMidiTrackNameDictionary()) {
+      foreach (KeyValuePair<int,string> track in MidiParser.GetMidiTrackNameDictionary()) {
         var tn = new ToolStripMenuItem(track.Value, null, Event_MidiChangeTrack);
         tn.Tag = track.Key;
         btn_pick_track.DropDownItems.Add(tn);
@@ -119,22 +118,24 @@ namespace SMFIOViewer
     
     public void Action_MidiFileOpen()
     {
-      if (midiFile != null) {
-        midiFile.Dispose();
-        midiFile = null;
-      }
-      
-      MidiFileDialog.Filter = Strings.FileFilter_MidiFile;
       Text = Strings.Dialog_Title_0;
-      
+
       if (MidiFileDialog.ShowDialog() == DialogResult.OK)
+      {
         if (File.Exists(MidiFileDialog.FileName))
+        {
+          if (MidiParser != null)
+          {
+            MidiParser.Dispose();
+            midiParser = null;
+          }
           Action_MidiFileOpen(MidiFileDialog.FileName, 0);
+        }
+      }
     }
     
     public void Action_MidiFileOpen(string filename, int trackNo)
     {
-      Event_MidiClearMemory(null, EventArgs.Empty);
       
       if (string.IsNullOrEmpty(filename))
         return;
@@ -143,24 +144,27 @@ namespace SMFIOViewer
         return;
       }
       
+      Event_MidiClearMemory(null, EventArgs.Empty);
+
       Text = string.Format(
         Strings.Dialog_Title_1,
         System.IO.Path.GetFileNameWithoutExtension(filename));
-      
-      midiFile = new MidiReader(filename);
-      midiFile.SelectedTrackNumber = trackNo;
-      
-      midiFile.ClearView -= Event_MidiClearMemory;
-      midiFile.FileLoaded -= Event_MidiFileLoaded;
-      midiFile.TrackChanged -= Event_MidiActiveTrackChanged_ListBoxItemSelected;
-      
-      midiFile.ClearView += Event_MidiClearMemory;
-      midiFile.FileLoaded += Event_MidiFileLoaded;
-      midiFile.TrackChanged += Event_MidiActiveTrackChanged_ListBoxItemSelected;
-      
-      midiFile.Read();
+
+      midiParser = new MidiReader(filename);
+
+      MidiParser.ClearView -= Event_MidiClearMemory;
+      MidiParser.FileLoaded -= Event_MidiFileLoaded;
+      MidiParser.TrackChanged -= Event_MidiActiveTrackChanged_ListBoxItemSelected;
+
+      MidiParser.ClearView += Event_MidiClearMemory;
+      MidiParser.FileLoaded += Event_MidiFileLoaded;
+      MidiParser.TrackChanged += Event_MidiActiveTrackChanged_ListBoxItemSelected;
+
+      midiParser.Read();
       
       OnGotMidiFile();
+
+      MidiParser.SelectedTrackNumber = 0; // MidiParser.SmfFileHandle.Format % 2 == 1
 
     }
     
