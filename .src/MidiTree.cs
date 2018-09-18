@@ -36,21 +36,16 @@ namespace SMFIOViewer
 				tn.Tag = i;
 				NodeMidi.Nodes.Add( tn );
 			}
-			
-			for (int i = 0; i < ui.MidiParser.TempoChanges.Count; i++)
+
+      var map = ui.MidiParser.TempoMap.Copy();
+			while (map.HasItems)
 			{
-			  var T = ui.MidiParser.TempoChanges[i];
-			  var C = new on.smfio.util.SampleClock(0,44100,T.TempoValue,ui.MidiParser.SmfFileHandle.Division){Rate=44100};
-			  // C.SolveSamples();
-			  string F = string.Format(
-			    "TK: {0}, Pulses: {1}, BPM: ~{2:0.00000}, MSPQ: {3}",
-			    T.TrackID, T.Pulses, T.TempoValue, T.MSPQ
-			   );
-			  NodeTempo.Nodes.Add(new TreeNode(F));
+        var T = map.Pop(true);
+        var min = on.smfio.TimeUtil.GetMBT(T.Pulse, ui.MidiParser.SmfFileHandle.Division);
+        var max = on.smfio.TimeUtil.GetMBT(T.PulseMax, ui.MidiParser.SmfFileHandle.Division);
+				var ss = on.smfio.TimeUtil.GetSSeconds(T.Second);
+			  NodeTempo.Nodes.Add(new TreeNode($"Pulses: {min}-{max}, SS={ss}, BPM: {(float)T.Tempo} muspqn: {T.MusPQN:##,###,##0}, {T.Second:0.000}"));
 			}
 		}
-		
-		
 	}
-
 }

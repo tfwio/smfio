@@ -32,7 +32,7 @@ namespace SMFIOViewer
 			this.TimeSignature = parser.TimeSignature;
 			this.KeySignature = parser.KeySignature;
 			this.Division = parser.SmfFileHandle.Division;
-			this.Tempo = parser.MidiTimeInfo.Tempo;
+			this.Tempo = parser.TempoMap.Top.Tempo;
 		}
 
 		public int Channels {
