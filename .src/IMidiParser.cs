@@ -57,8 +57,6 @@ namespace on.smfio
 		
 		int CurrentTrackRunningStatus { get; }
 		
-		SampleClock MidiTimeInfo { get; set; }
-		
 		void ResetTiming();
 		
 		void GetDivision();

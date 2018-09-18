@@ -81,12 +81,6 @@ namespace on.smfio
       set { timeSignature = value; }
     } MidiTimeSignature timeSignature = new MidiTimeSignature();
     
-    /// <inheritdoc/>
-    public SampleClock MidiTimeInfo {
-      get { return midiTimeInfo; }
-      set { midiTimeInfo = value; }
-    } SampleClock midiTimeInfo = new SampleClock(0, default_Fs, default_Tempo, default_Division);
-    
     #endregion
     #region TIME (int) DivMeasure, DivBar, DivNote, FileDivision
     
@@ -130,7 +124,6 @@ namespace on.smfio
     public void GetMemory()
     {
       SmfFileHandle = MidiUtil.GetMthd(MidiFileName);
-      midiTimeInfo.Division = SmfFileHandle.Division;
       TempoMap.Clear();
       ParseTrackMeta(0); // pre-scan? ;)
       Parse();

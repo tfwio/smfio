@@ -95,7 +95,7 @@
     <Compile Include="Common\Smf.NoteRange.cs" />
     <Compile Include="EnumFile.cs" />
     <Compile Include="Events.cs" />
-    <Compile Include="IClock.cs" />
+    <!-- <Compile Include="IClock.cs" /> -->
     <Compile Include="IMidiParser.cs" />
     <Compile Include="IMidiParser.Parser.cs" />
     <Compile Include="ITimeConfiguration.cs" />
@@ -111,7 +111,7 @@
     <Compile Include="MidiSystem.cs" />
     <Compile Include="MidiUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SampleClock.cs" />
+    <!-- <Compile Include="SampleClock.cs" /> -->
     <Compile Include="SmfStringFormatter.cs" />
     <Compile Include="TempoMap.cs" />
     <Compile Include="strings.cs" />
