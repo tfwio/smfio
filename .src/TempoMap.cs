@@ -82,7 +82,7 @@ namespace on.smfio
       while (HasItems)
       {
         if (Top.Match(pulse)) {
-          Log.ErrorMessage($"Resolved mus: {Top.MusPQN}\nindex: {IndexOf(Top)},\nPulse: {Top.Pulse} <= {pulse} < {Top.PulseMax},\n{Top.Second}");
+          // Log.ErrorMessage($"Resolved mus: {Top.MusPQN}\nindex: {IndexOf(Top)},\nPulse: {Top.Pulse} <= {pulse} < {Top.PulseMax},\n{Top.Second}");
           return Top;
         }
         Pop(true);
