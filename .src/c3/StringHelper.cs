@@ -5,7 +5,7 @@ namespace System
   /// <summary>
   /// Description of AppStrings.
   /// </summary>
-  static public class Strings
+  static class Strings
   {
     internal static System.Text.Encoding Encoding = System.Text.Encoding.UTF8;
     public const string Filter_MidiTrack = "MTrk {0}";
@@ -30,7 +30,7 @@ namespace System
 	/// This has been written particularly to replace a ‘mop’ function
 	/// from the ‘STR’ class (my old string lib)
 	/// </para>
-	static public class StringHelper
+	static class StringHelper
 	{
 		static public string GetAnsiChars(params char[] chars)
 		{

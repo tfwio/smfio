@@ -25,38 +25,39 @@ using on.smfio;
 
 namespace on.smfio.util
 {
-	public interface IAudioConfig
-	{
-		int Rate { get;set; }
-		float RateF { get; }
-		int Channels { get;set; }
-		int Latency { get;set; }
-	}
-	public interface IMidiConfig
-	{
-		int Division { get;set; }
-		
-		double Tempo    { get;set; }
-		
-		MidiTimeSignature TimeSignature { get;set; }
-		
-		MidiKeySignature KeySignature { get;set; }
-		
-		bool IsSingleZeroChannel { get;set; }
-		
-		double BarStart { get;set; }
-		
-		double BarStartPulses { get;set; }
-		/// <summary>
-		/// This is used in <see cref="Loop"/>.<see cref="Loop.Length"/>.
-		/// ...As well as a particular instance within NAudioVST.One(Loop).
-		/// </summary>
-		double BarLength { get;set; }
-		
-		double BarLengthPulses { get;set; }
-	}
-	
-	public interface ITimeConfiguration : IMidiConfig, IAudioConfig {
-		void FromMidi(IMidiParser parser);
-	}
+  public interface IAudioConfig
+  {
+    int Rate { get; set; }
+    float RateF { get; }
+    int Channels { get; set; }
+    int Latency { get; set; }
+  }
+  public interface IMidiConfig
+  {
+    short Division { get; set; }
+
+    double Tempo { get; set; }
+
+    MidiTimeSignature TimeSignature { get; set; }
+
+    MidiKeySignature KeySignature { get; set; }
+
+    bool IsSingleZeroChannel { get; set; }
+
+    double BarStart { get; set; }
+
+    double BarStartPulses { get; set; }
+    /// <summary>
+    /// This is used in <see cref="Loop"/>.<see cref="Loop.Length"/>.
+    /// ...As well as a particular instance within NAudioVST.One(Loop).
+    /// </summary>
+    double BarLength { get; set; }
+
+    double BarLengthPulses { get; set; }
+  }
+
+  public interface ITimeConfiguration : IMidiConfig, IAudioConfig
+  {
+    void FromMidi(IMidiParser parser);
+  }
 }

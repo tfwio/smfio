@@ -3,9 +3,13 @@
 using System;
 namespace on.smfio
 {
-  public class TimeUtil
+  public static class TimeUtil
   {
+    const double mus = 0.000001;
+    const double s60 = 60.0;
+
     const string DefaultMBTFormat = "{0:##,###,###,000}:{1:0#}:{2:00#}";
+
     public static string GetMBT(long pulse, int division, bool plusOne = true, string filter = DefaultMBTFormat)
     {
       int plusmode = plusOne ? 1 : 0;
@@ -18,22 +22,37 @@ namespace on.smfio
     /// <summary>
     /// Pulses from MBT.
     /// </summary>
-    public static long GetMBT(int division, int M, int B, int T, int start=1)
+    public static long GetMBT(int division, int M, int B, int T, int start = 1)
     {
       return ((((M - start) * (4 - start)) + B) * division) + T;
     }
     public static double GetSeconds(int division, double tempo, long pulse, double sec = 0.0)
     {
-      return ((60.0 / tempo) * (pulse / division)) + sec;
+      return ((s60 / tempo) * (pulse / division)) + sec;
     }
     public static double GetSeconds(int division, uint muspqn, long pulse, double sec = 0.0)
     {
-      return ((muspqn*0.000001) * (pulse / division)) + sec;
+      return ((muspqn * mus) * (pulse / division)) + sec;
     }
-    public static string GetSSeconds(double seconds, string filter="{0:00}:{1:00}:{2:00}.{3:000}")
+    public static string GetSSeconds(double seconds, string filter = "{0:00}:{1:00}:{2:00}.{3:000}")
     {
       var T = TimeSpan.FromSeconds(seconds);
       return string.Format(filter, T.Hours, T.Minutes, T.Seconds, T.Milliseconds);
+    }
+
+    public static double GetSamples(double pulse, double tempo, int rate, int division)
+    {
+      return (s60 / tempo * rate) * (pulse / division);
+    }
+
+    public static long GetPulses(long samples, int muspqn, int fs, int division)
+    {
+      return Convert.ToInt64((double)samples / (((muspqn * mus) * fs) * division));
+    }
+
+    public static long GetPulses(long samples, double tempo, int fs, int division)
+    {
+      return Convert.ToInt64((double)samples / ((s60 / tempo * fs) * division));
     }
 
   }

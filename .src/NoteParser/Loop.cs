@@ -25,29 +25,30 @@ using System.Drawing;
 
 namespace on.smfio.util
 {
-	public class LoopPoint : Loop
-	{
-//		public FloatPoint Mouse { get;set; }
-			public int BarOffset { get;set; }
-			public int BarStart { get;set; }
-			public int BarLength { get;set; }
-	}
-	/// <summary>
-	/// SAMPLE region
-	/// </summary>
-	public class Loop {
-	  
-		public double Begin { get ; set ; }
-		
-		public double Length { get ; set ; }
-		
-		/// <summary>
-		/// set length in stead.
-		/// </summary>
-		[System.Xml.Serialization.XmlIgnore]
-		public double End { get { return Begin+Length; } set { Length = value-Begin; } }
-		
-		/// <summary>can not be modified.</summary>
-		static public readonly Loop Empty = new Loop(){ Begin=0, End=0 };
-	}
+  public class LoopPoint : Loop
+  {
+    public FloatPoint Mouse { get; set; }
+    public int BarOffset { get; set; }
+    public int BarStart { get; set; }
+    public int BarLength { get; set; }
+  }
+  /// <summary>
+  /// SAMPLE region
+  /// </summary>
+  public class Loop
+  {
+
+    public double Begin { get; set; }
+
+    public double Length { get; set; }
+
+    /// <summary>
+    /// set length in stead.
+    /// </summary>
+    [System.Xml.Serialization.XmlIgnore]
+    public double End { get { return Begin + Length; } set { Length = value - Begin; } }
+
+    /// <summary>can not be modified.</summary>
+    static public readonly Loop Empty = new Loop() { Begin = 0, End = 0 };
+  }
 }

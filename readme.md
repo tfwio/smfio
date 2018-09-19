@@ -28,6 +28,11 @@ Goal(s)
 - MIDI Format 1 to Format 0 (in memory)
 - Writer (file export/write)
 
+0.1.3
+
+- re-introduce modest-vst dependencies:
+    - NoteParser derived on SmfReader
+
 0.1.2
 
 - tempo map & state

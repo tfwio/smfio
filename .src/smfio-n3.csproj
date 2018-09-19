@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <PropertyGroup>
-    <ProjectGuid>{FE891435-340C-40FB-9D4F-691EFDD24D89}</ProjectGuid>
+    <ProjectGuid>{5A70B240-14B9-4A2F-8C5B-497A67012A72}</ProjectGuid>
     <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
     <RootNamespace>on.smfio</RootNamespace>
     <AssemblyName>smfio</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <NoWin32Manifest>False</NoWin32Manifest>
@@ -49,6 +49,9 @@
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -61,23 +64,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="c3\DICT.cs" />
-    <Compile Include="c3\DoubleMathExtension.cs" />
-    <Compile Include="c3\DPoint.cs" />
-    <Compile Include="c3\FloatPoint.cs" />
-    <Compile Include="c3\Internals\CustomControlView.cs" />
-    <Compile Include="c3\Internals\MouseState.cs" />
-    <Compile Include="c3\Internals\MouseStateExtension.cs" />
-    <Compile Include="c3\Internals\Renderer_SelectionBox.cs" />
-    <Compile Include="c3\Internals\RenderStateType.cs" />
-    <Compile Include="c3\Internals\SplashForm.cs" />
+    <None Include="c3\DICT.cs" />
+    <None Include="c3\DoubleMathExtension.cs" />
+    <None Include="c3\DPoint.cs" />
+    <None Include="c3\FloatPoint.cs" />
+    <None Include="c3\Internals\CustomControlView.cs" />
+    <None Include="c3\Internals\MouseState.cs" />
+    <None Include="c3\Internals\MouseStateExtension.cs" />
+    <None Include="c3\Internals\Renderer_SelectionBox.cs" />
+    <None Include="c3\Internals\RenderStateType.cs" />
+    <None Include="c3\Internals\SplashForm.cs" />
     <Compile Include="c3\Internals\ToolStripUpDown.cs" />
-    <Compile Include="c3\Internals\ViewPoint.cs" />
+    <None Include="c3\Internals\ViewPoint.cs" />
     <Compile Include="c3\IO.EndianUtility.cs" />
-    <Compile Include="c3\NumericExtensions.cs" />
-    <Compile Include="c3\StringByteExtension.cs" />
+    <None Include="c3\NumericExtensions.cs" />
+    <None Include="c3\StringByteExtension.cs" />
+    <None Include="c3\SuperOld.cs" />
     <Compile Include="c3\StringHelper.cs" />
-    <Compile Include="c3\SuperOld.cs" />
     <!-- <Compile Include="ck.smf_head.cs" /> -->
     <Compile Include="ck.smf_mthd.cs" />
     <Compile Include="ck.smf_mtrk.cs" />
@@ -95,6 +98,7 @@
     <Compile Include="Common\Smf.NoteRange.cs" />
     <Compile Include="EnumFile.cs" />
     <Compile Include="Events.cs" />
+    <!-- <Compile Include="IClock.cs" /> -->
     <Compile Include="IMidiParser.cs" />
     <Compile Include="IMidiParser.Parser.cs" />
     <Compile Include="ITimeConfiguration.cs" />
@@ -108,13 +112,13 @@
     <Compile Include="MidiReader.Parse.cs" />
     <Compile Include="MidiSystem.cs" />
     <Compile Include="MidiUtil.cs" />
-    <Compile Include="NoteParser\MBT.cs" />
     <Compile Include="NoteParser\IMidiParser.Notes.cs" />
     <Compile Include="NoteParser\MidiReader.Notes.cs" />
     <Compile Include="NoteParser\MidiData.cs" />
     <Compile Include="NoteParser\MidiData.Note.cs" />
     <Compile Include="NoteParser\Loop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <!-- <Compile Include="SampleClock.cs" /> -->
     <Compile Include="SmfString.cs" />
     <Compile Include="TempoMap.cs" />
     <Compile Include="strings.cs" />
@@ -122,6 +126,9 @@
     <Compile Include="xg\XgNrpn.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include=".no" />
+    <Folder Include=".no\MidiData" />
+    <Folder Include=".no\MidiData\MidiData" />
     <Folder Include="c3" />
     <Folder Include="c3\Internals" />
     <Folder Include="Properties" />
@@ -137,6 +144,12 @@
     <None Include="ext\inst.map">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\System.Cor3.Lite\System.Cor3.Lite.csproj">
+      <Project>{e88ac1ae-b545-4a2c-b136-3e42dc75ef7f}</Project>
+      <Name>System.Cor3.Lite</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
