@@ -107,6 +107,7 @@
     <Compile Include="MidiMessage/MidiMessage.cs" />
     <Compile Include="MidiMessage/MetaMessage.cs" />
     <Compile Include="MidiMessage/SysexMessage.cs" />
+    <Compile Include="MidiMessage\SampleClock.cs" />
     <Compile Include="MidiMsgType.cs" />
     <Compile Include="MidiReader.cs" />
     <Compile Include="MidiReader.Parse.cs" />
@@ -126,9 +127,6 @@
     <Compile Include="xg\XgNrpn.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include=".no" />
-    <Folder Include=".no\MidiData" />
-    <Folder Include=".no\MidiData\MidiData" />
     <Folder Include="c3" />
     <Folder Include="c3\Internals" />
     <Folder Include="Properties" />
