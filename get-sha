@@ -1,0 +1,204 @@
+#!/usr/bin/env python
+"""
+author:  tfwroble@gmail.com
+website: github.com/tfwio
+license: free as in whistle.  use at own risk.
+
+print git revision and date information
+
+"""
+
+template='''using System;
+using System.Reflection;
+using System.Runtime.InteropServices;
+[assembly: AssemblyTitle("${title}")]
+[assembly: AssemblyProduct("${title}")]
+[assembly: AssemblyDescription("${subtitle}\\nv${revision}\\ncommit: ${sha}\\nby: ${author}\\n${www}\\n${date}")]
+#if DEBUG
+[assembly: AssemblyConfiguration("Debug")]
+#else
+[assembly: AssemblyConfiguration("Release")]
+#endif
+[assembly: AssemblyCompany("github.com/tfwio")]
+[assembly: AssemblyCopyright("Copyright 2003-2018")]
+[assembly: AssemblyCulture("")]
+[assembly: ComVisible(false)]
+[assembly: AssemblyVersion("${revision}")]
+[assembly: AssemblyFileVersion("${revision}")]
+'''
+
+import datetime
+import os
+from subprocess import Popen, PIPE
+
+start_path = os.path.abspath(os.curdir)
+smfio_path = os.path.join(start_path, 'smfio')
+smfio_view = start_path
+
+print_tree_fmt0 = '{}\n- revision: {}\n- count:    {}\n- date:     {}\n'
+print_tree_fmt1 = '{}\n- revision: {}\n- count:    {}\n- date:     {}\n- tag =     {}\n'
+
+sha_length = 7
+
+
+class dict8(object):
+  def __init__(self, d):
+    self.__dict__ = d
+
+
+def cmd(*args, show_err=False):
+  proc = Popen(args, stdout=PIPE)
+  sout, serr = proc.communicate()
+  if serr != None and show_err:
+    print(serr)
+  return sout.decode('utf-8')
+
+def sha(branch='HEAD', show_err=False):
+  result = cmd('git', 'show-ref', show_err=show_err)
+  mhash = None # print('wha?: {}'.format(result))
+  for row in result.split('\n'):
+    if row.find(branch) != -1:
+      mhash = row.split()[0]
+      break
+  return mhash
+
+def read(target_file):
+  with open(target_file, "r") as text:
+    output = text.read()
+  return output
+
+def write(data, target_file):
+  with open(target_file, "w") as text:
+    text.write(data)
+  return
+
+def date0(mdate: str, timeColonChar=':', showTime=True):
+  mdatex = mdate.split('\n')[-1].split(' ')
+  mdate2 = ("{0}-{1}" if showTime else "{0}").format(
+    mdatex[0].replace('-', ''),
+    mdatex[1].replace(':', timeColonChar)
+    )
+  return mdate2
+
+def date1(mdate: str):
+  mdatex = mdate.split('\n')[-1].split(' ')
+  mdate2 = "{}".format(mdatex[0].replace('-', ''))
+  return mdate2
+
+def date2(mdate: str):
+  mdatex = mdate.split('\n')[-1].split(' ')[0].replace('-', '')
+  return mdatex
+
+def tagFilter(input):
+  lines = input.split('\n')
+  info = ''
+  for line in range(2, len(lines)-1):
+    info += "{}\n".format(lines[line])
+  return info.lstrip('\n').rstrip('\n')
+
+def tree(branch='HEAD', date_only=True, show_err=False):
+  """
+  returns (hash, count, date, date_format, tag)
+  """
+  mhash  = sha(branch)
+  mcount = cmd('git', 'rev-list', '--count', mhash, show_err=show_err).strip()
+  mdate  = cmd('git', 'show', '-s', r'--format=%ci', mhash, show_err=show_err).strip()
+  return (
+    mhash,
+    mcount,
+    date2(mdate) if date_only==True else mdate,
+    date0(mdate),
+    tagFilter(mdate)
+  )
+
+def print_tree(name, branch='HEAD', date_only=True, show_err=False):
+  mhash, mcount, mdate, mdate2, tag = tree(branch, date_only, show_err)
+  print((print_tree_fmt0 if len(tag) == 0 else print_tree_fmt1).format(name, mhash, mcount, mdate2, tag))
+
+def showref(path, tagsOnly=True):
+  """
+  returns array of `{'sha': value, 'branch': value}`
+  accessable via `result.sha` | `result.branch`
+  """
+
+  apath = os.path.abspath(path)
+  os.chdir(apath)
+  
+  replacement = [ 'refs/remotes/origin/', 'refs/tags/' ]
+
+  justTags = ['git','show-ref']
+  if tagsOnly: justTags.append('--tags')
+  
+  info, data = cmd(*justTags).split('\n'), []
+
+  for i in range(0, len(info)-1):
+    line = info[i]
+    M = line.strip().split(' ')
+    if len(line)==0: continue
+    branch = M[1]
+    for N in replacement: branch = branch.replace(N,'')
+    data.insert(0, dict8({'sha': M[0], 'branch': M[1], 'tag': branch}))
+  return data
+
+def show_version(path):
+  apath = os.path.abspath(path)
+  os.chdir(apath)
+  version_file = os.path.join(apath, ".version")
+  version = read(version_file)
+  return version
+
+def dic_tree(path, head='refs/remotes/origin/HEAD'):
+  '''
+  provides: version, hash, count, date1, date2, tag
+  '''
+  os.chdir(path)
+  version = show_version(path)
+  mhash, mcount, mdate, mdate2, tag = tree(head)
+  return dict8({
+      'version': version,
+      'hash': mhash,
+      'count': mcount,
+      'date1': mdate,
+      'date2': mdate2,
+      'tag': tag
+  })
+
+def main():
+  
+  title = "smfio"
+  subtitle = "smf/midi parser"
+  author = "tfwio"
+  version = show_version(start_path)
+
+  tags = showref(start_path)
+  print()
+  print("Found {} tags:".format(len(tags)))
+  print()
+
+  lastTag = tags[1] if len(tags) > 1 else None
+
+  print("First Tag: {}".format(tags[0].branch))
+  if len(tags) > 1: print("Prior Tag: {}".format(tags[1].branch))
+  print()
+
+  T0 = dic_tree(start_path, tags[0].branch)
+  T1 = dic_tree(start_path, tags[1].branch)
+  inf = dict8({
+    'ver': T0.version,
+    'rc': int(T0.count)-int(T1.count),
+    'sha': T0.hash[:7],
+    'date': T0.date2,
+    'title': title,
+    'subtitle': subtitle,
+    'version': version,
+    'revision': '{}.{}'.format(T0.version,int(T0.count)-int(T1.count)),
+    'author': author,
+    'www': 'github.com/tfwio'
+  })
+  info = template
+  for key in inf.__dict__.keys():
+    info = info.replace("${{{0}}}".format(key), str(inf.__dict__[key]))
+  write(info, './.src/Properties/AssemblyInfo.cs')
+  #print("{0}.{1} #{2} ({3})".format(inf.ver, inf.rc, inf.sha, inf.date))
+
+main()

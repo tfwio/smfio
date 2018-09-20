@@ -64,24 +64,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="c3\DICT.cs" />
-    <None Include="c3\DoubleMathExtension.cs" />
-    <None Include="c3\DPoint.cs" />
-    <None Include="c3\FloatPoint.cs" />
-    <None Include="c3\Internals\CustomControlView.cs" />
-    <None Include="c3\Internals\MouseState.cs" />
-    <None Include="c3\Internals\MouseStateExtension.cs" />
-    <None Include="c3\Internals\Renderer_SelectionBox.cs" />
-    <None Include="c3\Internals\RenderStateType.cs" />
-    <None Include="c3\Internals\SplashForm.cs" />
-    <Compile Include="c3\Internals\ToolStripUpDown.cs" />
-    <None Include="c3\Internals\ViewPoint.cs" />
-    <Compile Include="c3\IO.EndianUtility.cs" />
-    <None Include="c3\NumericExtensions.cs" />
-    <None Include="c3\StringByteExtension.cs" />
-    <None Include="c3\SuperOld.cs" />
-    <Compile Include="c3\StringHelper.cs" />
     <!-- <Compile Include="ck.smf_head.cs" /> -->
+    <Compile Include="c3\IO.EndianUtility.cs" />
+    <Compile Include="c3\StringHelper.cs" />
     <Compile Include="ck.smf_mthd.cs" />
     <Compile Include="ck.smf_mtrk.cs" />
     <Compile Include="Common\ChMessage8.cs" />
@@ -119,7 +104,6 @@
     <Compile Include="NoteParser\MidiNote.cs" />
     <Compile Include="NoteParser\NoteParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SmfString.cs" />
     <Compile Include="TempoMap.cs" />
     <Compile Include="strings.cs" />
@@ -128,7 +112,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="c3" />
-    <Folder Include="c3\Internals" />
     <Folder Include="Properties" />
     <Folder Include="xg" />
   </ItemGroup>
@@ -150,4 +133,7 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>"$(ProjectDir)..\asm-nfo.bat"</PreBuildEvent>
+  </PropertyGroup>
 </Project>
