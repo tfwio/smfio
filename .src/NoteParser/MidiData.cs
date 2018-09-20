@@ -19,9 +19,13 @@ namespace on.smfio
       this.Channel = c;
       this.Pulse = pulse;
     }
-    public string GetMBTString(ushort division)
+    public string GetMBTString(short division)
     {
       return TimeUtil.GetMBT(Pulse, division);
+    }
+    public string GetMbtLen2(int division)
+    {
+      return TimeUtil.GetMBT(Pulse,division,false);
     }
   }
 }

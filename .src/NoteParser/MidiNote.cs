@@ -22,6 +22,7 @@ namespace on.smfio
     /// Velocity or Volume for 1: ‘Note ON’ and 2: “Note OFF”.
     /// </summary>
     public short noteOnVelocity, noteOffVelocity;
+
     /// <param name="channel">Channel (Nullable)—or is this color?</param>
     /// <param name="key"></param>
     /// <param name="pulse"></param>
