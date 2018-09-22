@@ -31,9 +31,13 @@ import datetime
 import os
 from subprocess import Popen, PIPE
 
+
 start_path = os.path.abspath(os.curdir)
 smfio_path = os.path.join(start_path, 'smfio')
 smfio_view = start_path
+
+smfio_prop = os.path.join(start_path, '.src/Properties')
+if not os.path.exists(smfio_prop): os.mkdir(smfio_prop)
 
 print_tree_fmt0 = '{}\n- revision: {}\n- count:    {}\n- date:     {}\n'
 print_tree_fmt1 = '{}\n- revision: {}\n- count:    {}\n- date:     {}\n- tag =     {}\n'
