@@ -1,2 +1,4 @@
 build/
 .src/Properties/AssemblyInfo.cs
+/.sln/.vs
+.src/bin/

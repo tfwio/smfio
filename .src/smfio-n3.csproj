@@ -10,8 +10,8 @@
     <AssemblyName>smfio</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <NoWin32Manifest>False</NoWin32Manifest>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
@@ -24,10 +24,12 @@
     <DocumentationFile>$(SolutionDIr)/../build/$(Platform)-$(Configuration)/gen.snd.midi.xml</DocumentationFile>
     <OutputPath>$(SolutionDIr)/../build/$(Platform)-$(Configuration)/</OutputPath>
     <NoWarn>1591</NoWarn>
+    <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <BaseAddress>4194304</BaseAddress>
+    <DefineConstants>TRACE;NOCOR3</DefineConstants>
     <RegisterForComInterop>False</RegisterForComInterop>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <FileAlignment>4096</FileAlignment>
@@ -35,18 +37,48 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>True</DebugSymbols>
     <DebugType>Full</DebugType>
+    <DefineConstants>DEBUG;TRACE;NOCOR3</DefineConstants>
     <Optimize>False</Optimize>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugSymbols>False</DebugSymbols>
     <DebugType>None</DebugType>
+    <DefineConstants>TRACE;NOCOR3</DefineConstants>
     <Optimize>True</Optimize>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
-    <DefineConstants>TRACE</DefineConstants>
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <DocumentationFile>..\..\..\build\AnyCPU-Debug\smfio.xml</DocumentationFile>
+    <ErrorReport>prompt</ErrorReport>
+    <DebugType>Full</DebugType>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Win32' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)/../build/$(Platform)-$(Configuration)/</OutputPath>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <DocumentationFile>..\..\..\build\AnyCPU-Debug\smfio.xml</DocumentationFile>
+    <FileAlignment>4096</FileAlignment>
+    <NoWarn>1591</NoWarn>
+    <DebugType>Full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Win32' ">
+    <OutputPath>$(SolutionDir)/../build/$(Platform)-$(Configuration)/</OutputPath>
+    <DocumentationFile>E:\dev\home\projects\modest-smf-vstnet\Solution\/../build/AnyCPU-Release/gen.snd.midi.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <FileAlignment>4096</FileAlignment>
+    <NoWarn>1591</NoWarn>
+    <DebugType>None</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp">
@@ -111,9 +143,10 @@
     <Compile Include="xg\XgNrpn.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="c3" />
-    <Folder Include="Properties" />
-    <Folder Include="xg" />
+    <ProjectReference Include="..\..\System.Cor3.Lite\System.Cor3.Lite.csproj">
+      <Project>{e88ac1ae-b545-4a2c-b136-3e42dc75ef7f}</Project>
+      <Name>System.Cor3.Lite</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="ext\cc.map">
@@ -127,13 +160,17 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\System.Cor3.Lite\System.Cor3.Lite.csproj">
-      <Project>{e88ac1ae-b545-4a2c-b136-3e42dc75ef7f}</Project>
-      <Name>System.Cor3.Lite</Name>
-    </ProjectReference>
+    <Content Include="app.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>"$(ProjectDir)..\asm-nfo.bat"</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'Win32' ">
+    <BaseAddress>4194304</BaseAddress>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
   </PropertyGroup>
 </Project>

@@ -25,6 +25,7 @@ namespace System
     public const string PianoMBQFormat = @"""{0:N0}:{1:00}:{2:00}""";
     public const string PianoMBQTFormat = "{0:N0}:{1:00}:{2:00}.{3:000}";
   }
+	#if !NOCOR3
 	/// <para>
 	/// quick helpers for string data conversions.
 	/// This has been written particularly to replace a ‘mop’ function
@@ -39,7 +40,7 @@ namespace System
 			Array.Clear(copy,0,copy.Length);
 			return returnValue;
 		}
-
+  
 		/// <summary>reverse a bit array</summary>
 		/// <param name="bits">the result is reversed (for little-endian/big-endian swapping)</param>
 		/// <returns>a reversed array of bits.</returns>
@@ -49,7 +50,7 @@ namespace System
 				Array.Reverse(bits);
 			return bits;
 		}
-
+  
 		#region GetBit
 		/// <summary>string to byte[] conversion</summary>
 		/// <remarks>uses System.Text.Encoding.Default</remarks>
@@ -73,4 +74,5 @@ namespace System
       }
 		
 	}
+#endif
 }
