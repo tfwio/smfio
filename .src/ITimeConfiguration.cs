@@ -34,6 +34,7 @@ namespace on.smfio.util
   }
   public interface IMidiConfig
   {
+    uint MusPQN { get; set; }
     short Division { get; set; }
 
     double Tempo { get; set; }

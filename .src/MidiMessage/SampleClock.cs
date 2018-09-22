@@ -11,6 +11,14 @@ namespace on.smfio
     int Samples32 { get; }
     int Samples32Floor { get; }
     long Pulse { get; set; }
+    double Frame { get; }
+    /// <summary>
+    /// <code>( D * ( ( ( ( S / ( ( 60.0 / T ) * R ) ) % 4 )  / D) * D ) ) % D</code>
+    /// <para>
+    /// Value is S; where S=Samples, D=Division, T=Tempo, R=Rate
+    /// </para>
+    /// </summary>
+    double Tick     { get; }
 
     SampleClock SolveSamples(long pulse);
     SampleClock SolveSamples(long pulse, ITimeConfiguration settings);
@@ -18,41 +26,42 @@ namespace on.smfio
   }
   public class SampleClock : ISampleClock
   {
-    const double Minute_Hex = 60000000.0;
-    const double mus = 0.00001;
-    const int micro = 100000;
-    const double s60 = 60.0;
-
     public SampleClock() { }
     public SampleClock(ITimeConfiguration conf)
     {
       Fs = conf.Rate;
       Division = conf.Division;
-      Tempo = conf.Tempo; // FIXME: ITimeConfiguration should use muspqn.
+      //Tempo = conf.Tempo; // FIXME: ITimeConfiguration should use muspqn.
+      MusPQN = conf.MusPQN;
     }
-
     public double Frame { get { return Pulse / Division; } }
-
+    
     public long Pulse
     {
       get { return mPulse; }
-      set { mPulse = value; mSample = TimeUtil.GetSamples(mPulse, Tempo, Fs, Division); }
-    }
-    long mPulse;
+      // set { mPulse = value; mSample = TimeUtil.GetSamples(mPulse, Tempo, Fs, Division); }
+      set { mPulse = value; mSample = SamplesFromPulses(mPulse, Tempo, Fs, Division); }
+    } long mPulse;
+    
+    /// <summary>
+    /// <code>( D * ( ( ( ( S / ( ( 60.0 / T ) * R ) ) % 4 )  / D) * D ) ) % D</code>
+    /// <para>
+    /// Value is S; where S=Samples, D=Division, T=Tempo, R=Rate
+    /// </para>
+    /// </summary>
+    public double Tick { get { return (Division * (QuarterHelperInhibited * Division)) % Division; } }
     public int Samples32Floor { get { return Convert.ToInt32(Math.Floor(Samples)); } }
     public int Samples32 { get { return Convert.ToInt32(Samples); } }
     public double Samples
     {
       get { return mSample; }
-      set { Pulse = (long)((mSample = value) / (60.0 / Tempo * Fs) * Division); }
-    }
-    double mSample;
+      set { Pulse = (long)((mSample = value) / (TimeUtil.s60 / Tempo * Fs) * Division); }
+    } double mSample;
 
     public int Fs { get; set; } = 44100;
     public short Division { get; set; } = 120;
     /// <summary>microseconds per quarter note</summary>
-    public ushort MSPQN { get; set; } = 50000;
-
+    public uint MusPQN { get; set; } = 500000;
 
     /// <summary>
     /// We don't reccomend using this setter.
@@ -61,14 +70,14 @@ namespace on.smfio
     /// </summary>
     public double Tempo
     {
-      get { return Minute_Hex / MSPQN; }
-      set { MSPQN = (ushort)Math.Floor((s60 / value) * micro); }
+      get { return TimeUtil.MicroMinute / MusPQN; }
+      set { MusPQN = (ushort)Math.Floor((TimeUtil.s60 / value) * TimeUtil.MicroSecond); }
     }
 
     public double PulsesPerPPQDivision { get { return (double)Division / 24; } }
     public double ClocksAtPosition { get { return Pulse / PulsesPerPPQDivision; } }
 
-    public double SPQN { get { return 60.0 / Tempo; } }
+    public double SPQN { get { return TimeUtil.s60 / Tempo; } }
     public double SamplesPerQuarter { get { return SPQN * Fs; } }
 
     public double QuarterHelper { get { return (QuartersOffset / Division); } }
@@ -80,7 +89,13 @@ namespace on.smfio
     public bool IsQuarterOffsetInTicks { get; set; }
     public double Measure { get { return (QuartersOffset / 16).Floor() + 1; } }
     public double Bar { get { return ((QuartersOffset / 4).Floor() % 4) + 1; } }
-    public double Tick { get { return (Division * (QuarterHelperInhibited * Division)) % Division; } }
+
+    public double SamplesFromPulses(long p, double tempo, int rate, int division) {
+      return SamplesFromPulses(Convert.ToDouble(p), tempo, rate, division);
+    }
+    public double SamplesFromPulses(double p, double tempo, int rate, int division) {
+      return (TimeUtil.s60 / tempo * rate) * (p / division);
+    }
 
     public SampleClock SolvePPQ(long samples, int fs, double tempo, short division, bool inTicks = true)
     {
@@ -90,41 +105,52 @@ namespace on.smfio
       IsQuarterOffsetInTicks = inTicks;
       Samples = samples;
       return this;
+      //return this.Copy();
     }
-    public SampleClock SolvePPQ(long samples, int fs, ushort muspqn, short division, bool inTicks = true)
+    public SampleClock SolvePPQ(long samples, int fs, uint muspqn, short division, bool inTicks = true)
     {
       Fs = fs;
-      MSPQN = muspqn;
+      MusPQN = muspqn;
       Division = division;
       IsQuarterOffsetInTicks = inTicks;
       Samples = samples;
       return this;
+      //return this.Copy();
     }
     public SampleClock SolvePPQ(long sampleOffset, ITimeConfiguration conf)
     {
-      // this.Pulse = TimeUtil . FromSamples(Fs, sampleOffset);
-      SolvePPQ(sampleOffset, conf.Rate, conf.Tempo, conf.Division, true);
+      Fs = conf.Rate;
+      MusPQN = conf.MusPQN;
+      Division = conf.Division;
+      IsQuarterOffsetInTicks = true;
+      Samples = sampleOffset;
       return this;
     }
 
     public SampleClock SolveSamples(long pulse)
     {
       this.Pulse = pulse;
+      //return this.Copy();
       return this;
     }
     public SampleClock SolveSamples(long pulse, ITimeConfiguration settings)
     {
       this.Pulse = pulse;
+      this.Division = settings.Division;
+      this.Fs = settings.Rate;
+      this.MusPQN = settings.MusPQN;
       return this;
+      //return this.Copy();
     }
-    public SampleClock SolveSamples(long pulse, int fs, ushort muspqn, short division, bool inTicks = true)
+    public SampleClock SolveSamples(long pulse, int fs, uint muspqn, short division, bool inTicks = true)
     {
       Pulse = pulse;
       Fs = fs;
-      MSPQN = muspqn;
+      MusPQN = muspqn;
       Division = division;
       IsQuarterOffsetInTicks = inTicks;
       return this;
+      //return this.Copy();
     }
     public SampleClock SolveSamples(long pulse, int fs, double tempo, short division, bool inTicks = true)
     {
@@ -134,6 +160,7 @@ namespace on.smfio
       Division = division;
       IsQuarterOffsetInTicks = inTicks;
       return this;
+      //return this.Copy();
     }
 
     /// <inheritdoc/>
@@ -168,9 +195,11 @@ namespace on.smfio
       return new SampleClock
       {
         Division = Division,
-        Samples = Samples,
-        MSPQN = MSPQN,
         Fs = Fs,
+        MusPQN = MusPQN,
+        Samples = Samples,
+        Pulse = Pulse,
+        IsQuarterOffsetInTicks = IsQuarterOffsetInTicks,
       };
     }
 

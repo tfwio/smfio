@@ -38,9 +38,9 @@ namespace on.smfio
     public double Tempo
     {
 #if USEFLOAT
-      get { return 60000000.0f / MusPQN; }
+      get { return TimeUtil.Minute_Hex / MusPQN; }
 #else
-      get { return 60000000.0 / MusPQN; }
+      get { return TimeUtil.MicroMinute / MusPQN; }
 #endif
     }
   }

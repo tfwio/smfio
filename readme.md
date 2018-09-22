@@ -61,6 +61,14 @@ Goal(s)
 - MIDI Format 1 to Format 0 (in memory)
 - Writer (file export/write)
 
+0.1.4
+
+- Fix modest related timing issue(s)
+- Use TimeUtil const (opposed to multiple const references or inlining)
+- add MusPQN to ITimeConfiguration
+- Fix SampleClock: set tempo (private field) from MusPQN setter and vice/vs
+- windows batch files for msys bash (added `#! cmd /c` to head)
+
 0.1.3
 
 - re-introduce modest-vst dependencies:  

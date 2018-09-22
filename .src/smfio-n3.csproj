@@ -15,25 +15,31 @@
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <IntermediateOutputPath>$(SolutionDIr)/../build/obj/$(Platform)-$(Configuration)/</IntermediateOutputPath>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>smfio.snk</AssemblyOriginatorKeyFile>
     <DelaySign>False</DelaySign>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
     <DocumentationFile>$(SolutionDIr)/../build/$(Platform)-$(Configuration)/gen.snd.midi.xml</DocumentationFile>
-    <OutputPath>$(SolutionDIr)/../build/$(Platform)-$(Configuration)/</OutputPath>
+    <IntermediateOutputPath>$(SolutionDIr)/../build/obj/$(Platform)-$(Configuration)/</IntermediateOutputPath>
+    <OutputPath>$(SolutionDir)/../build/$(Platform)-$(Configuration)/</OutputPath>
     <NoWarn>1591</NoWarn>
     <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <BaseAddress>4194304</BaseAddress>
-    <DefineConstants>TRACE;NOCOR3</DefineConstants>
     <RegisterForComInterop>False</RegisterForComInterop>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <FileAlignment>4096</FileAlignment>
   </PropertyGroup>
+  <!-- <PropertyGroup Condition=" '$(Platform)' == 'Win32' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <BaseAddress>4194304</BaseAddress>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <FileAlignment>4096</FileAlignment>
+  </PropertyGroup> -->
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>True</DebugSymbols>
     <DebugType>Full</DebugType>
@@ -60,7 +66,6 @@
   <PropertyGroup />
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Win32' ">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>$(SolutionDir)/../build/$(Platform)-$(Configuration)/</OutputPath>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     <DocumentationFile>..\..\..\build\AnyCPU-Debug\smfio.xml</DocumentationFile>
     <FileAlignment>4096</FileAlignment>
@@ -71,7 +76,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Win32' ">
-    <OutputPath>$(SolutionDir)/../build/$(Platform)-$(Configuration)/</OutputPath>
     <DocumentationFile>E:\dev\home\projects\modest-smf-vstnet\Solution\/../build/AnyCPU-Release/gen.snd.midi.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <FileAlignment>4096</FileAlignment>

@@ -5,8 +5,10 @@ namespace on.smfio
 {
   public static class TimeUtil
   {
-    const double mus = 0.000001;
-    const double s60 = 60.0;
+    public const double s60 = 60.0;
+    public const int    MicroSecond  = 1000000;
+    public const double MicroMinute = 60000000.0;
+    public const double MicroScale = 0.000001;
 
     const string DefaultMBTFormat = "{0:##,###,###,000}:{1:0#}:{2:00#}";
 
@@ -32,7 +34,7 @@ namespace on.smfio
     }
     public static double GetSeconds(int division, uint muspqn, long pulse, double sec = 0.0)
     {
-      return ((muspqn * mus) * (pulse / division)) + sec;
+      return ((muspqn * MicroScale) * (pulse / division)) + sec;
     }
     public static string GetSSeconds(double seconds, string filter = "{0:00}:{1:00}:{2:00}.{3:000}")
     {
@@ -47,7 +49,7 @@ namespace on.smfio
 
     public static long GetPulses(long samples, int muspqn, int fs, int division)
     {
-      return Convert.ToInt64((double)samples / (((muspqn * mus) * fs) * division));
+      return Convert.ToInt64((double)samples / (((muspqn * MicroScale) * fs) * division));
     }
 
     public static long GetPulses(long samples, double tempo, int fs, int division)
