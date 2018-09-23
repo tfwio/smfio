@@ -71,7 +71,7 @@ namespace on.smfio
     public double Tempo
     {
       get { return TimeUtil.MicroMinute / MusPQN; }
-      set { MusPQN = (ushort)Math.Floor((TimeUtil.s60 / value) * TimeUtil.MicroSecond); }
+      set { MusPQN = (uint)Math.Floor((TimeUtil.s60 / value) * TimeUtil.MicroSecond); }
     }
 
     public double PulsesPerPPQDivision { get { return (double)Division / 24; } }
