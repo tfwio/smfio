@@ -27,7 +27,7 @@ namespace on.smfio
         using (var bi = System.IO.File.OpenText(file))
         {
           string spoof = bi.ReadToEnd();
-          data_map = spoof.Split(new char[] { (char)0x0D });
+          data_map = spoof.Split((char)0x0A);
           bi.Close();
         }
       }
