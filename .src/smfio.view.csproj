@@ -14,9 +14,9 @@
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <IntermediateOutputPath>$(SolutionDIr)/../build/obj/$(Platform)-$(Configuration)/</IntermediateOutputPath>
+    <IntermediateOutputPath>$(SolutionDir)/../build/obj/$(Platform)-$(Configuration)/</IntermediateOutputPath>
     <WarningLevel>4</WarningLevel>
-    <OutputPath>$(SolutionDIr)/../build/$(Platform)-$(Configuration)/</OutputPath>
+    <OutputPath>$(SolutionDir)/../build/$(Platform)-$(Configuration)/</OutputPath>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\smfio\.src\smfio.snk</AssemblyOriginatorKeyFile>
     <DelaySign>False</DelaySign>
@@ -107,4 +107,7 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>"$(SolutionDir)..\asm-nfo.bat"</PreBuildEvent>
+  </PropertyGroup>
 </Project>
