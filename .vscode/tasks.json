@@ -11,12 +11,9 @@
         "/c",
         "${workspaceFolder}\\Build-dotnet-cli35-AnyCPU-Release.bat"
       ],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
       "problemMatcher": []
-    }, {
+    },
+    {
       "label": "Build: cli35 debug",
       "type": "process",
       "command": "cmd.exe",
@@ -37,10 +34,6 @@
         "/c",
         "${workspaceFolder}\\Build-dotnet-cli35-Clean_ALL.bat"
       ],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
       "problemMatcher": []
     }, {
       "label": "Run: Release",
