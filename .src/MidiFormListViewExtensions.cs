@@ -12,23 +12,29 @@ namespace SMFIOViewer
 {
   static public class MidiFormListViewExtensions
   {
-    static public void AddItem(this ListView lvx, System.Drawing.Color colar, params string[] content)
+    static public ListViewItem AddItem(this ListView lvx, System.Drawing.Color colar, params string[] content)
     {
-      var item = new ListViewItem(content);
-      item.BackColor = colar;
-      lvx.Items.Add(item);
+      return lvx.Items.Add(new ListViewItem(content){BackColor=colar});
     }
-    static public void AddItem(this ListView lvx, long pulse, System.Drawing.Color colar, params string[] content)
+    static public ListViewItem AddItem(this ListView lvx, long pulse, System.Drawing.Color colar, params string[] content)
     {
-      var item = new ListViewItem(content);
-      item.BackColor = colar;
-      item.ToolTipText = pulse.ToString();
-      lvx.Items.Add(item);
+      return lvx.Items.Add(new ListViewItem(content)
+      {
+        BackColor = colar,
+        ToolTipText = $"{pulse}",
+      });
+    }
+    static public ListViewItem AddItem(this ListView lvx, on.smfio.TempoState tempo, long pulse, System.Drawing.Color colar, params string[] content)
+    {
+      var item = lvx.AddItem(pulse, colar, content);
+      item.ToolTipText = $"Ticks: {pulse}, LastTempo-Ticks: {tempo.Pulse}, diff: {pulse - tempo.Pulse}";
+      return item;
     }
 
-		static public void AddItem(this ListView lvx, params string[] content)
+
+    static public ListViewItem AddItem(this ListView lvx, params string[] content)
 		{
-			lvx.Items.Add(new ListViewItem(content));
+			return lvx.Items.Add(new ListViewItem(content));
 		}
 	}
 }

@@ -172,26 +172,29 @@ namespace SMFIOViewer
 		  if (map.Count==0) map = Reader.TempoMap.Copy();
 			var tempo = !map.Top.Match(pulse) ? map.Seek(pulse) : map.Top;
       double seconds = TimeUtil.GetSeconds(Division, tempo.MusPQN, (long)pulse-tempo.Pulse, tempo.Second);
-		  string sseconds = TimeUtil.GetSSeconds(seconds);
-			string smbt = TimeUtil.GetMBT((long)pulse, Division);
+      string sseconds = TimeUtil.GetSSeconds(seconds, "{0:00}:{1:00}:{2:00}.{3:00000}");
+      string smbt = TimeUtil.GetMBT((long)pulse, Division);
 
       switch (msgType)
 			{
 				case MidiMsgType.MetaStr:
-					lve.AddItem( pulse, ColorResources.c4, smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF( midiMsg32 ), Reader.GetMetaString( nTrackOffset ) );
+					var item = lve.AddItem( tempo, pulse, ColorResources.c4, smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF( midiMsg32 ), Reader.GetMetaString( nTrackOffset ) );
 					break;
 				case MidiMsgType.MetaInf:
-          lve.AddItem(pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentTrackRunningStatus), smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF(midiMsg32), Reader.GetMetaSTR(nTrackOffset));
+          lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentTrackRunningStatus), smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF(midiMsg32), Reader.GetMetaSTR(nTrackOffset));
           break;
 				case MidiMsgType.SysCommon:
 				case MidiMsgType.System:
-					lve.AddItem( pulse, ColorResources.GetEventColor(midiMsg32,ColorResources.cR, Reader.CurrentTrackRunningStatus), smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF( midiMsg32 ), Reader.GetMetaSTR( nTrackOffset ) );
-					break;
+          lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentTrackRunningStatus), smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF(midiMsg32), Reader.GetMetaSTR(nTrackOffset));
+          break;
+  			case MidiMsgType.Channel  :
+        case MidiMsgType.NoteOn   :
+        case MidiMsgType.NoteOff  :
+        case MidiMsgType.CC       :
+			  case MidiMsgType.Undefined:
 				default:
-          //	case MsgType.Channel:
-          if (isRunningStatus) lve.AddItem( pulse, ColorResources.GetRseEventColor( ColorResources.Colors["225"], Reader.CurrentTrackRunningStatus ), smbt, sseconds, midiMsg8==0xF0 ? "" :(delta & 0x0F).ToString(), Reader.GetRseEventString( nTrackOffset ), Reader.chRseV( nTrackOffset ) );
-					else                 lve.AddItem( pulse, ColorResources.GetEventColor   ( ColorResources.Colors["225"], Reader.CurrentTrackRunningStatus ), smbt, sseconds, midiMsg8==0xF0 ? "" :(delta & 0x0F).ToString(), Reader.GetEventString   ( nTrackOffset ), Reader.chV   ( nTrackOffset ) );
-          //				if (t== MsgType.NoteOn||t== MsgType.NoteOff) Reader.CheckNote(t,ppq,Convert.ToByte((rse) & 0x0F),offset,bmsg,isrse);
+          if (isRunningStatus) lve.AddItem( tempo, pulse, ColorResources.GetRseEventColor( ColorResources.Colors["225"], Reader.CurrentTrackRunningStatus ), smbt, sseconds, midiMsg8==0xF0 ? "" :(delta & 0x0F).ToString(), Reader.GetRseEventString( nTrackOffset ), Reader.chRseV( nTrackOffset ) );
+					else                 lve.AddItem( tempo, pulse, ColorResources.GetEventColor   ( ColorResources.Colors["225"], Reader.CurrentTrackRunningStatus ), smbt, sseconds, midiMsg8==0xF0 ? "" :(delta & 0x0F).ToString(), Reader.GetEventString   ( nTrackOffset ), Reader.chV   ( nTrackOffset ) );
           break;
 			}
 		}
