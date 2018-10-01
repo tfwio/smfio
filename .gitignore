@@ -7,3 +7,5 @@
 /.vscode/.ropeproject/*
 .vscode/settings.json
 /smfio
+/get-sha-cs
+/get-sha
