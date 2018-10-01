@@ -30,11 +30,11 @@ namespace on.smfio
     }
     public static double GetSeconds(int division, double tempo, long pulse, double sec = 0.0)
     {
-      return ((s60 / tempo) * (pulse / division)) + sec;
+      return ((s60 / tempo) * ((double)pulse / division)) + sec;
     }
     public static double GetSeconds(int division, uint muspqn, long pulse, double sec = 0.0)
     {
-      return ((muspqn * MicroScale) * (pulse / division)) + sec;
+      return (((double)muspqn * MicroScale) * ((double)pulse / division)) + sec;
     }
     public static string GetSSeconds(double seconds, string filter = "{0:00}:{1:00}:{2:00}.{3:000}")
     {
@@ -44,7 +44,7 @@ namespace on.smfio
 
     public static double GetSamples(double pulse, double tempo, int rate, int division)
     {
-      return (s60 / tempo * rate) * (pulse / division);
+      return (s60 / tempo * rate) * ((double)pulse / division);
     }
 
     public static long GetPulses(long samples, int muspqn, int fs, int division)
