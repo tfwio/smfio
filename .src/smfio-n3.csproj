@@ -111,12 +111,15 @@
     <Compile Include="Common\MetaHelpers.cs" />
     <Compile Include="Common\MetaMsg32.cs" />
     <Compile Include="Common\MetaMsg8.cs" />
-    <Compile Include="Common\MetaMsgU16FF.cs" />
     <Compile Include="Common\MidiKeySignature.cs" />
     <Compile Include="Common\MidiTimeSignature.cs" />
     <Compile Include="Common\Smf.Meta.ChannelType.cs" />
     <Compile Include="Common\Smf.MidiMessageInfo.cs" />
     <Compile Include="Common\Smf.NoteRange.cs" />
+    <Compile Include="Common\Stat8.cs" />
+    <Compile Include="Common\Stat16.cs" />
+    <Compile Include="Common\Stat32.cs" />
+    <Compile Include="Common\StatUShort.cs" />
     <Compile Include="EnumFile.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="IMidiParser.cs" />

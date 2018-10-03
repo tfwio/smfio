@@ -74,7 +74,8 @@ namespace on.smfio.Common
 		static public bool IsPitchBend(int msg) { return PitchBendRange.IsInRange(msg); }
 	
 		/// True if the value is between 0x7FFF and 0x10000;
-		static public bool IsMidiMessage(int value) { return ((value < SystemRealtimeMessageRange.Max) &&(value > NoteOffRange.Min)); }
+		static public bool IsMidiMessage(int value) {
+		  return ((value < SystemRealtimeMessageRange.Max) &&(value > NoteOffRange.Min)); }
 		
 		/// True if the value is between 0x7FFF and 0x10000;
 		static public bool IsMidiBMessage(int value) { return ((value < SystemRealtimeMessageRange.MaxDown) && (value > NoteOffRange.MinDown)); }

@@ -102,7 +102,7 @@ namespace on.smfio
     // PARSE TRACK
     // =============================================
 
-    int SelectedTrackNumber { get; set; }
+    int ReaderIndex { get; set; }
 		
 		MidiReaderLoadTrackDelegate LoadTrack { get; set; }
 		
@@ -122,8 +122,9 @@ namespace on.smfio
 		/// </summary>
 		/// <param name="trackNo"></param>
 		void ParseTrackMeta(int trackNo);
-		
-		int GetTrackMessage(int position, int delta);
+
+    int GetEndOfSystemExclusive(int nTrackIndex, int nTrackOffset);
+    int GetTrackMessage(int position, int delta);
 
     // =============================================
     // PARSE TRACK (EVENT)
@@ -138,7 +139,7 @@ namespace on.smfio
 		
 		#region FILE
 		
-		smf_mthd SmfFileHandle { get; set; }
+		MTHD FileHandle { get; set; }
 		
 		string MidiFileName { get; set; }
 		

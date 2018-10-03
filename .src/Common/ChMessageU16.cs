@@ -1,5 +1,4 @@
-﻿#region Info
-// oio * 2005-11-12 * 4:19 PM
+﻿// oio * 2005-11-12 * 4:19 PM
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
@@ -17,19 +16,21 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
 // DEALINGS IN THE SOFTWARE.
-#endregion
-#region Using
 using System;
-#endregion
 namespace on.smfio.Common
 {
 	/// <summary>
 	/// 16-bit message type
+	/// 
+	/// These enum values are specifically used to detect number ranges.
+	/// 
+	/// I really have 
+	/// 
 	/// </summary>
 	public enum ChMessageU16 : ushort
 	{
 		/// 0x8000
-		NoteOff = ChMessage8.NoteOff << 8,
+		NoteOff = Stat8.NoteOn << 8,
 		/// 0x9000
 		NoteOn = ChMessage8.NoteOn << 8,
 		/// 0xA000

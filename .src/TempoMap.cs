@@ -98,10 +98,10 @@ namespace on.smfio
     /// This is to be called after all events have been processed
     /// so that we can determine each Min-Max range properly.
     /// </summary>
-    public void Sync(MidiReader reader, int plus=24)
+    public void Sync(Reader reader, int plus=24)
     {
       long longest = 0;
-      for (int nTrackIndex = 0; nTrackIndex < reader.SmfFileHandle.NumberOfTracks; nTrackIndex++)
+      for (int nTrackIndex = 0; nTrackIndex < reader.FileHandle.NumberOfTracks; nTrackIndex++)
       {
         if (longest < reader.TrackLength[nTrackIndex])
           longest = reader.TrackLength[nTrackIndex];

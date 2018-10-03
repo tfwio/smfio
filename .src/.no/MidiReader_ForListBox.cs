@@ -43,7 +43,7 @@ namespace MidiSmf.Format
 		public void GetMemory()
 		{
 			this.MidiMessage -= GotMidiEventE;
-			this.SmfFileHandle = MidiUtil.GetMthd(MidiFileName);
+			this.FileHandle = MidiUtil.GetMthd(MidiFileName);
 			this.MidiMessage += GotMidiEventE;
 		}
 		

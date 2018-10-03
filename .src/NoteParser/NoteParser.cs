@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace on.smfio
 {
-  public class NoteParser : MidiReader, INoteParser
+  public class NoteParser : Reader, INoteParser
   {
     public NoteParser() : base(true) { }
     public NoteParser(bool useEventHandler) : base(useEventHandler) { }
@@ -58,19 +58,19 @@ namespace on.smfio
       byte n = 0, v = 0;
       switch (type)
       {
-        case MidiMsgType.CC:
-          n = this[SelectedTrackNumber, offset + (rs ? 0 : 1)];
-          v = this[SelectedTrackNumber, offset + (rs ? 0 : 1) + 1];
+        case MidiMsgType.ControllerChange:
+          n = this[ReaderIndex, offset + (rs ? 0 : 1)];
+          v = this[ReaderIndex, offset + (rs ? 0 : 1) + 1];
           break;
         case MidiMsgType.NoteOn:
-          n = this[SelectedTrackNumber, offset + (rs ? 0 : 1)];
-          v = this[SelectedTrackNumber, offset + (rs ? 0 : 1) + 1];
+          n = this[ReaderIndex, offset + (rs ? 0 : 1)];
+          v = this[ReaderIndex, offset + (rs ? 0 : 1) + 1];
           if (v == 0) CloseNote(ppq, n, v);
           else Notes.Add(new MidiNote(ch, n, ppq, v));
           break;
         case MidiMsgType.NoteOff:
-          n = this[SelectedTrackNumber, offset + (rs ? 0 : 1)];
-          v = this[SelectedTrackNumber, offset + (rs ? 0 : 1) + 1];
+          n = this[ReaderIndex, offset + (rs ? 0 : 1)];
+          v = this[ReaderIndex, offset + (rs ? 0 : 1) + 1];
           CloseNote(ppq, n, v);
           break;
       }

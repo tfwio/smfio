@@ -1,7 +1,4 @@
-/*
- * Date: 11/12/2005
- * Time: 4:19 PM
- */
+/* Date: 11/12/2005 Time: 4:19 PM */
 using System;
 
 namespace on.smfio
@@ -27,6 +24,7 @@ namespace on.smfio
     static public string GetKeySharp(int value) { return KeysSharp[value % 12]; }
     static public string GetKeyFlat(int value) { return KeysFlat[value % 12]; }
 
-    static public int GetOctave(int value) { return (int)Math.Floor((double)value / 12); }
+    // FIXME: -1
+    static public int GetOctave(int value) { return (int)Math.Floor((double)value / 12)-1; }
   }
 }

@@ -4,13 +4,13 @@
  */
 using System;
 
-namespace on.smfio.Common
+namespace on.smfio
 {
 	/// <summary>
 	/// Note-Range is a range of possible values and is used to determine weather or
 	/// not a particular message value is of the type specifed by a given range. 
 	/// </summary>
-	public struct NoteRange
+	public struct StatRange
 	{
 		public string Name;
 		/// <summary>
@@ -27,12 +27,22 @@ namespace on.smfio.Common
 		public int MinUp { get { return Min << 8; } }
 		public int MaxUp { get { return Max << 8; } }
 		
-		public bool IsInRange(int value) { return value > Min && value < Max; }
+		public bool Contains(int pMin, int pMax, int pValue) { return pValue >= pMin && pValue <= pMax; }
+
+		public bool IsInRange(int value) { return value >= Min && value <= Max; }
 		
-		public NoteRange(ChMessageU16 msg, string name)
+		public static StatRange ForChannel(int pStatus, string pName) {
+			return new StatRange(){
+				Value = pStatus,
+				Min = pStatus & 0xF0,
+				Max = pStatus & 0xF0 | 1,
+			};
+		}
+		public StatRange(StatusByte msg, string name)
 		{
-			Min = (Value = (int)msg) - 1;
-			Max = (int)msg+0x1000;
+			Value = (int)msg;
+			Min = Value;
+			Max = Value;
 			Name = name;
 		}
 		/// <summary>
@@ -41,11 +51,11 @@ namespace on.smfio.Common
 		/// <param name="min">This is our actual Minimum value</param>
 		/// <param name="max">Our maximum value</param>
 		/// <param name="name"></param>
-		public NoteRange(ChMessageU16 min, ChMessageU16 max, string name)
+		public StatRange(StatusByte min, StatusByte max, string name)
 		{
 			Value = (int)min;
-			Min = Value-1;
-			Max = (int)max+1;
+			Min = Value;
+			Max = (int)max;
 			Name = name;
 		}
 	}

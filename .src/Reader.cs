@@ -4,6 +4,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using on.smfio.Common;
+
+using FileMode=System.IO.FileMode;
+using FileAccess=System.IO.FileAccess;
+using FileShare=System.IO.FileShare;
+using FileStream=System.IO.FileStream;
+using BinaryReader=System.IO.BinaryReader;
+
 using on.smfio.chunk;
 using on.smfio.util;
 
@@ -16,17 +23,33 @@ namespace on.smfio
   /// Internally, we load three text files from a subdirectory named ‘ext’.
   /// Controller change values, drum kit names and instrument names.
   /// </summary>
-  public partial class MidiReader : IDisposable, IMidiParser
+  public partial class Reader : IDisposable, IMidiParser
   {
-    protected byte this[int track, int index]
-    {
-      get { return SmfFileHandle[track, index]; }
-    }
     const int default_Fs = 44100;
     const int default_Tempo = 120;
     const int default_Division = 480;
 
+    /// <summary>Static MTHD loader.</summary>
+    /// <param name="fileName"></param>
+    /// <returns></returns>
+    MTHD GetMthd(string fileName)
+    {
+      MTHD FileHandle = null;
+      using (var STREAM = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        using (var READER = new BinaryReader(STREAM))
+      {
+        FileHandle = new MTHD(READER);
+        FileHandle.Tracks = new MTrk[FileHandle.NumberOfTracks];
+        for (int i = 0; i < FileHandle.NumberOfTracks; i++)
+          FileHandle.Tracks[i] = new MTrk(READER);
+      }
+      return FileHandle;
+    }
 
+    protected byte this[int track, int index]
+    {
+      get { return FileHandle[track, index]; }
+    }
 
     #region INotifyPropertyChanged (isn't used)
 
@@ -107,7 +130,7 @@ namespace on.smfio
     public int DivQuarter { get; private set; }
 
     /// <summary>Midi header-&gt;Division.</summary>
-    public short Division { get { return SmfFileHandle.Division; } }
+    public short Division { get { return FileHandle.Division; } }
 
     public void GetDivision()
     {
@@ -136,7 +159,7 @@ namespace on.smfio
     /// <inheritdoc/>
     public void GetMemory()
     {
-      SmfFileHandle = MidiUtil.GetMthd(MidiFileName);
+      FileHandle = GetMthd(MidiFileName);
       TempoMap.Clear();
       ParseTrackMeta(0); // pre-scan? ;)
       Parse();
@@ -171,10 +194,10 @@ namespace on.smfio
         case 0x90:
           return MidiMsgType.NoteOn;
         case 0xb0:
-          return MidiMsgType.CC;
+          return MidiMsgType.ControllerChange;
         case 0xF0:
         case 0xF7:
-          return MidiMsgType.System;
+          return MidiMsgType.SystemSpecific;
         default:
           //					case 12: return MsgType.CC;
           return def;
@@ -187,49 +210,57 @@ namespace on.smfio
     /// get track (selected) message
     public virtual int GetTrackMessage(int position, int delta)
     {
-      return GetNTrackMessage(SelectedTrackNumber, position, delta);
+      return GetNTrackMessage(ReaderIndex, position, delta);
     }
     /// MESSAGE PARSER
     /// get track (specific) message
     public virtual int GetNTrackMessage(int nTrackIndex, int nTrackOffset, int delta)
     {
       int DELTA_Returned = delta;
-      byte CurrentByte = SmfFileHandle.Get8Bit(nTrackIndex, nTrackOffset);
-      int CurrentIntMessage = SmfFileHandle.Get16BitInt32(nTrackIndex, nTrackOffset);
-      switch (CurrentIntMessage)
+      byte msg8 = FileHandle.Tracks[nTrackIndex].Data[nTrackOffset];
+      var msg16 = FileHandle.Get16Bit(nTrackIndex, nTrackOffset);
+      var msg32 = FileHandle.Get16BitInt32(nTrackIndex, nTrackOffset);
+      var str8 = $"{msg8:X1}";
+      var str32 = $"{msg32:X2}";
+      var str16 = $"{msg16:X2}";
+      switch (msg32)
       {
-        case (int)MetaMsgU16FF.Text:            // FF01
-        case (int)MetaMsgU16FF.Copyright:       // FF02
-        case (int)MetaMsgU16FF.SequenceName:    // FF03
-        case (int)MetaMsgU16FF.InstrumentName:  // FF04
-        case (int)MetaMsgU16FF.Lyric:           // FF05
-        case (int)MetaMsgU16FF.Marker:          // FF06
-        case (int)MetaMsgU16FF.Cue:             // FF07
-        case (int)MetaMsgU16FF.Port:            // FF08
-          MessageHandler(MidiMsgType.MetaStr, nTrackIndex, nTrackOffset, CurrentIntMessage, CurrentByte, CurrentTrackPulse, CurrentTrackRunningStatus, false);
+        case (int)Stat16.Text:            // FF01
+        case (int)Stat16.Copyright:       // FF02
+        case (int)Stat16.SequenceName:    // FF03
+        case (int)Stat16.InstrumentName:  // FF04
+        case (int)Stat16.Lyric:           // FF05
+        case (int)Stat16.Marker:          // FF06
+        case (int)Stat16.Cue:             // FF07
+        case (int)Stat16.PortMessage:            // FF08?
+          MessageHandler(MidiMsgType.MetaStr, nTrackIndex, nTrackOffset, msg32, msg8, CurrentTrackPulse, CurrentTrackRunningStatus, false);
           //lve.AddItem( c4, MeasureBarTick( TicksPerQuarterNote ), TicksPerQuarterNote.ToString(), ""/*(RunningStatus32 & 0x0F)+1*/, MetaHelpers.MetaNameFF( CurrentIntMessage ) , GetMetaString( position ) );
           DELTA_Returned = GetMetaNextPos(nTrackOffset);
           break;
-        case (int)MetaMsgU16FF.SequenceNo:      // FF00
-        case (int)MetaMsgU16FF.Chanel:          // FF20
-        case (int)MetaMsgU16FF.EndOfTrack:      // FF2F
-        case (int)MetaMsgU16FF.Tempo:           // FF51
-        case (int)MetaMsgU16FF.SMPTE:           // FF54
-        case (int)MetaMsgU16FF.TimeSignature:   // FF58
-        case (int)MetaMsgU16FF.KeySignature:    // FF59
+        case (int)Stat16.SequenceNo:      // FF00
+        case (int)Stat16.ChannelPrefix:   // FF20
+        case (int)Stat16.EndOfTrack:      // FF2F
+        case (int)Stat16.SetTempo:        // FF51
+        case (int)Stat16.SMPTEOffset:     // FF54
+        case (int)Stat16.TimeSignature:   // FF58
+        case (int)Stat16.KeySignature:    // FF59
           // why is this filtered and no others ? see gettrackmessage
-          MessageHandler(MidiMsgType.MetaInf, nTrackIndex, nTrackOffset, CurrentIntMessage, CurrentByte, CurrentTrackPulse, CurrentTrackRunningStatus, false);
+          MessageHandler(MidiMsgType.MetaInf, nTrackIndex, nTrackOffset, msg32, msg8, CurrentTrackPulse, CurrentTrackRunningStatus, false);
           DELTA_Returned = GetMetaNextPos(nTrackOffset);
           break;
-        case (int)MetaMsgU16FF.SystemSpecific:  // FF7F
-        case (int)MetaMsgU16FF.SystemExclusive: // FF7F
+        case (int)Stat16.SequencerSpecificMetaEvent:  // FF7F
           Debug.Print("?---------sys");
-          MessageHandler(MidiMsgType.System, nTrackIndex, nTrackOffset, CurrentIntMessage, CurrentByte, CurrentTrackPulse, CurrentTrackRunningStatus, false);
+          MessageHandler(MidiMsgType.SystemSpecific, nTrackIndex, nTrackOffset, msg32, msg8, CurrentTrackPulse, CurrentTrackRunningStatus, false);
           DELTA_Returned = GetMetaNextPos(nTrackOffset);
+          break;
+        case (int)Stat16.SystemExclusive: // 0xF0
+          Debug.Print("?---------system exclusive");
+          MessageHandler(MidiMsgType.SystemExclusive, nTrackIndex, nTrackOffset, msg32, msg8, CurrentTrackPulse, CurrentTrackRunningStatus, false);
+          DELTA_Returned = GetEndOfSystemExclusive(nTrackIndex, nTrackOffset);
           break;
         default:
           {
-            if (CurrentByte < 0x80)
+            if (msg8 < 0x80)
             {
               // Running Status
               int ExpandedRSE = CurrentTrackRunningStatus << 8;
@@ -245,9 +276,9 @@ namespace on.smfio
                 MessageHandler(GetMsgTyp(CurrentTrackRunningStatus), nTrackIndex, nTrackOffset, CurrentTrackRunningStatus, (byte)CurrentTrackRunningStatus, CurrentTrackPulse, CurrentTrackRunningStatus, true);
               }
             }
-            else if (MidiMessageInfo.IsMidiMessage(CurrentIntMessage))
+            else if (StatusQuery.IsMidiMessage(msg32))
             {
-              CurrentTrackRunningStatus = (SmfFileHandle[nTrackIndex, nTrackOffset]);
+              CurrentTrackRunningStatus = (FileHandle[nTrackIndex, nTrackOffset]);
               DELTA_Returned = GetNextPosition(nTrackOffset);
               // Debug.Print("{0:X}",runningStatus32);
               MessageHandler(GetMsgTyp(CurrentTrackRunningStatus), nTrackIndex, nTrackOffset, CurrentTrackRunningStatus, (byte)CurrentTrackRunningStatus, CurrentTrackPulse, CurrentTrackRunningStatus, false);
@@ -260,46 +291,49 @@ namespace on.smfio
 
           break;
       }
-      DELTA_Returned++;
-      // what is roy[1] if not the current track position?
-      return DELTA_Returned;
+      return ++DELTA_Returned;
     }
 
     /// MESSAGE PARSER see 'ParseTrackMeta';
+    /// 
+    /// The method (1) returns the delta time and (2) collects
     /// 
     /// TODO: Examine relevant context and explain.
     public virtual int GetTrackTiming(int nTrackIndex, int nTrackOffset, int delta)
     {
       int DELTA_Returned = delta;
-      byte CurrentByte = SmfFileHandle.Get8Bit(nTrackIndex, nTrackOffset);
-      int CurrentIntMessage = SmfFileHandle.Get16BitInt32(nTrackIndex, nTrackOffset);
-
-      switch (CurrentIntMessage)
+      byte msg8 = FileHandle.Tracks[nTrackIndex].Data[nTrackOffset];
+      var msg16 = FileHandle.Get16Bit(nTrackIndex, nTrackOffset);
+      var msg32 = FileHandle.Get16BitInt32(nTrackIndex, nTrackOffset);
+      var str8 = $"{msg8:X1}";
+      var str32 = $"{msg32:X2}";
+      var str16 = $"{msg16:X2}";
+      switch (msg32)
       {
-        // text
-        case (int)MetaMsgU16FF.Text:
-        case (int)MetaMsgU16FF.Copyright:
-        case (int)MetaMsgU16FF.SequenceName:
-        case (int)MetaMsgU16FF.InstrumentName:
-        case (int)MetaMsgU16FF.Lyric:
-        case (int)MetaMsgU16FF.Marker:
-        case (int)MetaMsgU16FF.Cue:
-        // channel
-        case (int)MetaMsgU16FF.Port:
-        case (int)MetaMsgU16FF.SequenceNo:
-        case (int)MetaMsgU16FF.Chanel:
-        case (int)MetaMsgU16FF.EndOfTrack:
-        case (int)MetaMsgU16FF.SMPTE:
+          // text
+        case Stat16.Text:
+        case Stat16.Copyright:
+        case Stat16.SequenceName:
+        case Stat16.InstrumentName:
+        case Stat16.Lyric:
+        case Stat16.Marker:
+        case Stat16.Cue:
+          // channel
+        case Stat16.SequenceNo:
+        case Stat16.ChannelPrefix:
+        case Stat16.EndOfTrack:
+        case Stat16.SMPTEOffset:
+          // does not belong.
+        case Stat16.PortMessage:
           DELTA_Returned = GetMetaNextPos(nTrackOffset);
           break;
-        case (int)MetaMsgU16FF.Tempo:
-          var muspqn = SmfFileHandle[SelectedTrackNumber].Get24Bit(nTrackOffset + 3);
+        case Stat16.SetTempo:
+          var muspqn = FileHandle[ReaderIndex].ReadU24(nTrackOffset + 3);
           TempoMap.Push(muspqn, Division, CurrentTrackPulse);
-          // Log.ErrorMessage($"Delta: {delta}, Pulse: {CurrentTrackPulse}, Pulse: {CurrentTrackPulse/Division}");
           OnTempoChanged(DELTA_Returned, muspqn);
           DELTA_Returned = GetMetaNextPos(nTrackOffset);
           break;
-        case (int)MetaMsgU16FF.TimeSignature:
+        case Stat16.TimeSignature:
           TimeSignature.SetSignature(
             (int)this[nTrackIndex, nTrackOffset + 3],
             (int)Math.Pow(-this[nTrackIndex, nTrackOffset + 4], 2),
@@ -308,18 +342,20 @@ namespace on.smfio
            );
           DELTA_Returned = GetMetaNextPos(nTrackOffset);
           break;
-        case (int)MetaMsgU16FF.KeySignature:
+        case Stat16.KeySignature:
           byte b = (this[nTrackIndex, nTrackOffset + 3]);
           KeySignature.SetSignature((KeySignatureType)b, this[nTrackIndex, nTrackOffset + 4] == 0);
           DELTA_Returned = GetMetaNextPos(nTrackOffset);
           break;
-        case (int)MetaMsgU16FF.SystemSpecific:
-        case (int)MetaMsgU16FF.SystemExclusive:
+        case Stat16.SequencerSpecificMetaEvent:
           DELTA_Returned = GetMetaNextPos(nTrackOffset);
+          break;
+        case Stat16.SystemExclusive:
+          DELTA_Returned = GetEndOfSystemExclusive(nTrackIndex, nTrackOffset);
           break;
         default:
           {
-            if (CurrentByte < 0x80)
+            if (msg8 < 0x80)
             {
               // Running Status
               int ExpandedRSE = CurrentTrackRunningStatus << 8;
@@ -334,9 +370,9 @@ namespace on.smfio
                 DELTA_Returned = delta1;
               }
             }
-            else if (MidiMessageInfo.IsMidiMessage(CurrentIntMessage))
+            else if (StatusQuery.IsMidiMessage(msg32))
             {
-              CurrentTrackRunningStatus = (SmfFileHandle[nTrackIndex, nTrackOffset]);
+              CurrentTrackRunningStatus = (FileHandle[nTrackIndex, nTrackOffset]);
               DELTA_Returned = GetNextPosition(nTrackOffset);
               DELTA_Returned++;
               return DELTA_Returned;
@@ -347,8 +383,7 @@ namespace on.smfio
 
           break;
       }
-      DELTA_Returned++;
-      return DELTA_Returned;
+      return ++DELTA_Returned;
     }
     #endregion
     #region MESSAGE methods
@@ -431,19 +466,19 @@ namespace on.smfio
 
     #region .ctor
 
-    public MidiReader() : this(true)
+    public Reader() : this(true)
     {
       LoadTrack = GetTrackMessage;
     }
-    public MidiReader(bool useEventHandler)
+    public Reader(bool useEventHandler)
     {
       if (UseEventHandler = useEventHandler)
         MessageHandler = OnMidiMessage;
     }
 
-    public MidiReader(MidiMessageHandler handler) : this(true) { }
-    public MidiReader(MidiEventDelegate handler) : this(false) { MessageHandler = handler; }
-    public MidiReader(string fileName) : this(true)
+    public Reader(MidiMessageHandler handler) : this(true) { }
+    public Reader(MidiEventDelegate handler) : this(false) { MessageHandler = handler; }
+    public Reader(string fileName) : this(true)
     {
       MidiFileName = fileName;
     }
@@ -456,9 +491,9 @@ namespace on.smfio
     public int GetOffset(int offset)
     {
       int result = 14;
-      for (int i = 0; i <= SelectedTrackNumber; i++)
+      for (int i = 0; i <= ReaderIndex; i++)
       {
-        result += SmfFileHandle[i].track.Length + 8; // if not 8, this will be 4
+        result += FileHandle[i].Data.Length + 8; // if not 8, this will be 4
       }
       return result + offset;
     }
@@ -476,7 +511,7 @@ namespace on.smfio
     void ClearAll()
     {
       ResetTiming();
-      SmfFileHandle = default(smf_mthd);
+      FileHandle = default(MTHD);
       MidiFileName = null;
       selectedTrackNumber = -1;
       GC.Collect();
@@ -490,7 +525,7 @@ namespace on.smfio
 
     int NextDelta(int offset, out long result)
     {
-      return NextDelta(SelectedTrackNumber, offset, out result);
+      return NextDelta(ReaderIndex, offset, out result);
     }
 
     /// <summary>
@@ -504,12 +539,12 @@ namespace on.smfio
     {
       byte tempBit;
       int i = offset;
-      if ((result = Convert.ToUInt32(SmfFileHandle[ntrack, i++])) > 0x7f)
+      if ((result = Convert.ToUInt32(FileHandle[ntrack, i++])) > 0x7f)
       {
         result &= 0x7f;
         do
         {
-          result = (result << 7) + ((tempBit = SmfFileHandle[ntrack, i++]) & 0x7f);
+          result = (result << 7) + ((tempBit = FileHandle[ntrack, i++]) & 0x7f);
         } while (tempBit > 0x7f);
       }
       return i;
@@ -519,10 +554,10 @@ namespace on.smfio
     #region READ META TRACK
 
     /// <summary>
-    /// Retruns the SMF Track at <see cref="SelectedTrackNumber"/>
+    /// Retruns the SMF Track at <see cref="ReaderIndex"/>
     /// </summary>
     /// <value></value>
-    smf_mtrk NTrack { get { return SmfFileHandle[SelectedTrackNumber]; } }
+    MTrk NTrack { get { return FileHandle[ReaderIndex]; } }
 
     /// <inheritdoc/>
     public void ParseTrackMeta(int tk)
@@ -530,7 +565,7 @@ namespace on.smfio
       long delta;
       int i = 0;
       selectedTrackNumber = tk;
-      while (i < NTrack.track.Length)
+      while (i < NTrack.Data.Length)
       {
         i = NextDelta(tk, i, out delta);
         CurrentTrackPulse += delta;
@@ -553,7 +588,7 @@ namespace on.smfio
       int i = 0;
       CurrentTrackPulse = 0;
 
-      while (i < NTrack.track.Length)
+      while (i < NTrack.Data.Length)
       {
         i = NextDelta(i, out delta);
         CurrentTrackPulse += delta;
@@ -563,7 +598,7 @@ namespace on.smfio
 
       OnAfterTrackLoaded(EventArgs.Empty);
 
-      return NTrack.track.Length;
+      return NTrack.Data.Length;
     }
     #endregion
     #region READ (PARSE) ALL TRACKS
@@ -579,7 +614,7 @@ namespace on.smfio
     {
       MidiDataList.Clear();
       TrackLength.Clear();
-      for (int i = 0; i < SmfFileHandle.NumberOfTracks; i++)
+      for (int i = 0; i < FileHandle.NumberOfTracks; i++)
       {
         MidiDataList.CreateKey(i);
         TrackLength.Add(-1);
@@ -587,7 +622,7 @@ namespace on.smfio
       CurrentTrackPulse = 0;
       lock (ParseAllLock)
       {
-        for (int nTrackIndex = 0; nTrackIndex < SmfFileHandle.NumberOfTracks; nTrackIndex++)
+        for (int nTrackIndex = 0; nTrackIndex < FileHandle.NumberOfTracks; nTrackIndex++)
         {
           ResetTiming();
           // Log.ErrorMessage($"Parsing track {nTrackIndex}");
@@ -596,7 +631,7 @@ namespace on.smfio
           {
             long delta = 0;
             int nTrackOffset = 0;
-            while (nTrackOffset < SmfFileHandle.Tracks[nTrackIndex].track.Length)
+            while (nTrackOffset < FileHandle.Tracks[nTrackIndex].Data.Length)
             {
               nTrackOffset = NextDelta(nTrackIndex, nTrackOffset, out delta);
               CurrentTrackPulse += delta;
@@ -616,21 +651,25 @@ namespace on.smfio
       switch (msgType)
       {
         case MidiMsgType.MetaStr:
-          midiDataList.AddV(SelectedTrackNumber, new MetaMessage(MidiMsgType.MetaStr, pulse, midiMsg32, GetMetaBString(nTrackOffset)));
+          midiDataList.AddV(ReaderIndex, new MetaMessage(MidiMsgType.MetaStr, pulse, midiMsg32, GetMetaBString(nTrackOffset)));
           break;
         case MidiMsgType.MetaInf:
           var midiMsg = new MetaMessage(pulse, midiMsg32, GetMetaData(nTrackOffset));
-          midiDataList.AddV(SelectedTrackNumber, midiMsg);
+          midiDataList.AddV(ReaderIndex, midiMsg);
           break;
-        case MidiMsgType.System:
+        case MidiMsgType.SystemExclusive:
+          Debug.WriteLine("Skip System Exclusive Message (for now)");
+          break;
+        case MidiMsgType.SystemSpecific:
+          midiDataList.AddV(ReaderIndex, new SystemExclusive(pulse, midiMsg32, GetEventValue(nTrackOffset)));
+          break;
         case MidiMsgType.SysCommon:
-          if (midiMsg32 == 0xFF7F) midiDataList.AddV(SelectedTrackNumber, new SysExMessage(pulse, midiMsg32, GetMetaValue(nTrackOffset)));
-          else if (midiMsg32 == 0xF0) midiDataList.AddV(SelectedTrackNumber, new SysExMessage(pulse, midiMsg32, GetEventValue(nTrackOffset)));
+          if (midiMsg32 == 0xFF7F) midiDataList.AddV(ReaderIndex, new SystemSpecific(pulse, midiMsg32, GetMetaValue(nTrackOffset)));
           else Log.ErrorMessage("Improper MidiMsgType classification?");
           break;
         default:
-          if (isRunningStatus) MidiDataList.AddV(SelectedTrackNumber, new ChannelMessage(pulse, delta, GetRseEventValue(nTrackOffset)));
-          else MidiDataList.AddV(SelectedTrackNumber, new ChannelMessage(pulse, delta, GetEventValue(nTrackOffset)));
+          if (isRunningStatus) MidiDataList.AddV(ReaderIndex, new ChannelMessage(pulse, delta, GetRseEventValue(nTrackOffset)));
+          else MidiDataList.AddV(ReaderIndex, new ChannelMessage(pulse, delta, GetEventValue(nTrackOffset)));
           break;
       }
     }
@@ -642,7 +681,7 @@ namespace on.smfio
     /// <para>Get/Set Selected Track Number;</para>
     /// <para>Setting the track number triggers the TrackChanged event!</para>
     /// </summary>
-    public int SelectedTrackNumber
+    public int ReaderIndex
     {
       get { return selectedTrackNumber; }
       set
@@ -658,7 +697,7 @@ namespace on.smfio
     {
       GetDivision();
       ResetTiming();
-      if (SelectedTrackNumber >= 0)
+      if (ReaderIndex >= 0)
       {
         totlen = ParseTrack();
         return StringTrackInfo;
@@ -673,7 +712,7 @@ namespace on.smfio
 
     public string MidiFileName { get; set; }
 
-    public smf_mthd SmfFileHandle { get; set; }
+    public MTHD FileHandle { get; set; }
 
     #endregion
 
@@ -723,7 +762,7 @@ namespace on.smfio
     /// <summary>
     /// This is triggered after a track number is selected,
     /// and before the track is parsed.
-    /// See <see cref="SelectedTrackNumber" />.
+    /// See <see cref="ReaderIndex" />.
     /// </summary>
     public event CliHandler TrackChanged;
     protected virtual void OnTrackChanged(CliEvent e)
@@ -749,11 +788,11 @@ namespace on.smfio
       get
       {
         return string.Format(
-                   Resource_TrackLoaded,
-          /*  0 */ SelectedTrackNumber,
+          Resource_TrackLoaded,
+          /*  0 */ ReaderIndex,
           /*  1 */ totlen,
-          /*  2 */ SmfFileHandle[SelectedTrackNumber].Size,
-          /*  3 */ Convert.ToInt32(SmfFileHandle.Division),
+          /*  2 */ FileHandle[ReaderIndex].Size,
+          /*  3 */ Convert.ToInt32(FileHandle.Division),
           /*  4 */ Convert.ToSingle(TempoMap.Top.Tempo),
           /*  5 */ TimeSignature.Numerator,
           /*  6 */ TimeSignature.Denominator,
@@ -761,7 +800,7 @@ namespace on.smfio
           /*  8 */ TimeSignature.ThirtySeconds,
           /*  9 */ KeySignature.KeyType,
           /* 10 */ KeySignature.IsMajor ? "Major" : "Minor",
-          /* 11 */ SmfFileHandle.Format,
+          /* 11 */ FileHandle.Format,
           /* 12 */ StringRes.STRING_APP_NAME
          );
       }
@@ -776,7 +815,7 @@ namespace on.smfio
 
     protected virtual void OnTrackLoadProgressChanged(int i)
     {
-      int progressAmount = (i / SmfFileHandle[selectedTrackNumber].track.Length) * 100;
+      int progressAmount = (i / FileHandle[selectedTrackNumber].Data.Length) * 100;
       ProgressChangedEventArgs e = new ProgressChangedEventArgs(i, null);
       if (TrackLoadProgressChanged != null) TrackLoadProgressChanged(this, e);
     }

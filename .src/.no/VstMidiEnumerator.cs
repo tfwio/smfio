@@ -35,7 +35,7 @@ namespace gen.snd.Midi
 		#region MIDI compliant
 		static public IEnumerable<int> GetTrackIndex(IMidiParser parser)
 		{
-			for (int i = 0; i < parser.SmfFileHandle.NumberOfTracks; i++) {
+			for (int i = 0; i < parser.FileHandle.NumberOfTracks; i++) {
 				yield return i;
 			}
 		}
@@ -63,7 +63,7 @@ namespace gen.snd.Midi
 		/// <returns></returns>
 		static bool HasMidiParser(IMidiParserUI_Lite ui)
 		{
-			if (ui.MidiParser != null && ui.MidiParser.MidiDataList.Count > 0 && ui.MidiParser.SmfFileHandle != null)
+			if (ui.MidiParser != null && ui.MidiParser.MidiDataList.Count > 0 && ui.MidiParser.FileHandle != null)
 				return false;
 			return true;
 		}
@@ -118,7 +118,7 @@ namespace gen.snd.Midi
 		static IEnumerable<MidiMessage> MidiMessage_Range(IMidiParserUI Parser, Loop loop)
 		{
 			SampleClock c = new SampleClock(Parser.VstContainer.VstPlayer.Settings);
-			for (int trackId = 0; trackId < Parser.MidiParser.SmfFileHandle.NumberOfTracks; trackId++) {
+			for (int trackId = 0; trackId < Parser.MidiParser.FileHandle.NumberOfTracks; trackId++) {
 				var elements = Parser.MidiParser.MidiDataList[trackId].Where(msg0 => msg0.IsContained(c, loop));
 				foreach (MidiMessage item in elements)
 					yield return item;

@@ -24,43 +24,45 @@ using System;
 namespace on.smfio.Common
 {
 	/// <summary>
-	/// 8-bit message type
+	/// Message (bits | 0xFF00)
 	/// </summary>
-	public enum MetaMsg8 : byte
+	public enum MetaMsgU16FF : ushort
 	{
-		/// x00
-		SequenceNo		= ChannelType.sequence_number_byte,
-		/// x01
-		Text			= ChannelType.text_byte,
-		/// x02
-		Copyright		= ChannelType.copy_byte,
-		/// x03
-		SequenceName	= ChannelType.sequence_name_byte,
-		/// x04
-		InstrumentName	= ChannelType.instrument_name_byte,
-		/// x05
-		Lyric			= ChannelType.lyric_byte,
-		/// x06
-		Marker			= ChannelType.marker_byte,
-		/// x07
-		Cue				= ChannelType.cue_byte,
-		/// x20
-		Chanel			= ChannelType.channel_byte,
-		/// x21
-		Port			= ChannelType.port_byte,
-		/// x51
-		Tempo			= ChannelType.tempo_byte,
-		/// x54
-		SMPTE			= ChannelType.smpte_byte,
-		/// x58
-		TimeSignature	= ChannelType.time_signature_byte,
-		/// x59
-		KeySignature	= ChannelType.key_signature_byte,
-		/// x2f
-		EndOfTrack		= ChannelType.end_track_byte,
-		/// x7f
-		SystemExclusive = ChannelType.sysex_byte,
-		/// 0xA0
-		Unknown0xA0		= ChannelType.sysex_byte,
+		/// 0xFF00
+		SequenceNo		  = 0xFF00,
+		/// 0xFF01
+		Text			      = 0xFF01,
+		/// 0xFF02
+		Copyright		    = 0xFF02,
+		/// 0xFF03
+		SequenceName  	= 0xFF03,
+		/// 0xFF04
+		InstrumentName	= 0xFF04,
+		/// 0xFF05
+		Lyric		      	= 0xFF05,
+		/// 0xFF06
+		Marker		    	= 0xFF06,
+		/// 0xFF07
+		Cue				      = 0xFF07,
+		/// 0xFF20
+		Chanel			    = 0xFF20,
+		/// 0xFF21
+		Port			      = 0xFF21,
+		/// 0xFF51
+		Tempo			      = 0xFF51,
+		/// 0xFF54
+		SMPTE			      = 0xFF54,
+		/// 0xFF58
+		TimeSignature	  = 0xFF58,
+		/// 0xFF59
+		KeySignature	  = 0xFF59,
+		/// 0xFF2F
+		EndOfTrack		  = 0xFF2F,
+		/// 0xFFF0
+		SystemExclusive = 0xFFF0,
+		/// 0xFF7F
+		SystemSpecific  = 0xFF7F,
+		
 	}
+
 }
