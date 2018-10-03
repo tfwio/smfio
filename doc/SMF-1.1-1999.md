@@ -725,7 +725,7 @@ stat          `D7-D0`      stat
 
 ------------------------------------------------------------------------------
 byte           data bytes     Description
-status         `D7-D0`
+status         7-0
 -------------- -------------- ------------------------------------------------
 `1011nnnn`     `0ccccccc`     **Channel Mode Messages**.\
                `0vvvvvvv`     This the same code as the Control Change
@@ -759,91 +759,91 @@ status         `D7-D0`
 
 #### System Common Messages
 
-------------------------------------------------------------------------------
-byte           data bytes   Description
-status         `D7-D0`
--------------- ------------ --------------------------------------------------
-`11110000`     `0iiiiiii`\  **System Exclusive**.\
-               `0ddddddd`\  This message makes up for all that MIDI doesn't
-               `..`\        support. `iiiiiii` is usually a seven-bit
-               `..`\        Manufacturer's I.D. code. If the synthesiser 
-               `0ddddddd`\  recognises the I.D. code as its own, it will
-               `11110111`\  listen to the rest of the message `ddddddd`.
-                            Otherwise, the message will be ignored. System
-                            Exclusive is used to send bulk dumps such as
-                            patch parameters and other non-spec data.
-                            (Note: Real-Time messages ONLY may be
-                            interleaved with a System Exclusive.)
-                            This message also is used for extensions called
-                            **Universal Exclusive Messages**.
+------------------------------------------------------------------------------------
+byte           data bytes   hex     Description
+status         `D7-D0`      status
+-------------- ------------ ------- ------------------------------------------------
+`11110000`     `0iiiiiii`\  `0xF0`  **System Exclusive**.\
+               `0ddddddd`\          This message makes up for all that MIDI doesn't
+               `..`\                support. `iiiiiii` is usually a seven-bit
+               `..`\                Manufacturer's I.D. code. If the synthesiser 
+               `0ddddddd`\          recognises the I.D. code as its own, it will
+               `11110111`\          listen to the rest of the message `ddddddd`.
+                                    Otherwise, the message will be ignored. System
+                                    Exclusive is used to send bulk dumps such as
+                                    patch parameters and other non-spec data.
+                                    (Note: Real-Time messages ONLY may be
+                                    interleaved with a System Exclusive.)
+                                    This message also is used for extensions called
+                                    **Universal Exclusive Messages**.
 
-`11110001`                  Undefined.
+`11110001`                  `0xF1`  Undefined.
 
-`11110010`     `0lllllll`   **Song Position Pointer**.
-               `0mmmmmmm`   This is an internal 14 bit register that holds
-                            the number of MIDI beats (1 beat=six MIDI
-                            clocks) since the start of the song. l is the
-                            LSB, m the MSB.
+`11110010`     `0lllllll`   `0xF2`  **Song Position Pointer**.
+               `0mmmmmmm`           This is an internal 14 bit register that holds
+                                    the number of MIDI beats (1 beat=six MIDI
+                                    clocks) since the start of the song. l is the
+                                    LSB, m the MSB.
 
-`11110011`     `0sssssss`   **Song Select**.\
-                            The Song Select specifies which sequence or song
-                            is to be played.
+`11110011`     `0sssssss`   `0xF3`  **Song Select**.\
+                                    The Song Select specifies which sequence or song
+                                    is to be played.
 
-`11110100`                  Undefined.
+`11110100`                  `0xF4`  Undefined.
 
-`11110101`                  Undefined.
+`11110101`                  `0xF5`  Undefined.
 
-`11110110`                  **Tune Request**.\
-                            Upon receiving a Tune Request, all analog
-                            synthesisers should tune their oscillators.
+`11110110`                  `0xF6`  **Tune Request**.\
+                                    Upon receiving a Tune Request, all analog
+                                    synthesisers should tune their oscillators.
 
-`11110111`                  **End of Exclusive**.\
-                            Used to terminate a System Exclusive dump
-                            (see above).
-------------------------------------------------------------------------------
+`11110111`                  `0xF7`  **End of Exclusive**.\
+                                    Used to terminate a System Exclusive dump
+                                    (see above).
+------------------------------------------------------------------------------------
 
 \pagebreak
 
 #### System Realtime Messages
 
 ------------------------------------------------------------------------------
-byte           data bytes   Description
-status         `D7-D0`
--------------- ------------ --------------------------------------------------
-`11111000`                  **Timing Clock**.\
-                            Sent 24 times per quarter note when
-                            synchronisation is required.
+byte           data bytes   hex       Description
+status         `D7-D0`      status
+-------------- ------------ --------- --------------------------------------------------
+`11111000`                  `0xF8`    **Timing Clock**.\
+                                      Sent 24 times per quarter note when
+                                      synchronisation is required.
 
-`11111001`                  Undefined.
+`11111001`                  `0xF9`    Undefined.
 
-`11111010`                  **Start**.\
-                            Start the current sequence playing. (This
-                            message will be followed with Timing Clocks).
+`11111010`                  `0xFA`    **Start**.\
+                                      Start the current sequence playing. (This
+                                      message will be followed with Timing Clocks).
 
-`11111011`                  **Continue**.\
-                            Continue at the point the sequence was Stopped.
+`11111011`                  `0xFB`    **Continue**.\
+                                      Continue at the point the sequence was Stopped.
 
-`11111100`                  **Stop**.\
-                            Stop the current sequence.
+`11111100`                  `0xFC`    **Stop**.\
+                                      Stop the current sequence.
 
-`11111101`                  Undefined.
+`11111101`                  `0xFD`    Undefined.
 
-`11111110`                  **Active Sensing**.\
-                            Use of this message is optional. When initially
-                            sent, the receiver will expect to receive
-                            another Active Sensing message each 300ms (max),
-                            or it will be assume that the connection has
-                            been terminated. At termination, the receiver
-                            will turn off all voices and return to normal
-                            (non-active sensing) operation.
+`11111110`                  `0xFE`    **Active Sensing**.\
+                                      Use of this message is optional. When initially
+                                      sent, the receiver will expect to receive
+                                      another Active Sensing message each 300ms (max),
+                                      or it will be assume that the connection has
+                                      been terminated. At termination, the receiver
+                                      will turn off all voices and return to normal
+                                      (non-active sensing) operation.
 
-`11111111`                  **Reset**\
-                            Reset all receivers in the system to power-up
-                            status. This should be used sparingly,
-                            preferably under manual control. In particular,
-                            it should not be sent on power-up.\
-                            In a MIDI file this is used as an escape to
-                            introduce `<meta events>`.
+`11111111`                  `0xFF`    **Reset**\
+                                      Reset all receivers in the system to power-up
+                                      status. This should be used sparingly,
+                                      preferably under manual control. In particular,
+                                      it should not be sent on power-up.\
+                                      In a MIDI file this is used as an escape to
+                                      introduce `<meta events>`.
 ------------------------------------------------------------------------------
 
 \pagebreak
@@ -1357,9 +1357,9 @@ though implied, are explicitly stated.
 The contents of the MIDI stream represented by this example are broken down here:
 
 ------------------------------------------------------------------------------
-Delta\      Event-Code\ Other\             Comment
-Time\       (hex)       bytes\
-(decimal)               (decimal)
+Delta\      Event-Code\   Other\           Comment
+Time\       (hex)         bytes\
+(decimal)                 (decimal)
 ----------- ------------- ---------------- -----------------------------------
 `0`         `FF 58`       `04 04 02 24 08` 4 bytes; $\frac{4}{4}$ time; 24 MIDI clocks/click, 8 32nd notes/ 24 MIDI clocks (24 MIDI clocks = 1 crotchet = 1 beat)
 
