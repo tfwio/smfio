@@ -63,9 +63,9 @@ The Status bytes of `0x80` to `0xEF` are for messages that can be broadcast on a
 ------ -----------------------------
 8      [Note On]
 9      [Note Off]
-A      [AfterTouch] (ie, key pressure)
-B      [Control Change]
-C      [Program (patch) Change]
+A      [AfterTouch (ie, key pressure)][Aftertouch]
+B      [Control Change][Controller]
+C      [Program (patch) Change][Program Change]
 D      [Channel Pressure]
 E      [Pitch Wheel]
 ------------------------------------
