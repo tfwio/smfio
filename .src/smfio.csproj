@@ -96,7 +96,6 @@
     <Compile Include="MidiMessage\SampleClock.cs" />
     <Compile Include="MidiMessage\SysexMessage.cs" />
     <Compile Include="MidiMsgType.cs" />
-    <Compile Include="MidiSystem.cs" />
     <Compile Include="MThd.cs" />
     <Compile Include="MTrk.cs" />
     <Compile Include="NoteParser\INoteParser.cs" />
