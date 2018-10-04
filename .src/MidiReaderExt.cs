@@ -13,7 +13,7 @@ namespace SMFIOViewer
 	{
     static IEnumerable<int> EnumerateTrackIndex(this IMidiParser parser)
 		{
-			for (int i = 0; i < parser.SmfFileHandle.NumberOfTracks; i++)
+			for (int i = 0; i < parser.FileHandle.NumberOfTracks; i++)
 				yield return i;
 		}
 

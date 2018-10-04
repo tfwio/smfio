@@ -27,10 +27,10 @@ namespace SMFIOViewer
 			NodeTempo.Nodes.Clear();
 			
 			if (ui.MidiParser==null) return;
-			if (ui.MidiParser.SmfFileHandle==null) return;
-			if (ui.MidiParser.SmfFileHandle.NumberOfTracks==0) return;
+			if (ui.MidiParser.FileHandle==null) return;
+			if (ui.MidiParser.FileHandle.NumberOfTracks==0) return;
 			
-			for (int i = 0; i < ui.MidiParser.SmfFileHandle.NumberOfTracks; i++)
+			for (int i = 0; i < ui.MidiParser.FileHandle.NumberOfTracks; i++)
 			{
 				var tn = new TreeNode(string.Format("{0}",/*Strings.Filter_MidiTrack*/ i )); //Event_MidiChangeTrack_MenuItemSelected
 				tn.Tag = i;
@@ -41,8 +41,8 @@ namespace SMFIOViewer
 			while (map.HasItems)
 			{
         var T = map.Pop(true);
-        var min = on.smfio.TimeUtil.GetMBT(T.Pulse, ui.MidiParser.SmfFileHandle.Division);
-        var max = on.smfio.TimeUtil.GetMBT(T.PulseMax, ui.MidiParser.SmfFileHandle.Division);
+        var min = on.smfio.TimeUtil.GetMBT(T.Pulse, ui.MidiParser.FileHandle.Division);
+        var max = on.smfio.TimeUtil.GetMBT(T.PulseMax, ui.MidiParser.FileHandle.Division);
 				var ss = on.smfio.TimeUtil.GetSSeconds(T.Second);
 			  NodeTempo.Nodes.Add(new TreeNode($"Pulses: {min}-{max}, SS={ss}, BPM: {(float)T.Tempo} muspqn: {T.MusPQN:##,###,##0}, {T.Second:0.000}"));
 			}

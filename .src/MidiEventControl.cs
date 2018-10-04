@@ -18,7 +18,6 @@ namespace SMFIOViewer
 {
   public class MidiEventControl : MidiControlBase
 	{
-
     IMidiParser Reader { get { return UserInterface.MidiParser; } }
     TempoMap map = null;
 
@@ -165,7 +164,7 @@ namespace SMFIOViewer
 		
 		#endregion
 
-		int Division { get { return Reader.SmfFileHandle.Division; } }
+		int Division { get { return Reader.FileHandle.Division; } }
 		
 		void GotMidiEventD(MidiMsgType msgType, int nTrackIndex, int nTrackOffset, int midiMsg32, byte midiMsg8, long pulse, int delta, bool isRunningStatus)
 		{
@@ -184,13 +183,17 @@ namespace SMFIOViewer
           lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentTrackRunningStatus), smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF(midiMsg32), Reader.GetMetaSTR(nTrackOffset));
           break;
 				case MidiMsgType.SysCommon:
-				case MidiMsgType.System:
+        case MidiMsgType.SystemSpecific:
+          lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentTrackRunningStatus), smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF(midiMsg32), Reader.GetMetaSTR(nTrackOffset));
+          break;
+        case MidiMsgType.SystemExclusive:
+					var bytes = Reader.FileHandle[nTrackIndex, nTrackOffset, Reader.GetEndOfSystemExclusive(nTrackIndex, nTrackOffset) - nTrackOffset];
           lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentTrackRunningStatus), smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF(midiMsg32), Reader.GetMetaSTR(nTrackOffset));
           break;
   			case MidiMsgType.Channel  :
         case MidiMsgType.NoteOn   :
         case MidiMsgType.NoteOff  :
-        case MidiMsgType.CC       :
+        case MidiMsgType.ControllerChange       :
 			  case MidiMsgType.Undefined:
 				default:
           if (isRunningStatus) lve.AddItem( tempo, pulse, ColorResources.GetRseEventColor( ColorResources.Colors["225"], Reader.CurrentTrackRunningStatus ), smbt, sseconds, midiMsg8==0xF0 ? "" :(delta & 0x0F).ToString(), Reader.GetRseEventString( nTrackOffset ), Reader.chRseV( nTrackOffset ) );

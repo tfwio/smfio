@@ -20,7 +20,7 @@ namespace SMFIOViewer
     
     public IMidiParser MidiParser {
       get { return midiParser; }
-    } protected internal on.smfio.MidiReader midiParser;
+    } protected internal on.smfio.Reader midiParser;
     
     // /// <inheritdoc/>
     //public ITimeConfiguration Settings {
@@ -32,7 +32,7 @@ namespace SMFIOViewer
     // (hence the try/catch-block in SetProgress(int))
     int cycles = 0, cycle = 12;
     
-    int trackLen { get { return this.MidiParser.SmfFileHandle[MidiParser.SelectedTrackNumber].track.Length; } }
+    int trackLen { get { return this.MidiParser.FileHandle[MidiParser.ReaderIndex].Data.Length; } }
     
     void SetProgress(int offset)
     {
@@ -72,7 +72,7 @@ namespace SMFIOViewer
       
       LoadTracks = MidiParser.TrackSelectAction;
 
-      MidiParser.SelectedTrackNumber = 0;
+      MidiParser.ReaderIndex = 0;
       numTempo.Value = Convert.ToDecimal(MidiParser.TempoMap.Top.Tempo);
     }
     
@@ -92,10 +92,10 @@ namespace SMFIOViewer
       
       var toolStripMenuItem = sender as ToolStripMenuItem;
       if (toolStripMenuItem != null)
-        MidiParser.SelectedTrackNumber = (int)toolStripMenuItem.Tag;
+        MidiParser.ReaderIndex = (int)toolStripMenuItem.Tag;
       
       else if (sender is ListBox && listBox1.SelectedIndex > -1)
-        MidiParser.SelectedTrackNumber = listBox1.SelectedIndex;
+        MidiParser.ReaderIndex = listBox1.SelectedIndex;
       
     }
     
@@ -150,7 +150,7 @@ namespace SMFIOViewer
         Strings.Dialog_Title_1,
         System.IO.Path.GetFileNameWithoutExtension(filename));
 
-      midiParser = new MidiReader(filename);
+      midiParser = new Reader(filename);
 
       MidiParser.ClearView -= Event_MidiClearMemory;
       MidiParser.FileLoaded -= Event_MidiFileLoaded;
@@ -164,7 +164,7 @@ namespace SMFIOViewer
       
       OnGotMidiFile();
 
-      MidiParser.SelectedTrackNumber = 0; // MidiParser.SmfFileHandle.Format % 2 == 1
+      MidiParser.ReaderIndex = 0; // MidiParser.FileHandle.Format % 2 == 1
 
     }
     

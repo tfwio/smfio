@@ -53,17 +53,17 @@ namespace on.smfio
     internal static Color GetRseEventColor(Color clr, int RunningStatus32)
 		{
 			int ExpandedRSE = RunningStatus32 << 8;
-			if (!MidiMessageInfo.IsMidiBMessage(RunningStatus32)) { Log.ErrorMessage("warning… {0:X2}", ExpandedRSE); return clr; }
-			else if (MidiMessageInfo.IsNoteOn(ExpandedRSE))            return Colors["rse2"];
-			else if (MidiMessageInfo.IsNoteOff(ExpandedRSE))           return Colors["rse2"];
-			else if (MidiMessageInfo.IsKeyAftertouch(ExpandedRSE))     return Colors["rse2"];
-			else if (MidiMessageInfo.IsControlChange(ExpandedRSE))     return Colors["rse3"];
-			else if (MidiMessageInfo.IsProgramChange(ExpandedRSE))     return Colors["rse3"];
-			else if (MidiMessageInfo.IsChannelAftertouch(ExpandedRSE)) return Colors["rse3"];
-			else if (MidiMessageInfo.IsPitchBend(ExpandedRSE))         return Colors["rse3"];
-			else if (MidiMessageInfo.IsSystemMessage(ExpandedRSE))     return Colors["rse3"];
-			else if (MidiMessageInfo.IsSystemCommon(ExpandedRSE))      return Colors["rse3"];
-			else if (MidiMessageInfo.IsSystemRealtime(ExpandedRSE))    return Colors["rse3"];
+			if (!StatusQuery.IsMidiBMessage(RunningStatus32)) { Log.ErrorMessage("warning… {0:X2}", ExpandedRSE); return clr; }
+			else if (StatusQuery.IsNoteOn(ExpandedRSE))            return Colors["rse2"];
+			else if (StatusQuery.IsNoteOff(ExpandedRSE))           return Colors["rse2"];
+			else if (StatusQuery.IsKeyAftertouch(ExpandedRSE))     return Colors["rse2"];
+			else if (StatusQuery.IsControlChange(ExpandedRSE))     return Colors["rse3"];
+			else if (StatusQuery.IsProgramChange(ExpandedRSE))     return Colors["rse3"];
+			else if (StatusQuery.IsChannelAftertouch(ExpandedRSE)) return Colors["rse3"];
+			else if (StatusQuery.IsPitchBend(ExpandedRSE))         return Colors["rse3"];
+			else if (StatusQuery.IsSequencerSpecific(ExpandedRSE)) return Colors["rse3"];
+			else if (StatusQuery.IsSystemCommon(ExpandedRSE))      return Colors["rse3"];
+			else if (StatusQuery.IsSystemRealtime(ExpandedRSE))    return Colors["rse3"];
 			return ListView.DefaultBackColor;
     }
 
@@ -75,17 +75,17 @@ namespace on.smfio
 		{
 			int ExpandedRSE = RunningStatus32 << 8;
 
-			if (!MidiMessageInfo.IsMidiBMessage(RunningStatus32)) { Log.ErrorMessage("warning… {0:X2}", ExpandedRSE); return clr; }
-			else if (MidiMessageInfo.IsNoteOn(ExpandedRSE))            return c1;
-			else if (MidiMessageInfo.IsNoteOff(ExpandedRSE))           return c2;
-			else if (MidiMessageInfo.IsKeyAftertouch(ExpandedRSE))     return c2;
-			else if (MidiMessageInfo.IsControlChange(ExpandedRSE))     return c3;
-			else if (MidiMessageInfo.IsProgramChange(ExpandedRSE))     return c3;
-			else if (MidiMessageInfo.IsChannelAftertouch(ExpandedRSE)) return c3;
-			else if (MidiMessageInfo.IsPitchBend(ExpandedRSE))         return c3;
-			else if (MidiMessageInfo.IsSystemMessage(ExpandedRSE))     return c0;
-			else if (MidiMessageInfo.IsSystemCommon(ExpandedRSE))      return c0;
-			else if (MidiMessageInfo.IsSystemRealtime(ExpandedRSE))    return c0;
+			if (!StatusQuery.IsMidiBMessage(RunningStatus32)) { Log.ErrorMessage("warning… {0:X2}", ExpandedRSE); return clr; }
+			else if (StatusQuery.IsNoteOn(ExpandedRSE))            return c1;
+			else if (StatusQuery.IsNoteOff(ExpandedRSE))           return c2;
+			else if (StatusQuery.IsKeyAftertouch(ExpandedRSE))     return c2;
+			else if (StatusQuery.IsControlChange(ExpandedRSE))     return c3;
+			else if (StatusQuery.IsProgramChange(ExpandedRSE))     return c3;
+			else if (StatusQuery.IsChannelAftertouch(ExpandedRSE)) return c3;
+			else if (StatusQuery.IsPitchBend(ExpandedRSE))         return c3;
+			else if (StatusQuery.IsSequencerSpecific(ExpandedRSE)) return c0;
+			else if (StatusQuery.IsSystemCommon(ExpandedRSE))      return c0;
+			else if (StatusQuery.IsSystemRealtime(ExpandedRSE))    return c0;
 			return ListView.DefaultBackColor;
 		}
     /// <summary>
@@ -95,27 +95,27 @@ namespace on.smfio
     internal static Color GetEventColor(int intMsg, Color clr, int RunningStatus32)
 		{
 			switch (intMsg) {
-				case (int)MetaMsgU16FF.Text:
-				case (int)MetaMsgU16FF.Copyright:
-				case (int)MetaMsgU16FF.SequenceName:
-				case (int)MetaMsgU16FF.InstrumentName:
-				case (int)MetaMsgU16FF.Lyric:
-				case (int)MetaMsgU16FF.Marker:
-				case (int)MetaMsgU16FF.Cue:
-				case (int)MetaMsgU16FF.Port:
+				case (int)Stat16.Text:
+				case (int)Stat16.Copyright:
+				case (int)Stat16.SequenceName:
+				case (int)Stat16.InstrumentName:
+				case (int)Stat16.Lyric:
+				case (int)Stat16.Marker:
+				case (int)Stat16.Cue:
+				case (int)Stat16.PortMessage:
 					return c4;
-				case (int)MetaMsgU16FF.Chanel:
-				case (int)MetaMsgU16FF.SequenceNo:
-				case (int)MetaMsgU16FF.SMPTE:
-				case (int)MetaMsgU16FF.SystemExclusive:
+				case (int)Stat16.ChannelPrefix:
+				case (int)Stat16.SequenceNo:
+				case (int)Stat16.SMPTEOffset:
+				case (int)Stat16.SystemExclusive:
 					return Colors["red"];
-				case (int)MetaMsgU16FF.EndOfTrack:
+				case (int)Stat16.EndOfTrack:
 					return Colors["end"];
-				case (int)MetaMsgU16FF.Tempo:
+				case (int)Stat16.SetTempo:
 					return Colors["tempo"];
-				case (int)MetaMsgU16FF.TimeSignature:
+				case (int)Stat16.TimeSignature:
 					return Colors["tsig"];
-				case (int)MetaMsgU16FF.KeySignature:
+				case (int)Stat16.KeySignature:
 					return Colors["ksig"];
 				default:
 					return ListView.DefaultBackColor;
