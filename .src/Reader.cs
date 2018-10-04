@@ -32,13 +32,13 @@ namespace on.smfio
     /// <summary>Static MTHD loader.</summary>
     /// <param name="fileName"></param>
     /// <returns></returns>
-    MTHD GetMthd(string fileName)
+    MTHd GetMthd(string fileName)
     {
-      MTHD FileHandle = null;
+      MTHd FileHandle = null;
       using (var STREAM = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
         using (var READER = new BinaryReader(STREAM))
       {
-        FileHandle = new MTHD(READER);
+        FileHandle = new MTHd(READER);
         FileHandle.Tracks = new MTrk[FileHandle.NumberOfTracks];
         for (int i = 0; i < FileHandle.NumberOfTracks; i++)
           FileHandle.Tracks[i] = new MTrk(READER);
@@ -511,7 +511,7 @@ namespace on.smfio
     void ClearAll()
     {
       ResetTiming();
-      FileHandle = default(MTHD);
+      FileHandle = default(MTHd);
       MidiFileName = null;
       selectedTrackNumber = -1;
       GC.Collect();
@@ -574,7 +574,6 @@ namespace on.smfio
     }
 
     #endregion
-    #region READ 1	 TRACK
 
     /// <summary>
     /// Parse the selected track
@@ -600,7 +599,6 @@ namespace on.smfio
 
       return NTrack.Data.Length;
     }
-    #endregion
     #region READ (PARSE) ALL TRACKS
 
     // when IsTrackSelected, the total number of ticks in the track.
@@ -626,7 +624,7 @@ namespace on.smfio
         {
           ResetTiming();
           // Log.ErrorMessage($"Parsing track {nTrackIndex}");
-          selectedTrackNumber = nTrackIndex;
+          selectedTrackNumber = nTrackIndex; // without triggering the event.
           lock (this)
           {
             long delta = 0;
@@ -712,7 +710,7 @@ namespace on.smfio
 
     public string MidiFileName { get; set; }
 
-    public MTHD FileHandle { get; set; }
+    public MTHd FileHandle { get; set; }
 
     #endregion
 

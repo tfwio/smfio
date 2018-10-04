@@ -139,7 +139,7 @@ namespace on.smfio
 		
 		#region FILE
 		
-		MTHD FileHandle { get; set; }
+		MTHd FileHandle { get; set; }
 		
 		string MidiFileName { get; set; }
 		

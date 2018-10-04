@@ -10,7 +10,7 @@ namespace on.smfio.chunk
   /// This is the main SMF File Capsule
   /// <para>• SMF ‘MThd’ header</para>
   /// </summary>
-  public class MTHD
+  public class MTHd
   {
     // FIXME: never used
     // public MemoryStream GetStream(int trackId) { return new MemoryStream(Tracks[trackId].track); }
@@ -45,7 +45,7 @@ namespace on.smfio.chunk
     /// </summary>
     /// <param name="br">System.IO.BinaryReader</param>
     /// <param name="tracks">track byte stream.</param>
-    public MTHD ( BinaryReader br , params MTrk[] tracks )
+    public MTHd ( BinaryReader br , params MTrk[] tracks )
     {
       ByteHead     = br.ReadBytes(4);
       ByteSize     = EndianUtil.Flip(br.ReadBytes(4));
