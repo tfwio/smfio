@@ -18,12 +18,15 @@ from subprocess import Popen, PIPE
 # GLOBALS
 #################################################
 
+def env_var(var: str, default=None):
+  return default if var not in os.environ else os.environ[var]
+
 start_path = os.path.abspath(os.curdir)
 smfio_path = os.path.join(start_path, "smfio")
 source_path = os.path.join(start_path, ".src")
 props_path = os.path.join(source_path, 'Properties')
 
-git_clone_smfio = 'https://github.com/tfwio/smfio'
+SMFIO_REPO = env_var('SMFIO_REPO', 'https://github.com/tfwio/smfio')
 
 if not os.path.exists(props_path): os.mkdir(props_path)
 
@@ -208,7 +211,7 @@ def save_smfio_revision():
     mhash = read(os.path.join(start_path, '.version-smfio'))
     print("\n'smfio' was not found in the root directory.")
     print('we\'ll do a git clone for you')
-    cmd('git', 'clone', git_clone_smfio, stderr=None)
+    cmd('git', 'clone', SMFIO_REPO, stderr=None)
     os.chdir(os.path.join(smfio_path))
     cmd('git', 'reset', '--hard', mhash[:7])
     return True
