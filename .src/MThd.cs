@@ -63,7 +63,7 @@ namespace on.smfio.chunk
     /// </returns>
     public Int32 Get16BitInt32(int ntrack, int offset) {
       var msg8 = Get8Bit(ntrack, offset);
-      if (msg8 == 0xF0) return 0xFFF0; // FIXME: and this would be a hack
+      //if (msg8 == 0xF0) return 0xFFF0; // FIXME: and this would be a hack
       return ( Get8Bit(ntrack, offset) << 8 ) + Get8Bit( ntrack, offset+1 );
     }
 

@@ -225,6 +225,7 @@ namespace on.smfio
       var str16 = $"{msg16:X2}";
       switch (msg32)
       {
+        case (int)Stat16.SequenceNo:      // FF00
         case (int)Stat16.Text:            // FF01
         case (int)Stat16.Copyright:       // FF02
         case (int)Stat16.SequenceName:    // FF03
@@ -232,19 +233,18 @@ namespace on.smfio
         case (int)Stat16.Lyric:           // FF05
         case (int)Stat16.Marker:          // FF06
         case (int)Stat16.Cue:             // FF07
-        case (int)Stat16.PortMessage:            // FF08?
           MessageHandler(MidiMsgType.MetaStr, nTrackIndex, nTrackOffset, msg32, msg8, CurrentTrackPulse, CurrentTrackRunningStatus, false);
           //lve.AddItem( c4, MeasureBarTick( TicksPerQuarterNote ), TicksPerQuarterNote.ToString(), ""/*(RunningStatus32 & 0x0F)+1*/, MetaHelpers.MetaNameFF( CurrentIntMessage ) , GetMetaString( position ) );
           DELTA_Returned = GetMetaNextPos(nTrackOffset);
           break;
-        case (int)Stat16.SequenceNo:      // FF00
+          // why is this filtered and no others ? see gettrackmessage
         case (int)Stat16.ChannelPrefix:   // FF20
+        case (int)Stat16.PortMessage:     // FF21?
         case (int)Stat16.EndOfTrack:      // FF2F
         case (int)Stat16.SetTempo:        // FF51
         case (int)Stat16.SMPTEOffset:     // FF54
         case (int)Stat16.TimeSignature:   // FF58
         case (int)Stat16.KeySignature:    // FF59
-          // why is this filtered and no others ? see gettrackmessage
           MessageHandler(MidiMsgType.MetaInf, nTrackIndex, nTrackOffset, msg32, msg8, CurrentTrackPulse, CurrentTrackRunningStatus, false);
           DELTA_Returned = GetMetaNextPos(nTrackOffset);
           break;
