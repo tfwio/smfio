@@ -44,17 +44,17 @@ namespace on.smfio.Common
 		
 		/// <summary>0xF0-F</summary>
 		static public readonly StatRange SystemExclusiveRange         = new StatRange(StatusByte.SystemExclusive, "System Exclusive Message");
-		
-		/// <summary>0xF0</summary>
-		static public readonly StatRange SequencerSpeceficRange       = new StatRange(StatusByte.SequencerSpecific, "System Specific Message");
+
+    /// <summary>0xFF 0x7F</summary>
+    static public readonly StatRange SequencerSpeceficRange       = new StatRange(StatusByte.SequencerSpecific, "System Specific Message");
 		
 		/// <summary>0xF0 &lt;= value &lt;= 0xF7</summary>
 		static public readonly StatRange SystemCommonMessageRange     = new StatRange(StatusByte.SystemExclusive, StatusByte.EndOfExclusive, "System Exclusive Message");
 		
 		/// <summary>F8 to FF</summary>
 		static public readonly StatRange SystemRealtimeRange          = new StatRange(StatusByte.MIDI_Clock, StatusByte.Reset, "System Realtime Message");
-		
-    /// <summary>0xF0 (System Common)</summary>
+
+    /// <summary>0xFF 0x7F (System Common)</summary>
     static public bool IsSequencerSpecific(int msg) { return SequencerSpeceficRange.IsInRange(msg); }
     
     /// <summary>0xF0 (System Common)</summary>

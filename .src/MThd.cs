@@ -16,8 +16,8 @@ namespace on.smfio.chunk
     // public MemoryStream GetStream(int trackId) { return new MemoryStream(Tracks[trackId].track); }
     public MTrk this[int ntrack] { get { return Tracks[ntrack]; } }
     public byte this[int ntrack, int offset] { get { return this[ntrack].Data[offset]; } }
-    public byte[] this[int ntrack, int offset, int length] { get { return GetByteMessage(ntrack,offset,length); } }
-    
+    public byte[] this[int ntrack, int offset, int length] { get { return GetByteMessage(ntrack, offset, length); } }
+
     #region Properties
     internal byte[] ByteHead = new byte[4];
     public char[] CkHead { get { return System.Text.Encoding.ASCII.GetChars(ByteHead); } }
@@ -57,7 +57,12 @@ namespace on.smfio.chunk
     }
     #endregion
 
-    #region Utility Functions
+    public int ReadDelta(int pTrackID, int pTrackOffset, out long pDeltaVar)
+    {
+      return Tracks[pTrackID].DeltaRead(pTrackOffset, out pDeltaVar);
+    }
+
+    #region Message Utility Functions
     /// <returns>
     /// loads two bytes (UInt16's allocation type/size) to Int32.
     /// </returns>

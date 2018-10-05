@@ -13,9 +13,9 @@ namespace on.smfio
   public interface IMidiParser_Parser
   {
 
-    // =============================
-    // TIME
-    // =============================
+    // // =============================
+    // // TIME
+    // // =============================
 
     /// <summary>Measure:Bar:Ticks</summary>
     /// <param name="value">Pulses</param>
@@ -37,13 +37,6 @@ namespace on.smfio
     /// <param name="offset"></param>
     /// <returns></returns>		
     string GetMetaSTR(int offset);
-
-    /// <summary>
-    /// Place the imaginary caret one byte before the next read.
-    /// </summary>
-    /// <param name="offset"></param>
-    /// <returns></returns>
-    int GetMetaNextPos(int offset);
 
     /// <summary>
     /// There is no plus (its not used).

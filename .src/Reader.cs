@@ -25,6 +25,11 @@ namespace on.smfio
   /// </summary>
   public partial class Reader : IDisposable, IMidiParser
   {
+
+    public MTrk this[int kTrackID] { get { return FileHandle[kTrackID]; } }
+    public byte this[int kTrackID, int kTrackOffset] { get { return FileHandle[kTrackID, kTrackOffset]; } }
+    public byte[] this[int kTrackID, int kTrackOffset, int kSize] { get { return FileHandle[kTrackID, kTrackOffset, kSize]; } }
+
     const int default_Fs = 44100;
     const int default_Tempo = 120;
     const int default_Division = 480;
@@ -44,11 +49,6 @@ namespace on.smfio
           FileHandle.Tracks[i] = new MTrk(READER);
       }
       return FileHandle;
-    }
-
-    protected byte this[int track, int index]
-    {
-      get { return FileHandle[track, index]; }
     }
 
     #region INotifyPropertyChanged (isn't used)
@@ -225,7 +225,7 @@ namespace on.smfio
       var str16 = $"{msg16:X2}";
       switch (msg32)
       {
-        case (int)Stat16.SequenceNo:      // FF00
+        case (int)Stat16.SequenceNumber:  // FF00
         case (int)Stat16.Text:            // FF01
         case (int)Stat16.Copyright:       // FF02
         case (int)Stat16.SequenceName:    // FF03
@@ -235,7 +235,7 @@ namespace on.smfio
         case (int)Stat16.Cue:             // FF07
           MessageHandler(MidiMsgType.MetaStr, nTrackIndex, nTrackOffset, msg32, msg8, CurrentTrackPulse, CurrentTrackRunningStatus, false);
           //lve.AddItem( c4, MeasureBarTick( TicksPerQuarterNote ), TicksPerQuarterNote.ToString(), ""/*(RunningStatus32 & 0x0F)+1*/, MetaHelpers.MetaNameFF( CurrentIntMessage ) , GetMetaString( position ) );
-          DELTA_Returned = GetMetaNextPos(nTrackOffset);
+          DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
           break;
           // why is this filtered and no others ? see gettrackmessage
         case (int)Stat16.ChannelPrefix:   // FF20
@@ -246,17 +246,17 @@ namespace on.smfio
         case (int)Stat16.TimeSignature:   // FF58
         case (int)Stat16.KeySignature:    // FF59
           MessageHandler(MidiMsgType.MetaInf, nTrackIndex, nTrackOffset, msg32, msg8, CurrentTrackPulse, CurrentTrackRunningStatus, false);
-          DELTA_Returned = GetMetaNextPos(nTrackOffset);
+          DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
           break;
         case (int)Stat16.SequencerSpecificMetaEvent:  // FF7F
           Debug.Print("?---------sys");
           MessageHandler(MidiMsgType.SystemSpecific, nTrackIndex, nTrackOffset, msg32, msg8, CurrentTrackPulse, CurrentTrackRunningStatus, false);
-          DELTA_Returned = GetMetaNextPos(nTrackOffset);
+          DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
           break;
         case (int)Stat16.SystemExclusive: // 0xF0
           Debug.Print("?---------system exclusive");
           MessageHandler(MidiMsgType.SystemExclusive, nTrackIndex, nTrackOffset, msg32, msg8, CurrentTrackPulse, CurrentTrackRunningStatus, false);
-          DELTA_Returned = GetEndOfSystemExclusive(nTrackIndex, nTrackOffset);
+          DELTA_Returned = FileHandle[nTrackIndex].GetEndOfSystemExclusive(nTrackOffset);
           break;
         default:
           {
@@ -311,7 +311,7 @@ namespace on.smfio
       switch (msg32)
       {
           // text
-        case Stat16.Text:
+        case Stat16.SequenceNumber:
         case Stat16.Copyright:
         case Stat16.SequenceName:
         case Stat16.InstrumentName:
@@ -319,19 +319,18 @@ namespace on.smfio
         case Stat16.Marker:
         case Stat16.Cue:
           // channel
-        case Stat16.SequenceNo:
         case Stat16.ChannelPrefix:
         case Stat16.EndOfTrack:
         case Stat16.SMPTEOffset:
           // does not belong.
         case Stat16.PortMessage:
-          DELTA_Returned = GetMetaNextPos(nTrackOffset);
+          DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
           break;
         case Stat16.SetTempo:
           var muspqn = FileHandle[ReaderIndex].ReadU24(nTrackOffset + 3);
           TempoMap.Push(muspqn, Division, CurrentTrackPulse);
           OnTempoChanged(DELTA_Returned, muspqn);
-          DELTA_Returned = GetMetaNextPos(nTrackOffset);
+          DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
           break;
         case Stat16.TimeSignature:
           TimeSignature.SetSignature(
@@ -340,18 +339,18 @@ namespace on.smfio
             (int)this[nTrackIndex, nTrackOffset + 5],
             (int)this[nTrackIndex, nTrackOffset + 6]
            );
-          DELTA_Returned = GetMetaNextPos(nTrackOffset);
+          DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
           break;
         case Stat16.KeySignature:
           byte b = (this[nTrackIndex, nTrackOffset + 3]);
           KeySignature.SetSignature((KeySignatureType)b, this[nTrackIndex, nTrackOffset + 4] == 0);
-          DELTA_Returned = GetMetaNextPos(nTrackOffset);
+          DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
           break;
         case Stat16.SequencerSpecificMetaEvent:
-          DELTA_Returned = GetMetaNextPos(nTrackOffset);
+          DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
           break;
         case Stat16.SystemExclusive:
-          DELTA_Returned = GetEndOfSystemExclusive(nTrackIndex, nTrackOffset);
+          DELTA_Returned = FileHandle[nTrackIndex].GetEndOfSystemExclusive(nTrackOffset);
           break;
         default:
           {
@@ -374,8 +373,7 @@ namespace on.smfio
             {
               CurrentTrackRunningStatus = (FileHandle[nTrackIndex, nTrackOffset]);
               DELTA_Returned = GetNextPosition(nTrackOffset);
-              DELTA_Returned++;
-              return DELTA_Returned;
+              return ++DELTA_Returned;
             }
             else
               throw new FormatException("Bad format!\nThere is probably a problem with the Input File unless we made an error reading it!)");
@@ -523,31 +521,17 @@ namespace on.smfio
 
     #region READ VAR INT
 
-    int NextDelta(int offset, out long result)
-    {
-      return NextDelta(ReaderIndex, offset, out result);
-    }
-
     /// <summary>
-    /// Use offset - result to get your length.
+    /// Read from track with `ntrack` index at `offset`.
+    /// 
+    /// into (long) `result` is stored our variable delta.
     /// </summary>
     /// <param name="ntrack">track index.</param>
     /// <param name="offset">offset in bytes into the track</param>
     /// <param name="result">The current running number of elapsed pulses.</param>
     /// <returns>next byte offset (read) position.</returns>
-    int NextDelta(int ntrack, int offset, out long result)
-    {
-      byte tempBit;
-      int i = offset;
-      if ((result = Convert.ToUInt32(FileHandle[ntrack, i++])) > 0x7f)
-      {
-        result &= 0x7f;
-        do
-        {
-          result = (result << 7) + ((tempBit = FileHandle[ntrack, i++]) & 0x7f);
-        } while (tempBit > 0x7f);
-      }
-      return i;
+    int NextDelta(int ntrack, int offset, out long result) {
+      return FileHandle.ReadDelta(ntrack, offset, out result);
     }
 
     #endregion
@@ -567,7 +551,7 @@ namespace on.smfio
       selectedTrackNumber = tk;
       while (i < NTrack.Data.Length)
       {
-        i = NextDelta(tk, i, out delta);
+        i = FileHandle.ReadDelta(tk, i, out delta);
         CurrentTrackPulse += delta;
         i = GetTrackTiming(selectedTrackNumber, i, Convert.ToInt32(delta));
       }
@@ -583,15 +567,16 @@ namespace on.smfio
     {
       OnBeforeTrackLoaded(EventArgs.Empty);
 
-      long delta;
+      long mSevenBitDelta;
       int i = 0;
       CurrentTrackPulse = 0;
 
       while (i < NTrack.Data.Length)
       {
-        i = NextDelta(i, out delta);
-        CurrentTrackPulse += delta;
-        i = GetTrackMessage(i, Convert.ToInt32(delta));
+        i = FileHandle[ReaderIndex].DeltaRead(i, out mSevenBitDelta);
+        
+        CurrentTrackPulse += mSevenBitDelta;
+        i = GetTrackMessage(i, Convert.ToInt32(mSevenBitDelta));
         OnTrackLoadProgressChanged(i);
       }
 
@@ -631,7 +616,7 @@ namespace on.smfio
             int nTrackOffset = 0;
             while (nTrackOffset < FileHandle.Tracks[nTrackIndex].Data.Length)
             {
-              nTrackOffset = NextDelta(nTrackIndex, nTrackOffset, out delta);
+              nTrackOffset = FileHandle.ReadDelta(nTrackIndex, nTrackOffset, out delta);
               CurrentTrackPulse += delta;
               nTrackOffset = GetNTrackMessage(nTrackIndex, nTrackOffset, Convert.ToInt32(delta));
             }

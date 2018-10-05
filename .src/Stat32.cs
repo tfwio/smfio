@@ -24,7 +24,7 @@ namespace on.smfio
     // Metadata
 
     /// <summary>0xFF00</summary>
-    public const int SequenceNo                 = 0xFF00;
+    public const int SequenceNumber             = 0xFF00;
     /// <summary>0xFF01</summary>
     public const int Text                       = 0xFF01;
     /// <summary>0xFF02</summary>

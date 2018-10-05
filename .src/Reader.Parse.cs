@@ -17,45 +17,42 @@ namespace on.smfio
     /// <summary>
     /// Next Position (rse)
     /// 
+    /// All that we want is the next buffer read position.
+    /// 
+    /// It just may be that we are probing for the end of a
+    /// message chunk to the boundary of a delta-time (or RealTime).
+    /// 
     /// FIXME: This is much bulkier than necessary.
     /// </summary>
-    int Increment(int offset, int plus)
+    int Increment(int offset, int seek)
     {
       // int ExpandedRSE = CurrentTrackRunningStatus << 8;
       int status = CurrentTrackRunningStatus & 0xFF; // convert to byte
+      // FF (append one)
+      if (StatusQuery.IsNoteOff(status))           return offset + seek + 1; // 0xFF 0x8c 0xNN 0xNN
+      if (StatusQuery.IsNoteOn(status))            return offset + seek + 1; // 0xFF 0x9c 0xNN 0xNN
+      if (StatusQuery.IsKeyAftertouch(status))     return offset + seek + 1; // 0xFF 0xAc 0xNN 0xNN
+      if (StatusQuery.IsControlChange(status))     return offset + seek + 1; // 0xFF 0xBc 0xNN 0xNN
+      if (StatusQuery.IsProgramChange(status))     return offset + seek;     // 0xCc 0xNN 0xNN 0xNN
+      if (StatusQuery.IsChannelAftertouch(status)) return offset + seek;     // 0xDc 0xNN 0xNN
+      if (StatusQuery.IsPitchBend(status))         return offset + seek + 1; // 0xFF 0xEc 0xNN 0xNN
+      if (StatusQuery.IsSequencerSpecific(status)) return offset + seek + FileHandle[ReaderIndex, offset + seek];
+      if (StatusQuery.IsSystemExclusive(status))   return FileHandle[ReaderIndex].GetEndOfSystemExclusive(offset);
+      //if (StatusQuery.IsSequencerSpecific(status)) return offset + seek; // 0xFF 0xF0
       // 
-      if (StatusQuery.IsNoteOff(status))           return offset + plus + 1;
-      if (StatusQuery.IsNoteOn(status))            return offset + plus + 1;
-      if (StatusQuery.IsKeyAftertouch(status))     return offset + plus + 1;
-      if (StatusQuery.IsControlChange(status))     return offset + plus + 1;
-      if (StatusQuery.IsPitchBend(status))         return offset + plus + 1;
-      // 
-      if (StatusQuery.IsProgramChange(status))     return offset + plus;
-      if (StatusQuery.IsChannelAftertouch(status)) return offset + plus;
-      if (StatusQuery.IsSystemRealtime(status))    return offset + plus;
+      if (StatusQuery.IsSystemCommon(status))      return offset + seek + FileHandle[ReaderIndex, offset + seek];
+      if (StatusQuery.IsSystemRealtime(status))    return offset + seek; // 0xF0
 
-      // check this before the general common category
-      if (StatusQuery.IsSequencerSpecific(status)) return offset + plus + FileHandle[ReaderIndex, offset + plus];
-      if (StatusQuery.IsSystemCommon(status))      return offset + plus + FileHandle[ReaderIndex, offset + plus];
-
+      // this could be wrong.  We just checked for system-realtime, yes?
+      // what if there are two realtime messages lined after the other?
       if (!StatusQuery.IsMidiBMessage(CurrentTrackRunningStatus)) return -1;
+      
+      // check this before the general common category
+
       return -1;
     }
 
-    /// <inheritdoc/>
     public string GetMbtString(long value) { return TimeUtil.GetMBT(value, Division); }
-
-    //
-    // TIME
-    // ---------------------------------
-
-    /// <inheritdoc/>
-    public int GetMetaNextPos(int offset)
-    {
-      long result = 0;
-      return NextDelta(offset + 2, out result) +
-             Convert.ToInt32(result) - 1;
-    }
 
     // 
     // META STRING
@@ -65,7 +62,7 @@ namespace on.smfio
     public string GetMetaString(int offset)
     {
       long result = 0;
-      int nextOffset = NextDelta(offset + 2, out result);
+      int nextOffset = FileHandle.ReadDelta(ReaderIndex, FileHandle[ReaderIndex].DeltaRead(offset + 2, out result), out result) + Convert.ToInt32(result) - 1;
       return Strings.Encoding.GetString(FileHandle[ReaderIndex, nextOffset, Convert.ToInt32(result)]);
     }
 
@@ -85,17 +82,15 @@ namespace on.smfio
         case StatusWord.EndOfTrack:     /* 0xFF2F */ return MetaHelpers.meta_FF2F();
         // FIXME: This just is not right.
         case StatusWord.SequencerSpecific:  /* 0xFF7F */ return FileHandle[ReaderIndex, pTrackOffset, 3].StringifyHex();
-        case StatusWord.SystemExclusive:    /* 0xF0 */   return FileHandle[ReaderIndex, pTrackOffset, GetEndOfSystemExclusive(ReaderIndex, pTrackOffset) - pTrackOffset].StringifyHex();
+        case StatusWord.SystemExclusive:    /* 0xF0 */   return FileHandle[ReaderIndex, pTrackOffset, FileHandle[ReaderIndex].GetEndOfSystemExclusive(pTrackOffset) - pTrackOffset].StringifyHex();
         default: // check for a channel message
           if (CurrentTrackRunningStatus == 0xF0)
           {
             long ro = 0;
-            int no = NextDelta(pTrackOffset + 1, out ro) - pTrackOffset;
+            int no = FileHandle.ReadDelta(ReaderIndex, pTrackOffset + 1, out ro) - pTrackOffset;
             return FileHandle[ReaderIndex, pTrackOffset, Convert.ToInt32(ro) + 2].StringifyHex();
           }
           string msg = string.Format(StringRes.String_Unknown_Message, CurrentTrackRunningStatus, FileHandle[ReaderIndex, pTrackOffset, 2].StringifyHex());
-
-
           return Strings.Encoding.GetString(FileHandle[ReaderIndex, pTrackOffset, FileHandle[ReaderIndex, pTrackOffset + 2] + 3]);
       }
     }
@@ -104,7 +99,7 @@ namespace on.smfio
     public byte[] GetMetaBString(int offset)
     {
       long result = 0;
-      int nextOffset = NextDelta(offset + 2, out result);
+      int nextOffset = FileHandle.ReadDelta(ReaderIndex, offset + 2, out result);
       return FileHandle[ReaderIndex, nextOffset, Convert.ToInt32(result)];
     }
 
@@ -141,7 +136,9 @@ namespace on.smfio
     }
 
     /// <inheritdoc/>
-    public byte[] GetMetaData(int offset) { return FileHandle[ReaderIndex, offset, FileHandle[ReaderIndex, offset + 2] + 3]; }
+    public byte[] GetMetaData(int offset) {
+      return FileHandle[ReaderIndex, offset, FileHandle[ReaderIndex, offset + 2] + 3];
+    }
 
     // 
     // Event Insight
@@ -154,19 +151,6 @@ namespace on.smfio
     public int GetNextPosition(int offset)
     {
       return Increment(offset, 1);
-    }
-    public int GetEndOfSystemExclusive(int nTrackIndex, int nTrackOffset)
-    {
-      int nOffset = nTrackOffset;
-      byte moo1 = this[nTrackIndex, nTrackOffset];
-      var soo1 = $"{moo1:X2}";
-      byte moo = moo1;
-      var soo = $"{moo:X2}";
-      while (moo != 0xF7) {
-        moo = this[nTrackIndex, ++nOffset];
-        soo = $"{moo:X2}";
-      }
-      return nOffset;
     }
 
     // 
@@ -200,7 +184,7 @@ namespace on.smfio
       else if (StatusQuery.IsPitchBend(ExpandedRSE)) return (FileHandle[ReaderIndex, offset + plus, 2]).StringifyHex();
       // sysex and seq-specific
       else if (StatusQuery.IsSequencerSpecific(ExpandedRSE)) return (FileHandle[ReaderIndex, offset + plus, FileHandle[ReaderIndex, offset + plus] + 1]).StringifyHex();
-      else if (StatusQuery.IsSystemExclusive(ExpandedRSE)) return (FileHandle[ReaderIndex, offset+plus, GetEndOfSystemExclusive(selectedTrackNumber, offset+plus) - offset]).StringifyHex();
+      else if (StatusQuery.IsSystemExclusive(ExpandedRSE)) return (FileHandle[ReaderIndex, offset+plus, FileHandle[ReaderIndex].GetEndOfSystemExclusive(offset+plus) - offset]).StringifyHex();
       // any missed common messages
       else if (StatusQuery.IsSystemCommon(ExpandedRSE)) return (FileHandle[ReaderIndex, offset + plus, FileHandle[ReaderIndex, offset + plus] + 1]).StringifyHex();
       else if (StatusQuery.IsSystemRealtime(ExpandedRSE)) return (FileHandle[ReaderIndex, offset + plus, 4]).StringifyHex();
@@ -318,14 +302,6 @@ namespace on.smfio
     /// <inheritdoc/>
     public string chRseV(int v) { return string.Format("{0} {1}", string.Format("{0:X2}", CurrentTrackRunningStatus), GetRseEventValueString(v)); }
     
-  }
-
-  partial class Reader
-  {
-    class MetadataString
-    {
-      
-    }
   }
 
 }

@@ -15,9 +15,10 @@ namespace on.smfio
 		IMidiParser_Parser,
 		INotifyPropertyChanged
   {
-		MTrk this[int kTrackID] { get; }
+    MTrk this[int kTrackID] { get; }
     byte this[int kTrackID, int kTrackOffset] { get; }
     byte[] this[int kTrackID, int kTrackOffset, int kSize] { get; }
+
     // =============================================
     // CHANNEL
     // =============================================
@@ -126,7 +127,6 @@ namespace on.smfio
 		/// <param name="trackNo"></param>
 		void ParseTrackMeta(int trackNo);
 
-    int GetEndOfSystemExclusive(int nTrackIndex, int nTrackOffset);
     int GetTrackMessage(int position, int delta);
 
     // =============================================
