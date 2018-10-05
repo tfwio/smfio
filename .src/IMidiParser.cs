@@ -15,6 +15,9 @@ namespace on.smfio
 		IMidiParser_Parser,
 		INotifyPropertyChanged
   {
+		MTrk this[int kTrackID] { get; }
+    byte this[int kTrackID, int kTrackOffset] { get; }
+    byte[] this[int kTrackID, int kTrackOffset, int kSize] { get; }
     // =============================================
     // CHANNEL
     // =============================================
