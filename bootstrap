@@ -3,16 +3,24 @@
 author:  tfwroble@gmail.com
 website: github.com/tfwio
 license: free as in whistle.  use at own risk.
-
-print git revision and date information
-
+purpose:
+  - print git revision and date information.
+  - write assemblyinfo.cs based on said info.
+  - see class Meta (below)
+todo (goals):
+  - use smfio.view's `.version` if running this from
+    smfio.view root.
+  - use the same script as a drop-in for both smfio
+    (master) and smfio-view branch.
 """
 
+# 
+
+from argparse import ArgumentParser
 import datetime
 import os
 import sys
 from subprocess import Popen, PIPE
-
 
 #################################################
 # GLOBALS
@@ -26,7 +34,9 @@ smfio_path = os.path.join(start_path, "smfio")
 source_path = os.path.join(start_path, ".src")
 props_path = os.path.join(source_path, 'Properties')
 
+# in save_smfio_revision
 SMFIO_REPO = env_var('SMFIO_REPO', 'https://github.com/tfwio/smfio')
+DEFAULT_BRANCH = env_var('DEFAULT_BRANCH', 'refs/remotes/origin/master')
 
 if not os.path.exists(props_path): os.mkdir(props_path)
 
@@ -34,6 +44,61 @@ print_tree_fmt0 = '{}\n- revision: {}\n- count:    {}\n- date:     {}\n'
 print_tree_fmt1 = '{}\n- revision: {}\n- count:    {}\n- date:     {}\n- tag =     {}\n'
 
 sha_length = 7
+
+description_text = '''
+This script writes
+  ./.src/Properties/AssemblyInfo.cs
+
+Also, it backs up the last known SHA1 of the (./Source/smfio) library.
+The SHA1/Commnt of smfio is placed into the following file:
+  ./.version-smfio
+
+----
+
+Also, this script is influenced by ENVIRONMENT variables:
+
+SMFIO_REPO can be used to supply the GIT-REPO for smfio.
+DEFAULT_BRANCH can be used to over-ride the active branch.
+'''
+
+class Meta(object):
+  ver = None
+  rc = None
+  sha = None
+  date = None
+  title = None
+  copyright = None
+  subtitle = None
+  version = None
+  homepage = None
+  revision = None
+  author = None
+
+  def __init__(self, pPath):
+    self.author = "tfwio"
+    self.title = "smfio.view"
+    self.subtitle = "smfio: viewer demonstration"
+    self.webname = "github.com/tfwio"
+    self.homepage = "https://github.com/tfwio"
+
+    T0, T1 = git.get_last_tags(pPath)
+    self.version = show_version(pPath)
+
+    self.ver = T0.version
+    self.rc = int(T0.count)-int(T1.count)
+    self.sha = T0.hash[:7]
+    self.date = T0.date2
+    self.copyright = "Copyright © 2005–2012 {}".format(self.webname)
+    self.revision = '{}.{}'.format(T0.version, int(T0.count)-int(T1.count))
+    
+    self.save()
+
+  def save(self):
+    info = template
+    for key in self.__dict__.keys():
+      info = info.replace("${{{0}}}".format(key), str(self.__dict__[key]))
+    write(info, os.path.join(props_path, 'AssemblyInfo.cs'))
+
 
 #################################################
 # TEMPLATE
@@ -73,136 +138,174 @@ def cmd(*args, show_err=False, stderr=PIPE):
   if serr != None and show_err: print(serr)
   return sout.decode('utf-8')
 
-def sha(branch='HEAD', show_err=False):
-  result = cmd('git', 'show-ref', show_err=show_err)
-  mhash = None # print('wha?: {}'.format(result))
-  for row in result.split('\n'):
-    if row.find(branch) != -1:
-      mhash = row.split()[0]
-      break
-  return mhash
-
 def read(target_file):
   with open(target_file, "r", encoding='utf-8') as text:
     output = text.read()
   return output
 
 def write(data, target_file):
-  with open(target_file, "w",encoding='utf-8') as text:
+  with open(target_file, "w", encoding='utf-8') as text:
     text.write(data)
   return
 
-def date0(mdate: str, timeColonChar=':', showTime=True):
-  mdatex = mdate.split('\n')[-1].split(' ')
-  mdate2 = ("{0}-{1}" if showTime else "{0}").format(
-    mdatex[0].replace('-', ''),
-    mdatex[1].replace(':', timeColonChar)
+class git:
+
+  @staticmethod
+  def tagFilter(input):
+    lines = input.split('\n')
+    info = ''
+    for line in range(2, len(lines)-1):
+      info += "{}\n".format(lines[line])
+    return info.lstrip('\n').rstrip('\n')
+
+  @staticmethod
+  def date0(mdate: str, timeColonChar=':', showTime=True):
+    mdatex = mdate.split('\n')[-1].split(' ')
+    mdate2 = ("{0}-{1}" if showTime else "{0}").format(
+      mdatex[0].replace('-', ''),
+      mdatex[1].replace(':', timeColonChar)
+      )
+    return mdate2
+
+  @staticmethod
+  def date1(mdate: str):
+    mdatex = mdate.split('\n')[-1].split(' ')
+    mdate2 = "{}".format(mdatex[0].replace('-', ''))
+    return mdate2
+
+  @staticmethod
+  def date2(mdate: str):
+    mdatex = mdate.split('\n')[-1].split(' ')[0].replace('-', '')
+    return mdatex
+  
+  @staticmethod
+  def sha(branch, show_err=False):
+    result = cmd('git', 'show-ref', show_err=show_err)
+    mhash = None # print('wha?: {}'.format(result))
+    for row in result.split('\n'):
+      # this isn't adequate.
+      if row.find(branch) != -1:
+        mhash = row.split()[0]
+        break
+    return mhash
+
+  @staticmethod
+  def tree(branch, date_only=True, show_err=False):
+    """
+    returns (hash, count, date, date_format, tag)
+    """
+    mhash = git.sha(branch)
+    mcount = cmd('git', 'rev-list', '--count', mhash, show_err=show_err).strip()
+    mdate  = cmd('git', 'show', '-s', r'--format=%ci', mhash, show_err=show_err).strip()
+    return (
+      mhash,
+      mcount,
+      git.date2(mdate) if date_only == True else mdate,
+      git.date0(mdate),
+      git.tagFilter(mdate)
     )
-  return mdate2
 
-def date1(mdate: str):
-  mdatex = mdate.split('\n')[-1].split(' ')
-  mdate2 = "{}".format(mdatex[0].replace('-', ''))
-  return mdate2
+  @staticmethod
+  def print_tree(name, branch, date_only=True, show_err=False):
+    mhash, mcount, mdate, mdate2, tag = git.tree(branch, date_only, show_err)
+    print((print_tree_fmt0 if len(tag) == 0 else print_tree_fmt1).format(name, mhash, mcount, mdate2, tag))
 
-def date2(mdate: str):
-  mdatex = mdate.split('\n')[-1].split(' ')[0].replace('-', '')
-  return mdatex
+  @staticmethod
+  def showref(path, tagsOnly=True):
+    """
+    returns array of `{'sha': value, 'branch': value}`
+    accessable via `result.sha` | `result.branch`
+    """
 
-def tagFilter(input):
-  lines = input.split('\n')
-  info = ''
-  for line in range(2, len(lines)-1):
-    info += "{}\n".format(lines[line])
-  return info.lstrip('\n').rstrip('\n')
+    apath = os.path.abspath(path)
+    os.chdir(apath)
+    
+    replacement = [ 'refs/remotes/origin/', 'refs/tags/' ]
 
-def tree(branch='HEAD', date_only=True, show_err=False):
-  """
-  returns (hash, count, date, date_format, tag)
-  """
-  mhash  = sha(branch)
-  mcount = cmd('git', 'rev-list', '--count', mhash, show_err=show_err).strip()
-  mdate  = cmd('git', 'show', '-s', r'--format=%ci', mhash, show_err=show_err).strip()
-  return (
-    mhash,
-    mcount,
-    date2(mdate) if date_only==True else mdate,
-    date0(mdate),
-    tagFilter(mdate)
-  )
+    justTags = ['git','show-ref']
+    if tagsOnly: justTags.append('--tags')
+    
+    info, data = cmd(*justTags).split('\n'), []
 
-def print_tree(name, branch='HEAD', date_only=True, show_err=False):
-  mhash, mcount, mdate, mdate2, tag = tree(branch, date_only, show_err)
-  print((print_tree_fmt0 if len(tag) == 0 else print_tree_fmt1).format(name, mhash, mcount, mdate2, tag))
+    for i in range(0, len(info)-1):
+      line = info[i]
+      M = line.strip().split(' ')
+      if len(line)==0: continue
+      branch = M[1]
+      for N in replacement: branch = branch.replace(N,'')
+      data.insert(0, dict8({'sha': M[0], 'branch': M[1], 'tag': branch}))
+    return data
 
-def showref(path, tagsOnly=True):
-  """
-  returns array of `{'sha': value, 'branch': value}`
-  accessable via `result.sha` | `result.branch`
-  """
-
-  apath = os.path.abspath(path)
-  os.chdir(apath)
-  
-  replacement = [ 'refs/remotes/origin/', 'refs/tags/' ]
-
-  justTags = ['git','show-ref']
-  if tagsOnly: justTags.append('--tags')
-  
-  info, data = cmd(*justTags).split('\n'), []
-
-  for i in range(0, len(info)-1):
-    line = info[i]
-    M = line.strip().split(' ')
-    if len(line)==0: continue
-    branch = M[1]
-    for N in replacement: branch = branch.replace(N,'')
-    data.insert(0, dict8({'sha': M[0], 'branch': M[1], 'tag': branch}))
-  return data
-
-def show_version(path):
-  apath = os.path.abspath(path)
-  os.chdir(apath)
-  version_file = os.path.join(apath, ".version")
-  version = read(version_file)
-  return version
-
-def dic_tree(path, head='refs/remotes/origin/HEAD'):
-  '''
-  provides: version, hash, count, date1, date2, tag
-  '''
-  os.chdir(path)
-  version = show_version(path)
-  mhash, mcount, mdate, mdate2, tag = tree(head)
-  return dict8({
+  @staticmethod
+  def dic_tree(path, branch):
+    '''
+    provides: version, hash, count, date1, date2, tag
+    '''
+    os.chdir(path)
+    version = show_version(path)
+    mhash, mcount, mdate, mdate2, tag = git.tree(branch)
+    return dict8({
       'version': version,
       'hash': mhash,
       'count': mcount,
       'date1': mdate,
       'date2': mdate2,
       'tag': tag
-  })
+    })
+
+  @staticmethod
+  def get_last_tags(pPath):
+    def get_tags(pPath):
+      os.chdir(pPath)
+      tags = git.showref(pPath)
+      print()
+      # print("Found {} tags:".format(len(tags)))
+      # print()
+
+      if (len(tags) > 0):
+        lastTag = tags[1] if len(tags) > 1 else None
+        print("First Tag: {}".format(tags[0].branch))
+        if len(tags) > 1:
+          print("Prior Tag: {}".format(tags[1].branch))
+        print()
+      else:
+        raise Exception("Expected at least two GIT 'tags'.")
+      return tags
+    tags = get_tags(pPath)
+    return git.dic_tree(pPath, tags[0].branch), git.dic_tree(pPath, tags[1].branch)
+
+def show_version(path):
+  apath = os.path.abspath(path)
+  os.chdir(apath)
+  # print("CWD: {}, start: {}".format(apath, start_path))
+  version_file = os.path.join(apath, ".version")
+  if apath == start_path:
+    version = read(version_file)
+  else:
+    version = read(version_file)
+  return version
 
 def save_smfio_revision():
   '''
-  This method checks if smfio_path exists.
+  - check if smfio_path exists.
 
-  If it does exist, then it continues to update the .version-smfio
-  file with the particular sha1 hash of the repository and returns True.
+    - If NO, update the .version-smfio file with
+      sha1 hash of the repository; return True.
+    - If NO, git clone smfio library into current
+      root directory; return False.
 
-  If not, then it checks out the smfio library into the current
-  root directory, and returns False.
-  In this case, it also ensures that we are using the version
-  specified via a call to `git reset --hard [the hash]`
+      In this case, it also ensures that we are using the version
+      specified via a call to `git reset --hard [the hash]`
 
   The method is intended to be called as such:
 
   `if save_smfio_revision(): save_smfio_revision()`
   '''
   os.chdir(start_path)
+
   if os.path.exists(smfio_path):
     os.chdir(smfio_path)
-    smfio_sha1 = sha()
+    smfio_sha1 = git.sha(DEFAULT_BRANCH)
     os.chdir(start_path)
     write(smfio_sha1,'.version-smfio')
     return False
@@ -228,65 +331,66 @@ def ensure_nuget():
 #################################################
 # MAIN()
 #################################################
+def main(pPath):
+  meta = Meta(pPath)
 
-def main():
-  os.chdir(start_path)
-  print('''
-This script writes
-  ./.src/Properties/AssemblyInfo.cs
+class App:
+  parser, options = None, None
 
-Also, it backs up the last known SHA1 of the (./Source/smfio) library.
-The SHA1/Commnt of smfio is placed into the following file:
-  ./.version-smfio
-''')
-
-
-  tags = showref(start_path)
-  print()
-  print("Found {} tags:".format(len(tags)))
-  print()
-
-  if (len(tags) > 0):
-    lastTag = tags[1] if len(tags) > 1 else None
-    print("First Tag: {}".format(tags[0].branch))
-    if len(tags) > 1: print("Prior Tag: {}".format(tags[1].branch))
-    print()
-  else:
-    raise Exception("Expected at least two GIT 'tags'.")
+  def get_info(self):
+    os.chdir(start_path)
+    git.print_tree("smfio.view", DEFAULT_BRANCH)
+    os.chdir(smfio_path)
+    git.print_tree("smfio", DEFAULT_BRANCH)
   
-  T0 = dic_tree(start_path, tags[0].branch)
-  T1 = dic_tree(start_path, tags[1].branch)
+  def get_refs(self):
+    os.chdir(start_path)
+    print('- smfio.view')
+    print(cmd('git', 'show-ref'))
+    os.chdir(smfio_path)
+    print('- smfio')
+    print(cmd('git', 'show-ref'))
   
-  # modest (Standard MIDI Format) + VST v2.4 technology
-  title = "smfio.view"
-  subtitle = "smfio: viewer demonstration"
-  author = "tfwio"
-  homepage = "https://github.com/tfwio"
-  webname = "github.com/tfwio"
-  copy   = "Copyright © 2005–2012 {}".format(webname)
-  
-  version = show_version(start_path)
-  inf = dict8({
-    'ver': T0.version,
-    'rc': int(T0.count)-int(T1.count),
-    'sha': T0.hash[:7],
-    'date': T0.date2,
-    'title': title,
-    'copyright': copy,
-    'subtitle': subtitle,
-    'version': version,
-    'homepage': homepage,
-    'revision': '{}.{}'.format(T0.version,int(T0.count)-int(T1.count)),
-    'author': author,
-    'www': webname
-  })
-  info = template
-  for key in inf.__dict__.keys():
-    info = info.replace("${{{0}}}".format(key), str(inf.__dict__[key]))
-  write(info, os.path.join(props_path, 'AssemblyInfo.cs'))
-  #print("{0}.{1} #{2} ({3})".format(inf.ver, inf.rc, inf.sha, inf.date))
+  def default(self):
+    # ensure_nuget()
+    if save_smfio_revision(): save_smfio_revision()
+    main(smfio_path)
 
+  def get_options(self):
+    global description_text, SMFIO_REPO, DEFAULT_BRANCH
+    global main, save_smfio_revision
 
-# ensure_nuget()
-if save_smfio_revision(): save_smfio_revision()
-main()
+    parser = ArgumentParser(description=description_text)
+
+    parser.add_argument('--git',  dest='repo', default=SMFIO_REPO, help="supply a (local) github repo")
+    parser.add_argument('--fork', dest='fork', default=DEFAULT_BRANCH, help="Specify branch (for ./[here]/smfio) used. USE WITH CARE!.")
+    parser.add_argument('--tag',  dest='tag',  default=None, help='does nothing.  But eventually it will do something...')
+    parser.add_argument('--info', dest='info', action='store_true', help='If this flag is present, we print some git info for ./[here]/smfio.')
+    parser.add_argument('--refs', dest='refs', action='store_true', help='calls \'git show-ref\' to show all tags and branches with SHA1.')
+    
+    o = parser.parse_args()
+
+    SMFIO_REPO, DEFAULT_BRANCH, SMFIO_TAG = o.repo, o.fork, o.tag
+
+    self.parser = parser
+    self.options = o
+
+    quit = o.refs | o.info
+    
+    if o.info: self.get_info()
+    if o.refs: self.get_refs()
+    
+    if quit: sys.exit()
+    
+    elif len(sys.argv) == 1:
+      self.get_refs()
+      self.default()
+      sys.exit()
+    else:
+      self.default()
+      sys.exit()
+
+  def __init__(self):
+    self.get_options()
+
+App()
