@@ -21,28 +21,21 @@ namespace on.smfio
     internal static readonly Color c3 = Color.FromArgb(107, 180, 131);
     internal static readonly Color c4 = Color.FromArgb(225, 225, 235);
     internal static readonly Color cR = Color.FromArgb(255, 0, 0);
-
-    internal static Dictionary<string, Color> Colors
-    {
-      get
-      {
-        Dictionary<string, Color> dic = new Dictionary<string, Color>();
-        dic.Add("red", Color.Red);
-        dic.Add("meta", Color.Red);
-        dic.Add("white", Color.White);
-        dic.Add("chanel", Color.Red);
-        dic.Add("225", Color.FromArgb(225, 255, 225));
-        dic.Add("rse1", Color.FromArgb(225, 255, 225));
-        dic.Add("rse2", Color.FromArgb(0, 127, 255));
-        dic.Add("rse3", Color.FromArgb(125, 225, 125));
-        dic.Add("tempo", Color.FromArgb(225, 235, 225));
-        dic.Add("tsig", Color.FromArgb(225, 235, 225));
-        dic.Add("ksig", Color.FromArgb(225, 235, 225));
-        dic.Add("end", Color.FromArgb(125, 135, 125));
-        dic.Add("ssx", Color.FromArgb(125, 135, 125));
-        return dic;
-      }
-    }
+    internal static readonly Dictionary<string, Color> Colors = new Dictionary<string, Color>(){
+      {"225", Color.FromArgb(225, 255, 225)  },
+      {"rse1", Color.FromArgb(225, 255, 225) },
+      {"rse2", Color.FromArgb(0, 127, 255)   },
+      {"rse3", Color.FromArgb(125, 225, 125) },
+      {"tempo", Color.FromArgb(225, 235, 225)},
+      {"tsig", Color.FromArgb(225, 235, 225) },
+      {"ksig", Color.FromArgb(225, 235, 225) },
+      {"end", Color.FromArgb(125, 135, 125)  },
+      {"ssx", Color.FromArgb(125, 135, 125)  },
+      {"red", Color.Red    },
+      {"meta", Color.Red   },
+      {"white", Color.White},
+      {"chanel", Color.Red },
+    };
     // 
     // Color Helper (For WinForms)
     // ---------------------------------
@@ -52,7 +45,7 @@ namespace on.smfio
     /// </summary>
     internal static Color GetRseEventColor(Color clr, int RunningStatus32)
 		{
-			int ExpandedRSE = RunningStatus32 << 8;
+      int ExpandedRSE = RunningStatus32;// << 8;
 			if (!StatusQuery.IsMidiBMessage(RunningStatus32)) { Log.ErrorMessage("warning… {0:X2}", ExpandedRSE); return clr; }
 			else if (StatusQuery.IsNoteOn(ExpandedRSE))            return Colors["rse2"];
 			else if (StatusQuery.IsNoteOff(ExpandedRSE))           return Colors["rse2"];
@@ -73,7 +66,7 @@ namespace on.smfio
 		/// </summary>
     internal static Color GetEventColor(Color clr, int RunningStatus32)
 		{
-			int ExpandedRSE = RunningStatus32 << 8;
+      int ExpandedRSE = RunningStatus32;// << 8;
 
 			if (!StatusQuery.IsMidiBMessage(RunningStatus32)) { Log.ErrorMessage("warning… {0:X2}", ExpandedRSE); return clr; }
 			else if (StatusQuery.IsNoteOn(ExpandedRSE))            return c1;
@@ -105,7 +98,7 @@ namespace on.smfio
 				case (int)Stat16.PortMessage:
 					return c4;
 				case (int)Stat16.ChannelPrefix:
-				case (int)Stat16.SequenceNo:
+				case (int)Stat16.SequenceNumber:
 				case (int)Stat16.SMPTEOffset:
 				case (int)Stat16.SystemExclusive:
 					return Colors["red"];
