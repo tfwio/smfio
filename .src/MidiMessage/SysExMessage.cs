@@ -10,28 +10,28 @@ namespace on.smfio
   /// I do believe that I've come across RSE Sysex messages, but I guess I'll have
   /// to find out the hard way if this data is getting collected.
   /// </summary>
-  public class SystemSpecific : MIDIMessage
+  public class SequencerSpecific : MIDIMessage
   {
     #region Properties
     
-    public string MetaString { get { return Strings.Encoding.GetString(Data); } }
+    public string MetaString { get { return Strings.Encoding.GetString(base.Data); } }
     
-    public int MessageLength { get; set; }
+    public int Length { get; set; }
     
-    public byte[] SystemData { get { return GetSystemMessage(); } }
+    public byte[] Data { get { return GetSystemMessage(); } }
     
     public byte[] GetSystemMessage()
     {
-      byte[] bitset = new byte[Data.Length-1];
-      bitset[0] = Data[0];
-      for (int i=2; i < Data.Length; i++) bitset[i-1] = Data[i];
+      byte[] bitset = new byte[base.Data.Length-1];
+      bitset[0] = base.Data[0];
+      for (int i=2; i < base.Data.Length; i++) bitset[i - 1] = base.Data[i];
       return bitset;
     }
   
     #endregion
-    public SystemSpecific(long delta, int message, params byte[] data) : base(MidiMsgType.SystemSpecific,delta,message,data)
+    public SequencerSpecific(long delta, int message, params byte[] data) : base(MidiMsgType.SequencerSpecific,delta,message,data)
     {
-      MessageLength = data.Length-1;
+      Length = data.Length-1;
     }
   }
   /// <summary>
@@ -58,7 +58,7 @@ namespace on.smfio
     }
   
     #endregion
-    public SystemExclusive(long delta, int message, params byte[] data) : base(MidiMsgType.SystemSpecific,delta,message,data)
+    public SystemExclusive(long delta, int message, params byte[] data) : base(MidiMsgType.SequencerSpecific,delta,message,data)
     {
       MessageLength = data.Length-1;
     }

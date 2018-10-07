@@ -17,10 +17,10 @@ namespace on.smfio
     // // TIME
     // // =============================
 
-    /// <summary>Measure:Bar:Ticks</summary>
-    /// <param name="value">Pulses</param>
-    /// <returns>Measure:Bar:Quarters:Ticks +/- Quarters</returns>
-    string GetMbtString(long value);
+    // /// <summary>Measure:Bar:Ticks</summary>
+    // /// <param name="value">Pulses</param>
+    // /// <returns>Measure:Bar:Quarters:Ticks +/- Quarters</returns>
+    // string GetMbtString(long value);
 
     // =============================
     // META
@@ -29,14 +29,14 @@ namespace on.smfio
     /// <summary>Gets a string value.</summary>
     /// <param name="offset"></param>
     /// <returns>UTF8 Decoded</returns>
-    string GetMetaString(int offset);
+    string GetMetadataString(int offset);
 
     /// <summary>
     /// Return a string value per meta-event or throw exception.
     /// </summary>
     /// <param name="offset"></param>
     /// <returns></returns>		
-    string GetMetaSTR(int offset);
+    string GetMessageString(int offset);
 
     /// <summary>
     /// There is no plus (its not used).
@@ -80,7 +80,8 @@ namespace on.smfio
     /// </summary>
     /// <param name="v">message value bit</param>
     /// <returns>
-    /// string.Format("{0} {1}", string.Format("{0:X2}", RunningStatus32), GetEventValueString(v))
+    /// string.Format("{0} {1}", string.Format("{0:X2}", RunningStatus32),
+    /// GetEventValueString(v))
     /// </returns>
     string chRseV(int v);
 
@@ -89,7 +90,7 @@ namespace on.smfio
     // =================================
 
     /// <summary>Next Position (rse)</summary>
-    int GetNextRsePosition(int offset);
+    int IncrementRun(int offset);
 
     /// <summary>Next Position (rse)</summary>
     int GetNextPosition(int offset);

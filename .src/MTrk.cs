@@ -59,13 +59,15 @@ namespace on.smfio.chunk
 		public int DeltaSeek(int pTrackOffset, int increment = 2, int backstep = 1)
     {
       long result = 0;
-      return DeltaRead(pTrackOffset + increment, out result) + Convert.ToInt32(result) - backstep;
+      int index = DeltaRead(pTrackOffset + increment, out result);
+      int value = index + (int)result - backstep;
+      return value;
     }
     public int DeltaRead(int pTrackOffset, out long pDeltaVar)
     {
       byte tempBit;
       int i = pTrackOffset;
-      if ((pDeltaVar = Convert.ToInt64(Data[i++])) > 0x7f)
+      if ((pDeltaVar = Data[i++]) > 0x7f)
       {
         pDeltaVar &= 0x7f;
         do
@@ -78,8 +80,8 @@ namespace on.smfio.chunk
     public int GetEndOfSystemExclusive(int nTrackOffset)
     {
       int offset = nTrackOffset;
-      while (Data[nTrackOffset] != 0xF7) ++offset;
-      return Data[nTrackOffset];
+      while (Data[offset] != 0xF7) offset++;
+      return offset;
     }
 
     public struct MessageBlock

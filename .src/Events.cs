@@ -13,6 +13,15 @@ namespace on.smfio
 
   /// <summary>
   /// A callback to help parsing incoming (parser) messages.
+	/// 
+	/// - MidiMsgType
+	/// - nTrackIndex
+	/// - nTrackOffset
+	/// - midiMsg32
+	/// - midiMsg8
+	/// - pulse
+	/// - delta
+	/// - isRunningStatus
   /// </summary>
   public delegate void MidiEventDelegate(
     MidiMsgType msgType,
@@ -40,7 +49,7 @@ namespace on.smfio
 		
 		public bool IsRunningStatus = false;
 		
-		public MidiMsgType MessageType = MidiMsgType.Channel;
+		public MidiMsgType MessageType = MidiMsgType.ChannelVoice;
 		
 		public byte[] Data = null;
 

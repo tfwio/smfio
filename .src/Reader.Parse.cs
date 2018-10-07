@@ -26,8 +26,7 @@ namespace on.smfio
     /// </summary>
     int Increment(int offset, int seek)
     {
-      // int ExpandedRSE = CurrentTrackRunningStatus << 8;
-      int status = CurrentTrackRunningStatus & 0xFF; // convert to byte
+      int status = CurrentStatus & 0xFF; // convert to byte
       // FF (append one)
       if (StatusQuery.IsNoteOff(status))           return offset + seek + 1; // 0xFF 0x8c 0xNN 0xNN
       if (StatusQuery.IsNoteOn(status))            return offset + seek + 1; // 0xFF 0x9c 0xNN 0xNN
@@ -45,7 +44,7 @@ namespace on.smfio
 
       // this could be wrong.  We just checked for system-realtime, yes?
       // what if there are two realtime messages lined after the other?
-      if (!StatusQuery.IsMidiBMessage(CurrentTrackRunningStatus)) return -1;
+      if (!StatusQuery.IsMidiBMessage(CurrentRunningStatus8)) return -1;
       
       // check this before the general common category
 
@@ -59,40 +58,12 @@ namespace on.smfio
     // ---------------
 
     /// <inheritdoc/>
-    public string GetMetaString(int offset)
+    public string GetMetadataString(int offset)
     {
-      long result = 0;
-      int nextOffset = FileHandle.ReadDelta(ReaderIndex, FileHandle[ReaderIndex].DeltaRead(offset + 2, out result), out result) + Convert.ToInt32(result) - 1;
-      return Strings.Encoding.GetString(FileHandle[ReaderIndex, nextOffset, Convert.ToInt32(result)]);
-    }
-
-    /// <inheritdoc/>
-    public string GetMetaSTR(int pTrackOffset)
-    {
-      var msg8 = FileHandle.Get8Bit(ReaderIndex, pTrackOffset);
-      var msg32 = FileHandle.Get16BitInt32(ReaderIndex, pTrackOffset);
-      switch ((StatusWord)msg32)
-      {
-        case StatusWord.SequenceNumber: /* 0xFF00 */ return MetaHelpers.meta_FF00(FileHandle[ReaderIndex, pTrackOffset + 3], FileHandle[ReaderIndex, pTrackOffset + 4]);
-        case StatusWord.ChannelPrefix:  /* 0xFF20 */ return FileHandle[ReaderIndex, pTrackOffset + 3].ToString();
-        case StatusWord.SetTempo:       /* 0xFF51 */ return MetaHelpers.meta_FF51(Convert.ToInt32(FileHandle[ReaderIndex].ReadU24(pTrackOffset + 3)));
-        case StatusWord.SMPTEOffset:    /* 0xFF54 */ return MetaHelpers.meta_FF54();
-        case StatusWord.TimeSignature:  /* 0xFF58 */ return MetaHelpers.meta_FF58(FileHandle[ReaderIndex], pTrackOffset);
-        case StatusWord.KeySignature:   /* 0xFF59 */ return MetaHelpers.PrintKeysignature(FileHandle[ReaderIndex], pTrackOffset);
-        case StatusWord.EndOfTrack:     /* 0xFF2F */ return MetaHelpers.meta_FF2F();
-        // FIXME: This just is not right.
-        case StatusWord.SequencerSpecific:  /* 0xFF7F */ return FileHandle[ReaderIndex, pTrackOffset, 3].StringifyHex();
-        case StatusWord.SystemExclusive:    /* 0xF0 */   return FileHandle[ReaderIndex, pTrackOffset, FileHandle[ReaderIndex].GetEndOfSystemExclusive(pTrackOffset) - pTrackOffset].StringifyHex();
-        default: // check for a channel message
-          if (CurrentTrackRunningStatus == 0xF0)
-          {
-            long ro = 0;
-            int no = FileHandle.ReadDelta(ReaderIndex, pTrackOffset + 1, out ro) - pTrackOffset;
-            return FileHandle[ReaderIndex, pTrackOffset, Convert.ToInt32(ro) + 2].StringifyHex();
-          }
-          string msg = string.Format(StringRes.String_Unknown_Message, CurrentTrackRunningStatus, FileHandle[ReaderIndex, pTrackOffset, 2].StringifyHex());
-          return Strings.Encoding.GetString(FileHandle[ReaderIndex, pTrackOffset, FileHandle[ReaderIndex, pTrackOffset + 2] + 3]);
-      }
+      long stringLength = 0;
+      int stringStart = FileHandle[ReaderIndex].DeltaRead(offset + 2, out stringLength); // the message length byte starts at offset+2.
+      var result = Strings.Encoding.GetString(FileHandle[ReaderIndex, stringStart, (int)stringLength]);
+      return result;
     }
 
     /// <inheritdoc/>
@@ -104,12 +75,46 @@ namespace on.smfio
     }
 
     /// <inheritdoc/>
+    public string GetMessageString(int pTrackOffset)
+    {
+      var msg32 = FileHandle.Get16Bit(ReaderIndex, pTrackOffset);
+      switch ((StatusWord)msg32)
+      {
+        case StatusWord.SequenceNumber: /* 0xFF00 */ return MetaHelpers.meta_FF00(FileHandle[ReaderIndex, pTrackOffset + 3], FileHandle[ReaderIndex, pTrackOffset + 4]);
+        case StatusWord.ChannelPrefix:  /* 0xFF20 */ return FileHandle[ReaderIndex, pTrackOffset + 3].ToString();
+        case StatusWord.SetTempo:       /* 0xFF51 */ return MetaHelpers.meta_FF51(Convert.ToInt32(FileHandle[ReaderIndex].ReadU24(pTrackOffset + 3)));
+        case StatusWord.SMPTEOffset:    /* 0xFF54 */ return MetaHelpers.meta_FF54();
+        case StatusWord.TimeSignature:  /* 0xFF58 */ return MetaHelpers.meta_FF58(FileHandle[ReaderIndex], pTrackOffset);
+        case StatusWord.KeySignature:   /* 0xFF59 */ return MetaHelpers.PrintKeysignature(FileHandle[ReaderIndex], pTrackOffset);
+        case StatusWord.EndOfTrack:     /* 0xFF2F */ return MetaHelpers.meta_FF2F();
+        // FIXME: This just is not right.
+        case StatusWord.SequencerSpecific:  /* 0xFF7F */
+          return GetMetaBString(pTrackOffset).StringifyHex();
+        case StatusWord.SystemExclusive:    /* 0xF0 */
+          int nlength = FileHandle[ReaderIndex].GetEndOfSystemExclusive(pTrackOffset) - pTrackOffset;
+          int noffset = pTrackOffset;
+          string nresult = FileHandle[ReaderIndex, pTrackOffset, nlength].StringifyHex();
+          return nresult;
+           
+        default: // check for a channel message
+          if (CurrentRunningStatus8 == 0xF0)
+          {
+            long ro = 0;
+            int no = FileHandle.ReadDelta(ReaderIndex, pTrackOffset + 1, out ro) - pTrackOffset;
+            return FileHandle[ReaderIndex, pTrackOffset, Convert.ToInt32(ro) + 2].StringifyHex();
+          }
+          string msg = string.Format(StringRes.String_Unknown_Message, CurrentRunningStatus8, FileHandle[ReaderIndex, pTrackOffset, 2].StringifyHex());
+          return Strings.Encoding.GetString(FileHandle[ReaderIndex, pTrackOffset, FileHandle[ReaderIndex, pTrackOffset + 2] + 3]);
+      }
+    }
+
+    /// <inheritdoc/>
     public int GetMetaLen(int offset, int plus) { return FileHandle[ReaderIndex, offset + 2]; }
 
     /// <inheritdoc/>
     public byte[] GetMetaValue(int offset)
     {
-      switch ((StatusWord)FileHandle.Get16BitInt32(ReaderIndex, offset))
+      switch ((StatusWord)FileHandle.Get16Bit(ReaderIndex, offset))
       {
         /* 0xff00 */
         case StatusWord.SequenceNumber: return FileHandle[ReaderIndex, offset, 5];
@@ -130,7 +135,7 @@ namespace on.smfio
         /* 0xff7f */
         case StatusWord.SystemExclusive: return FileHandle[ReaderIndex, offset, 4];
         default:
-          Log.ErrorMessage(StringRes.String_Unknown_Message, CurrentTrackRunningStatus, FileHandle[ReaderIndex, offset + 1]);
+          Log.ErrorMessage(StringRes.String_Unknown_Message, CurrentRunningStatus8, FileHandle[ReaderIndex, offset + 1]);
           return FileHandle[ReaderIndex, offset, FileHandle[ReaderIndex, offset + 2] + 3];
       }
     }
@@ -145,13 +150,10 @@ namespace on.smfio
     // ---------------------------------
 
     /// <inheritdoc/>
-    public int GetNextRsePosition(int offset) { return Increment(offset, 0); }
+    public int IncrementRun(int offset) { return Increment(offset, 0); }
 
     /// <inheritdoc/>
-    public int GetNextPosition(int offset)
-    {
-      return Increment(offset, 1);
-    }
+    public int GetNextPosition(int offset) { return Increment(offset, 1); }
 
     // 
     // Event Insight (name, value) and specialized helpers
@@ -170,8 +172,8 @@ namespace on.smfio
     /// <inheritdoc/>
     string GetEventValueString(int offset, int plus)
     {
-      int ExpandedRSE = CurrentTrackRunningStatus << 8;
-      int delta = GetNextRsePosition(offset + plus);
+      int ExpandedRSE = CurrentRunningStatus8; // << 8;
+      int delta = IncrementRun(offset + plus);
       if (delta == -1) Debug.Assert(false, string.Format("warning… {0:X2}", ExpandedRSE));
       // 
       else if (StatusQuery.IsNoteOn(ExpandedRSE)) return (FileHandle[ReaderIndex, offset + plus, 2]).StringifyHex();
@@ -199,10 +201,10 @@ namespace on.smfio
 
     byte[] GetEventValue(int offset, int plus)
     {
-      List<byte> returned = new List<byte> { (byte)(CurrentTrackRunningStatus & 0xff) };
-      int ExpandedRSE = CurrentTrackRunningStatus << 8;
-      int delta = GetNextRsePosition(offset + plus);
-
+      List<byte> returned = new List<byte> { (byte)(CurrentRunningStatus8 & 0xff) };
+      int ExpandedRSE = CurrentRunningStatus8;
+      int length = IncrementRun(offset + plus); // delta-byte-encoded 'size' integer. 
+      //
       if (StatusQuery.IsNoteOn(ExpandedRSE)) returned.AddRange(FileHandle[ReaderIndex, offset + plus, 2]);
       else if (StatusQuery.IsNoteOff(ExpandedRSE)) returned.AddRange(FileHandle[ReaderIndex, offset + plus, 2]);
       else if (StatusQuery.IsKeyAftertouch(ExpandedRSE)) returned.AddRange(FileHandle[ReaderIndex, offset + plus, 2]);
@@ -230,7 +232,7 @@ namespace on.smfio
       }
       else if (StatusQuery.IsSystemRealtime(ExpandedRSE))
         returned.AddRange(FileHandle[ReaderIndex, offset + plus, 2]);
-      else if (delta == -1) Debug.Assert(false, string.Format("warning… {0:X2}", ExpandedRSE));
+      else if (length == -1) Debug.Assert(false, string.Format("warning… {0:X2}", ExpandedRSE));
       byte[] bytes = returned.ToArray();
       return bytes;
     }
@@ -241,8 +243,8 @@ namespace on.smfio
 
     int GetEventLength(int offset, int plus)
     {
-      int ExpandedRSE = CurrentTrackRunningStatus << 8;
-      int delta = GetNextRsePosition(offset + plus);
+      int ExpandedRSE = CurrentRunningStatus8; // << 8;
+      int delta = IncrementRun(offset + plus);
       if (delta == -1) Debug.Assert(false, string.Format("warning… {0:X2}", ExpandedRSE));
       else if (StatusQuery.IsNoteOn(ExpandedRSE)) return 2;
       else if (StatusQuery.IsNoteOff(ExpandedRSE)) return 2;
@@ -270,13 +272,16 @@ namespace on.smfio
 
     string GetEventString(int offset, int plus)
     {
-      int ExpandedRSE = CurrentTrackRunningStatus << 8;
-      if (!StatusQuery.IsMidiBMessage(CurrentTrackRunningStatus))
+      string bytestatus = $"{CurrentRunningStatus8:X4}";
+      int ExpandedRSE = CurrentRunningStatus8; // << 8;
+      bool passFail = !StatusQuery.IsMidiMessage(CurrentRunningStatus8); // what are we checking for here?
+      if (!StatusQuery.IsMidiMessage(CurrentRunningStatus8))
       {
         Debug.Assert(false, string.Format("warning… {0:X2}", ExpandedRSE));
         return null;
       }
-      else if (StatusQuery.IsNoteOn(ExpandedRSE)) return GetNoteMsg(0, offset + plus, StringRes.m9);
+      else
+      if (StatusQuery.IsNoteOn(ExpandedRSE)) return GetNoteMsg(0, offset + plus, StringRes.m9);
       else if (StatusQuery.IsNoteOff(ExpandedRSE)) return GetNoteMsg(0, offset + plus, StringRes.m8);
       else if (StatusQuery.IsKeyAftertouch(ExpandedRSE)) return string.Format(StringRes.mA, FileHandle[ReaderIndex, offset + plus], FileHandle[ReaderIndex, offset + plus + 1]);
       else if (StatusQuery.IsControlChange(ExpandedRSE)) return string.Format(StringRes.mB, SmfString.ControlMap[FileHandle.Get8Bit(ReaderIndex, offset + plus)].Replace((char)0xa, (char)0x20).Trim(), FileHandle.Get8Bit(ReaderIndex, offset + plus + 1));
@@ -297,10 +302,10 @@ namespace on.smfio
     string GetNoteMsg(int shift, int offset, string format) { return string.Format(format, FileHandle[ReaderIndex, offset + shift], FileHandle[ReaderIndex, offset + shift + 1], SmfString.GetKeySharp(FileHandle[ReaderIndex, offset + shift]), SmfString.GetOctave(FileHandle[ReaderIndex, offset + shift])); }
 
     /// <inheritdoc/>
-    public string chV(int v) { return string.Format("{0} {1}", string.Format("{0:X2}", CurrentTrackRunningStatus), GetEventValueString(v)); }
+    public string chV(int v) { return string.Format("{0} {1}", string.Format("{0:X2}", CurrentRunningStatus8), GetEventValueString(v)); }
 
     /// <inheritdoc/>
-    public string chRseV(int v) { return string.Format("{0} {1}", string.Format("{0:X2}", CurrentTrackRunningStatus), GetRseEventValueString(v)); }
+    public string chRseV(int v) { return string.Format("{0} {1}", string.Format("{0:X2}", CurrentRunningStatus8), GetRseEventValueString(v)); }
     
   }
 

@@ -60,7 +60,7 @@ namespace on.smfio
     short Division { get; }
     long CurrentTrackPulse { get; }
 		
-		int CurrentTrackRunningStatus { get; }
+		int CurrentRunningStatus8 { get; }
 		
 		void ResetTiming();
 		

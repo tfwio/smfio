@@ -31,87 +31,87 @@ namespace on.smfio
     // Metadata
 
     /// <summary>0xFF00</summary>
-    public const int SequenceNumber          = 0xFF00;
+    public const ushort SequenceNumber          = 0xFF00;
     /// <summary>0xFF01</summary>
-    public const int Text                    = 0xFF01;
+    public const ushort Text                    = 0xFF01;
     /// <summary>0xFF02</summary>
-    public const int Copyright               = 0xFF02;
+    public const ushort Copyright               = 0xFF02;
     /// <summary>0xFF03</summary>
-    public const int SequenceName            = 0xFF03;
+    public const ushort SequenceName            = 0xFF03;
     /// <summary>0xFF04</summary>
-    public const int InstrumentName          = 0xFF04;
+    public const ushort InstrumentName          = 0xFF04;
     /// <summary>0xFF05</summary>
-    public const int Lyric                   = 0xFF05;
+    public const ushort Lyric                   = 0xFF05;
     /// <summary>0xFF06</summary>
-    public const int Marker                  = 0xFF06;
+    public const ushort Marker                  = 0xFF06;
     /// <summary>0xFF07</summary>
-    public const int Cue                     = 0xFF07;
+    public const ushort Cue                     = 0xFF07;
     /// <summary>0xFF20</summary>
-    public const int ChannelPrefix           = 0xFF20;
+    public const ushort ChannelPrefix           = 0xFF20;
     /// <summary>0xFF21</summary>
-    public const int PortMessage             = 0xFF21;
+    public const ushort PortMessage             = 0xFF21;
     /// <summary>0xFF2F</summary>
-    public const int EndOfTrack              = 0xFF2F;
+    public const ushort EndOfTrack              = 0xFF2F;
     /// <summary>0xFF51</summary>
-    public const int SetTempo                = 0xFF51;
+    public const ushort SetTempo                = 0xFF51;
     /// <summary>0xFF54</summary>
-    public const int SMPTEOffset             = 0xFF54;
+    public const ushort SMPTEOffset             = 0xFF54;
     /// <summary>0xFF58</summary>
-    public const int TimeSignature           = 0xFF58;
+    public const ushort TimeSignature           = 0xFF58;
     /// <summary>0xFF59</summary>
-    public const int KeySignature            = 0xFF59;
+    public const ushort KeySignature            = 0xFF59;
     /// <summary>0xFF7F (Was SystemSpecific)</summary>
-    public const int SequencerSpecificMetaEvent = 0xFF7F;
+    public const ushort SequencerSpecificMetaEvent = 0xFF7F;
 
     // Voice (Channel)
 
-    public const int NoteOff                 = 0x80;
-    public const int NoteOn                  = 0x90;
-    public const int PolyphonicKeyPressure   = 0xA0;
-    public const int ControlChange           = 0xB0;
-    public const int ProgramChange           = 0xC0;
-    public const int ChannelPressure         = 0xD0;
-    public const int PitchWheel              = 0xE0;
+    public const ushort NoteOff                 = 0x80;
+    public const ushort NoteOn                  = 0x90;
+    public const ushort PolyphonicKeyPressure   = 0xA0;
+    public const ushort ControlChange           = 0xB0;
+    public const ushort ProgramChange           = 0xC0;
+    public const ushort ChannelPressure         = 0xD0;
+    public const ushort PitchWheel              = 0xE0;
 
     // System Common
 
     /// <summary>0xF0</summary>
-    public const int SystemExclusive         = 0xF0;
+    public const ushort SystemExclusive         = 0xF0;
     /// <summary>0xF1</summary>
-    public const int MTC_QuarterFrameMessage = 0xF1;
+    public const ushort MTC_QuarterFrameMessage = 0xF1;
     /// <summary>0xF2</summary>
-    public const int SongPositionPointer     = 0xF2;
+    public const ushort SongPositionPointer     = 0xF2;
     /// <summary>0xF3</summary>
-    public const int SongSelect              = 0xF3;
+    public const ushort SongSelect              = 0xF3;
     /// <summary>0xF4</summary>
-    public const int Unknown0                = 0xF4;
+    public const ushort Unknown0                = 0xF4;
     /// <summary>0xF5</summary>
-    public const int Unknown1                = 0xF5;
+    public const ushort Unknown1                = 0xF5;
     /// <summary>0xF6</summary>
-    public const int TuneRequest             = 0xF6;
+    public const ushort TuneRequest             = 0xF6;
     /// <summary>0xF7</summary>
-    public const int Unknown2                = 0xF7;
+    public const ushort Unknown2                = 0xF7;
     /// <summary>0xF7</summary>
-    public const int EndOfExclusive          = Unknown2;
+    public const ushort EndOfExclusive          = Unknown2;
 
     // System Realtime
 
     /// <summary>0xF8</summary>
-    public const int MIDI_Clock              = 0xF8;
+    public const ushort MIDI_Clock              = 0xF8;
     /// <summary>0xF8</summary>
-    public const int Unknown3                = 0xF9;
+    public const ushort Unknown3                = 0xF9;
     /// <summary>0xFA</summary>
-    public const int MIDI_Start              = 0xFA;
+    public const ushort MIDI_Start              = 0xFA;
     /// <summary>0xFB</summary>
-    public const int MIDI_Continue           = 0xFB;
+    public const ushort MIDI_Continue           = 0xFB;
     /// <summary>0xFC</summary>
-    public const int MIDI_Stop               = 0xFC;
+    public const ushort MIDI_Stop               = 0xFC;
     /// <summary>0xFD</summary>
-    public const int Unknown4                = 0xFD;
+    public const ushort Unknown4                = 0xFD;
     /// <summary>0xFE</summary>
-    public const int ActiveSense             = 0xFE;
+    public const ushort ActiveSense             = 0xFE;
     /// <summary>0xFF</summary>
-    public const int Reset                   = 0xFF;
+    public const ushort Reset                   = 0xFF;
 
   }
 

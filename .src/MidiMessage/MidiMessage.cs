@@ -45,7 +45,7 @@ namespace on.smfio
     public MidiMsgType MessageFlag { get; }
 
     public byte ChannelBit { get { return Convert.ToByte(Message & 0x000F); } }
-    public byte MessageBit { get { return Convert.ToByte(Message & 0x00F0); } }
+    public byte MessageBit { get { return Convert.ToByte(Message & 0x00F0); } } // ?
 
     public int Message { get; set; }
 

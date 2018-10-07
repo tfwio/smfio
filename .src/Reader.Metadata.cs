@@ -56,7 +56,7 @@ namespace on.smfio
     /// <param name="msg32"></param>
     static public string MetaNameFF(int msg32)
     {
-      return MetaName((StatusByte)((byte)(msg32 & 0x000000FF)));
+      return MetaName((StatusByte)((byte)(msg32 & 0xFF)));
     }
 		
 		/// <summary>

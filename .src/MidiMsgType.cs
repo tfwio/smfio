@@ -16,24 +16,22 @@ namespace on.smfio
 		Undefined,
 		MetaInf,
 		MetaStr,
-		/// <summary>was System (0xFF7F)</summary>
+		/// <summary>0xFF7F</summary>
 		///
-		SystemSpecific,
+		SequencerSpecific,
     SystemExclusive,
-		SysCommon,
     /// <summary>
-    /// This has been used to distinguish a StatusByte message
-    /// such as F0 from 0xAn where n is the channel and the
-    /// StatusByte prior contains just a pure status.
+    /// A channel message is a message event which points at a specific channel in the lower 4 byte MSB.
     /// 
-		/// It does not make much sense that we're using Channel
-		/// message as it is here.
-		/// 
+    /// E.G. 0xAc is channel c+1 (to make a human readable channel index)
+    /// 
+    /// Or we can say `var ch = 0xAc &amp; 0x0F`;
+    /// 
     /// In fact <see cref="MidiMsgType.ControllerChange"/>, <see cref="MidiMsgType.NoteOn"/>,
 		/// <see cref="MidiMsgType.NoteOff"/>, <see cref="MidiMsgType.MetaInf"/> and
 		/// <see cref="MidiMsgType.MetaStr"/> can all fit into this criterion.
     /// </summary>
-    Channel,
+    ChannelVoice,
 		ControllerChange,
 		NoteOn,
 		NoteOff,
