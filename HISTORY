@@ -9,6 +9,27 @@ Goal(s)
 - simple(r) example(s)
 - MIDI Format 1 to Format 0 (in memory)
 - Writer (file export/write)
+- SMPTE support
+
+0.2.0
+
+version bump is due to generally re-writing much
+code surrounding the context of a status message
+in the parser.  New classes have either been added
+or renamed/reworked in this regard and this likely
+will break any prior dependent source(s).
+
+- System Exclusive messages are proper and working.
+- Sequencer Specific Metadata is now working.
+- the parser is quite a bit more comprehensive.
+  Before, it was just a frigging nightmare trying
+  to understand just why the H the default
+  message-status was converted to something that
+  looked like a meta-message before passing it
+  along to other parse ops.
+- MTrk now takes on a bit more responsibility
+- StatRange, StatusQuery and several other status-message
+  utilities are now working comprehensively and smooth.
 
 0.1.4
 
