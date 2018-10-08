@@ -56,7 +56,7 @@ namespace SMFIOViewer
     protected virtual void OnGotMidiFile()
     {
       numPpq.Value = MidiParser.Division;
-      numTempo.Value = 120.0M;
+      numTempo.Value = Convert.ToDecimal(midiParser.TempoMap.Top.Tempo);
       if (GotMidiFile != null)
         GotMidiFile(this, EventArgs.Empty);
     }
@@ -74,6 +74,7 @@ namespace SMFIOViewer
 
       MidiParser.ReaderIndex = 0;
       numTempo.Value = Convert.ToDecimal(MidiParser.TempoMap.Top.Tempo);
+      numPpq.Value = Convert.ToDecimal(MidiParser.Division);
     }
     
     #region MIDI ListBox (Event_MidiChangeTrack_MenuItemSelected)
