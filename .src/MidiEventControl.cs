@@ -13,16 +13,15 @@ using on.smfio;
 using on.smfio.Common;
 using on.smfio.util;
 
-// 7285Hz
 namespace SMFIOViewer
 {
-  public class MidiEventControl : MidiControlBase
+	public class MidiEventControl : MidiControlBase
 	{
-    IMidiParser Reader { get { return UserInterface.MidiParser; } }
-    TempoMap map = null;
+		IMidiParser Reader { get { return UserInterface.MidiParser; } }
+		TempoMap map = null;
 
-    #region ListView/Registry
-    const string regpath = @"Software\tfoxo\smfio";
+		#region ListView/Registry
+		const string regpath = @"Software\tfoxo\smfio";
 		const string reg_list_columns 	= "EventList2.Columns[]";
 		const string reg_list_fontsize 	= "EventList2.FontSize";
 		
@@ -68,52 +67,52 @@ namespace SMFIOViewer
 		{
 			Reg.SetControlFontSize(lve,9);
 			ListFontSize = "9";
-    }
-    public override void ApplyRegistrySettings()
-    {
-      Debug.Print("Loading Settings for MidiListView");
-      try
-      {
-        if (!string.IsNullOrEmpty(ListFontSize))
-        {
-          Reg.SetControlFontSize(this.lve, float.Parse(ListFontSize));
-        }
-      }
-      catch
-      {
-        Debug.Print("Error updating font size");
-      }
-      try
-      {
-        Debug.Print("got value: {0}", ListColumns);
-        if (string.IsNullOrEmpty(ListColumns))
-        {
-          Debug.Print("got error!: {0}", ListColumns);
-        }
-        var vals = Reg.TranslateString(ListColumns);
-        if (vals != null) this.ListColSize = vals;
-      }
-      catch
-      {
-        Debug.Print("Error updating list-col size");
-      }
-      Debug.Print("Adding Col-Resized Event");
+		}
+		public override void ApplyRegistrySettings()
+		{
+			Debug.Print("Loading Settings for MidiListView");
+			try
+			{
+				if (!string.IsNullOrEmpty(ListFontSize))
+				{
+					Reg.SetControlFontSize(this.lve, float.Parse(ListFontSize));
+				}
+			}
+			catch
+			{
+				Debug.Print("Error updating font size");
+			}
+			try
+			{
+				Debug.Print("got value: {0}", ListColumns);
+				if (string.IsNullOrEmpty(ListColumns))
+				{
+					Debug.Print("got error!: {0}", ListColumns);
+				}
+				var vals = Reg.TranslateString(ListColumns);
+				if (vals != null) this.ListColSize = vals;
+			}
+			catch
+			{
+				Debug.Print("Error updating list-col size");
+			}
+			Debug.Print("Adding Col-Resized Event");
 
-      this.lve.ColumnWidthChanged += new System.Windows.Forms.ColumnWidthChangedEventHandler(this.LveColumnWidthChanged);
-    }
-    void SaveColumnSetting()
-    {
-      string v = Reg.TranslateString(ListColSize);
-      Debug.Print("Saving Col Sizes");
-      Debug.Print(v);
-      if (!string.IsNullOrEmpty(v)) ListColumns = v;
-      ListFontSize = lve.Font.SizeInPoints.ToString();
-    }
+			this.lve.ColumnWidthChanged += new System.Windows.Forms.ColumnWidthChangedEventHandler(this.LveColumnWidthChanged);
+		}
+		void SaveColumnSetting()
+		{
+			string v = Reg.TranslateString(ListColSize);
+			Debug.Print("Saving Col Sizes");
+			Debug.Print(v);
+			if (!string.IsNullOrEmpty(v)) ListColumns = v;
+			ListFontSize = lve.Font.SizeInPoints.ToString();
+		}
 
-    void LveColumnWidthChanged(object sender, ColumnWidthChangedEventArgs e)
-    {
-      SaveColumnSetting();
-    }
+		void LveColumnWidthChanged(object sender, ColumnWidthChangedEventArgs e)
+		{
+			SaveColumnSetting();
+		}
 
 		#endregion
 		
@@ -146,14 +145,14 @@ namespace SMFIOViewer
 			base.FileLoaded(sender, e);
 			
 			if (!Reader.MessageHandlers.Contains(GotMidiEventD))
-        Reader.MessageHandlers.Add(GotMidiEventD);
+				Reader.MessageHandlers.Add(GotMidiEventD);
 		}
 		public override void BeforeTrackLoaded(object sender, EventArgs e)
 		{
 			Debug.Print("Midi Event List Hidden");
 			this.lve.Visible = false;
 			base.BeforeTrackLoaded(sender, e);
-      map = Reader.TempoMap.Copy();
+			map = Reader.TempoMap.Copy();
 		}
 		public override void AfterTrackLoaded(object sender, EventArgs e)
 		{
@@ -168,31 +167,34 @@ namespace SMFIOViewer
 		
 		void GotMidiEventD(MidiMsgType msgType, int nTrackIndex, int nTrackOffset, int midiMsg32, byte midiMsg8, long pulse, int statusRunning, bool isRunningStatus)
 		{
-      string hex = $"{midiMsg32:X4}";
-		  if (map.Count==0) map = Reader.TempoMap.Copy();
+			if (map.Count==0) map = Reader.TempoMap.Copy();
 			var tempo = !map.Top.Match(pulse) ? map.Seek(pulse) : map.Top;
-      double seconds = TimeUtil.GetSeconds(Division, tempo.MusPQN, (long)pulse-tempo.Pulse, tempo.Second);
-      string sseconds = TimeUtil.GetSSeconds(seconds);
-      string smbt = TimeUtil.GetMBT((long)pulse, Division);
-      switch (msgType)
+			double seconds = TimeUtil.GetSeconds(Division, tempo.MusPQN, (long)pulse-tempo.Pulse, tempo.Second);
+			string sseconds = TimeUtil.GetSSeconds(seconds);
+			string smbt = TimeUtil.GetMBT((long)pulse, Division);
+
+			switch (msgType)
 			{
 				case MidiMsgType.MetaStr:
 					var item = lve.AddItem( tempo, pulse, ColorResources.c4, smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF( midiMsg32 ), Reader.GetMetadataString( nTrackOffset ) );
 					break;
 				case MidiMsgType.MetaInf:
-          lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentRunningStatus8), smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF(midiMsg32), Reader.GetMessageString(nTrackOffset));
-          break;
-        case MidiMsgType.SequencerSpecific:
-          lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentRunningStatus8), smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF(midiMsg32), Reader.GetMessageString(nTrackOffset));
-          break;
-        case MidiMsgType.SystemExclusive:
+					lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentRunningStatus8), smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF(midiMsg32), Reader.GetMessageString(nTrackOffset));
+					break;
+				case MidiMsgType.SequencerSpecific:
+					lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentRunningStatus8), smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF(midiMsg32), Reader.GetMessageString(nTrackOffset));
+					break;
+				case MidiMsgType.SystemExclusive:
 					var bytes = Reader[nTrackIndex, nTrackOffset, Reader[nTrackIndex].GetEndOfSystemExclusive(nTrackOffset) - nTrackOffset];
-          lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentRunningStatus8), smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF(midiMsg32), Reader.GetMessageString(nTrackOffset));
-          break;
+					lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentRunningStatus8), smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF(midiMsg32), Reader.GetMessageString(nTrackOffset));
+					break;
+				case MidiMsgType.EOT:
+					lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentRunningStatus8), smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF(midiMsg32), Reader.GetMessageString(nTrackOffset));
+					break;
 				default: // expecting channel voice messages
-          if (isRunningStatus) lve.AddItem( tempo, pulse, ColorResources.GetRseEventColor( ColorResources.Colors["225"], Reader.CurrentRunningStatus8 ), smbt, sseconds, midiMsg8==0xF0 ? "" :(statusRunning & 0x0F).ToString(), Reader.GetRseEventString( nTrackOffset ), Reader.chRseV( nTrackOffset ) );
+					if (isRunningStatus) lve.AddItem( tempo, pulse, ColorResources.GetRseEventColor( ColorResources.Colors["225"], Reader.CurrentRunningStatus8 ), smbt, sseconds, midiMsg8==0xF0 ? "" :(statusRunning & 0x0F).ToString(), Reader.GetRseEventString( nTrackOffset ), Reader.chRseV( nTrackOffset ) );
 					else                 lve.AddItem( tempo, pulse, ColorResources.GetEventColor   ( ColorResources.Colors["225"], Reader.CurrentRunningStatus8 ), smbt, sseconds, midiMsg8==0xF0 ? "" :(statusRunning & 0x0F).ToString(), Reader.GetEventString   ( nTrackOffset ), Reader.chV   ( nTrackOffset ) );
-          break;
+					break;
 			}
 		}
 		
@@ -224,11 +226,11 @@ namespace SMFIOViewer
 			this.lve.BackColor = System.Drawing.SystemColors.Window;
 			this.lve.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.lve.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			                          	this.cctime,
-			                          	this.cchhmmss,
-			                          	this.ccchanel,
-			                          	this.ccevent,
-			                          	this.ccmsg});
+																	this.cctime,
+																	this.cchhmmss,
+																	this.ccchanel,
+																	this.ccevent,
+																	this.ccmsg});
 			this.lve.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.lve.Font = new System.Drawing.Font("FreeMono", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
 			this.lve.FullRowSelect = true;
