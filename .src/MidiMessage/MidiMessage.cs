@@ -52,7 +52,7 @@ namespace on.smfio
     /// <summary>Not quite sure this is the best name for this guy.</summary>
     public long Pulse { get; set; }
 
-    public byte[] Data { get; set; }
+    virtual public byte[] Data { get; set; }
 
     #endregion
 
