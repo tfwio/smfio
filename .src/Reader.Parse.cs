@@ -14,6 +14,17 @@ namespace on.smfio
 {
   public partial class Reader : IMidiParser_Parser
   {
+
+    // 
+    // Event Insight
+    // ---------------------------------
+
+    /// <inheritdoc/>
+    public int IncrementRun(int offset) { return Increment(offset, 0); }
+
+    /// <inheritdoc/>
+    public int GetNextPosition(int offset) { return Increment(offset, 1); }
+
     /// <summary>
     /// Next Position (rse)
     /// 
@@ -26,27 +37,25 @@ namespace on.smfio
     /// </summary>
     int Increment(int offset, int seek)
     {
+      int Op = offset + seek, Op1 = offset + seek + 1;
       int status = CurrentStatus & 0xFF; // convert to byte
       // FF (append one)
-      if (StatusQuery.IsNoteOff(status))           return offset + seek + 1; // 0xFF 0x8c 0xNN 0xNN
-      if (StatusQuery.IsNoteOn(status))            return offset + seek + 1; // 0xFF 0x9c 0xNN 0xNN
-      if (StatusQuery.IsKeyAftertouch(status))     return offset + seek + 1; // 0xFF 0xAc 0xNN 0xNN
-      if (StatusQuery.IsControlChange(status))     return offset + seek + 1; // 0xFF 0xBc 0xNN 0xNN
-      if (StatusQuery.IsProgramChange(status))     return offset + seek;     // 0xCc 0xNN 0xNN 0xNN
-      if (StatusQuery.IsChannelAftertouch(status)) return offset + seek;     // 0xDc 0xNN 0xNN
-      if (StatusQuery.IsPitchBend(status))         return offset + seek + 1; // 0xFF 0xEc 0xNN 0xNN
-      if (StatusQuery.IsSequencerSpecific(status)) return offset + seek + FileHandle[ReaderIndex, offset + seek];
+      if (StatusQuery.IsNoteOff(status))           return Op1; // 0xFF 0x8c 0xNN 0xNN
+      if (StatusQuery.IsNoteOn(status))            return Op1; // 0xFF 0x9c 0xNN 0xNN
+      if (StatusQuery.IsKeyAftertouch(status))     return Op1; // 0xFF 0xAc 0xNN 0xNN
+      if (StatusQuery.IsControlChange(status))     return Op1; // 0xFF 0xBc 0xNN 0xNN
+      if (StatusQuery.IsProgramChange(status))     return Op;  // 0xCc 0xNN 0xNN 0xNN
+      if (StatusQuery.IsChannelAftertouch(status)) return Op;  // 0xDc 0xNN 0xNN
+      if (StatusQuery.IsPitchBend(status))         return Op1; // 0xFF 0xEc 0xNN 0xNN
+      if (StatusQuery.IsSequencerSpecific(status)) return Op + FileHandle[ReaderIndex, Op];
       if (StatusQuery.IsSystemExclusive(status))   return FileHandle[ReaderIndex].GetEndOfSystemExclusive(offset);
       //if (StatusQuery.IsSequencerSpecific(status)) return offset + seek; // 0xFF 0xF0
       // 
-      if (StatusQuery.IsSystemCommon(status))      return offset + seek + FileHandle[ReaderIndex, offset + seek];
-      if (StatusQuery.IsSystemRealtime(status))    return offset + seek; // 0xF0
+      if (StatusQuery.IsSystemCommon(status))      return Op + FileHandle[ReaderIndex, Op];
+      if (StatusQuery.IsSystemRealtime(status))    return Op; // 0xF0
 
-      // this could be wrong.  We just checked for system-realtime, yes?
       // what if there are two realtime messages lined after the other?
       if (!StatusQuery.IsMidiBMessage(CurrentRunningStatus8)) return -1;
-      
-      // check this before the general common category
 
       return -1;
     }
@@ -87,7 +96,6 @@ namespace on.smfio
         case StatusWord.TimeSignature:  /* 0xFF58 */ return MetaHelpers.meta_FF58(FileHandle[ReaderIndex], pTrackOffset);
         case StatusWord.KeySignature:   /* 0xFF59 */ return MetaHelpers.PrintKeysignature(FileHandle[ReaderIndex], pTrackOffset);
         case StatusWord.EndOfTrack:     /* 0xFF2F */ return MetaHelpers.meta_FF2F();
-        // FIXME: This just is not right.
         case StatusWord.SequencerSpecific:  /* 0xFF7F */
           return GetMetaBString(pTrackOffset).StringifyHex();
         case StatusWord.SystemExclusive:    /* 0xF0 */
@@ -146,28 +154,14 @@ namespace on.smfio
     }
 
     // 
-    // Event Insight
-    // ---------------------------------
-
-    /// <inheritdoc/>
-    public int IncrementRun(int offset) { return Increment(offset, 0); }
-
-    /// <inheritdoc/>
-    public int GetNextPosition(int offset) { return Increment(offset, 1); }
-
-    // 
     // Event Insight (name, value) and specialized helpers
     // ---------------------------------
 
     /// <inheritdoc/>
-    public string GetRseEventValueString(int offset) {
-      return GetEventValueString(offset, 0);
-    }
+    public string GetRseEventValueString(int offset) { return GetEventValueString(offset, 0); }
 
     /// <inheritdoc/>
-    public string GetEventValueString(int offset) {
-      return GetEventValueString(offset, 1);
-    }
+    public string GetEventValueString(int offset) { return GetEventValueString(offset, 1); }
 
     /// <inheritdoc/>
     string GetEventValueString(int offset, int plus)
@@ -175,10 +169,10 @@ namespace on.smfio
       int ExpandedRSE = CurrentRunningStatus8; // << 8;
       int delta = IncrementRun(offset + plus);
       if (delta == -1) Debug.Assert(false, string.Format("warning… {0:X2}", ExpandedRSE));
-      // 
+      // channel voice
       else if (StatusQuery.IsNoteOn(ExpandedRSE)) return (FileHandle[ReaderIndex, offset + plus, 2]).StringifyHex();
       else if (StatusQuery.IsNoteOff(ExpandedRSE)) return (FileHandle[ReaderIndex, offset + plus, 2]).StringifyHex();
-      // voice mode
+      // channel voice mode
       else if (StatusQuery.IsKeyAftertouch(ExpandedRSE)) return (FileHandle[ReaderIndex, offset + plus, 2]).StringifyHex();
       else if (StatusQuery.IsControlChange(ExpandedRSE)) return (FileHandle[ReaderIndex, offset + plus, 2]).StringifyHex();
       else if (StatusQuery.IsProgramChange(ExpandedRSE)) return (FileHandle[ReaderIndex, offset + plus, 2]).StringifyHex();
@@ -201,63 +195,43 @@ namespace on.smfio
 
     byte[] GetEventValue(int offset, int plus)
     {
-      List<byte> returned = new List<byte> { (byte)(CurrentRunningStatus8 & 0xff) };
-      int ExpandedRSE = CurrentRunningStatus8;
-      int length = IncrementRun(offset + plus); // delta-byte-encoded 'size' integer. 
-      //
-      if (StatusQuery.IsNoteOn(ExpandedRSE)) returned.AddRange(FileHandle[ReaderIndex, offset + plus, 2]);
-      else if (StatusQuery.IsNoteOff(ExpandedRSE)) returned.AddRange(FileHandle[ReaderIndex, offset + plus, 2]);
-      else if (StatusQuery.IsKeyAftertouch(ExpandedRSE)) returned.AddRange(FileHandle[ReaderIndex, offset + plus, 2]);
-      else if (StatusQuery.IsControlChange(ExpandedRSE)) returned.AddRange(FileHandle[ReaderIndex, offset + plus, 2]);
-      else if (StatusQuery.IsProgramChange(ExpandedRSE)) returned.AddRange(FileHandle[ReaderIndex, offset + plus, 2]);
-      else if (StatusQuery.IsChannelAftertouch(ExpandedRSE)) returned.AddRange(FileHandle[ReaderIndex, offset + plus, 2]);
-      else if (StatusQuery.IsPitchBend(ExpandedRSE)) returned.AddRange(FileHandle[ReaderIndex, offset + plus, 2]);
-      else if (StatusQuery.IsSequencerSpecific(ExpandedRSE))
+      int Op = offset + plus, Op1 = offset + plus + 1;
+      int length = IncrementRun(Op); // delta-byte-encoded 'size' integer. 
+      List<byte> returned = new List<byte> { (byte)(this.CurrentRunningStatus8 & 0xff) };
+      // channel/voice
+      if (StatusQuery.IsNoteOn(CurrentRunningStatus8)) returned.AddRange(FileHandle[ReaderIndex, Op, 2]);
+      else if (StatusQuery.IsNoteOff(CurrentRunningStatus8)) returned.AddRange(FileHandle[ReaderIndex, Op, 2]);
+      // channel/voice (mode)
+      else if (StatusQuery.IsKeyAftertouch(CurrentRunningStatus8)) returned.AddRange(FileHandle[ReaderIndex, Op, 2]);
+      else if (StatusQuery.IsControlChange(CurrentRunningStatus8)) returned.AddRange(FileHandle[ReaderIndex, Op, 2]);
+      else if (StatusQuery.IsProgramChange(CurrentRunningStatus8)) returned.AddRange(FileHandle[ReaderIndex, Op, 2]);
+      else if (StatusQuery.IsChannelAftertouch(CurrentRunningStatus8)) returned.AddRange(FileHandle[ReaderIndex, Op, 2]);
+      else if (StatusQuery.IsPitchBend(CurrentRunningStatus8)) returned.AddRange(FileHandle[ReaderIndex, Op, 2]);
+      // metadata
+      else if (StatusQuery.IsSequencerSpecific(CurrentRunningStatus8))
+      {
+        returned.Clear();
+        returned.AddRange(FileHandle[selectedTrackNumber, offset, 1]);
+        returned.AddRange(FileHandle[ReaderIndex, Op, FileHandle[ReaderIndex, Op] + 1]);
+      }
+      // system
+      else if (StatusQuery.IsSystemExclusive(CurrentRunningStatus8))
       {
         returned.Clear();
         returned.AddRange(FileHandle[selectedTrackNumber, offset, 1]);
         returned.AddRange(FileHandle[ReaderIndex, offset + plus, FileHandle[ReaderIndex, offset + plus] + 1]);
       }
-      else if (StatusQuery.IsSystemExclusive(ExpandedRSE))
-      {
-        returned.Clear();
-        returned.AddRange(FileHandle[selectedTrackNumber, offset, 1]);
-        returned.AddRange(FileHandle[ReaderIndex, offset + plus, FileHandle[ReaderIndex, offset + plus] + 1]);
-      }
-      else if (StatusQuery.IsSystemCommon(ExpandedRSE))
+      else if (StatusQuery.IsSystemCommon(CurrentRunningStatus8))
       {
         returned.Clear();
         returned.AddRange(FileHandle[selectedTrackNumber, offset, 2]);
         returned.AddRange(FileHandle[ReaderIndex, offset + plus, FileHandle[ReaderIndex, offset + plus] + 1]);
       }
-      else if (StatusQuery.IsSystemRealtime(ExpandedRSE))
+      else if (StatusQuery.IsSystemRealtime(CurrentRunningStatus8))
         returned.AddRange(FileHandle[ReaderIndex, offset + plus, 2]);
-      else if (length == -1) Debug.Assert(false, string.Format("warning… {0:X2}", ExpandedRSE));
+      else if (length == -1) Debug.Assert(false, string.Format("warning… {0:X2}", CurrentRunningStatus8));
       byte[] bytes = returned.ToArray();
       return bytes;
-    }
-
-    // 
-    // Event Length
-    // ---------------------------------
-
-    int GetEventLength(int offset, int plus)
-    {
-      int ExpandedRSE = CurrentRunningStatus8; // << 8;
-      int delta = IncrementRun(offset + plus);
-      if (delta == -1) Debug.Assert(false, string.Format("warning… {0:X2}", ExpandedRSE));
-      else if (StatusQuery.IsNoteOn(ExpandedRSE)) return 2;
-      else if (StatusQuery.IsNoteOff(ExpandedRSE)) return 2;
-      else if (StatusQuery.IsKeyAftertouch(ExpandedRSE)) return 2;
-      else if (StatusQuery.IsControlChange(ExpandedRSE)) return 2;
-      else if (StatusQuery.IsProgramChange(ExpandedRSE)) return 2;
-      else if (StatusQuery.IsChannelAftertouch(ExpandedRSE)) return 2;
-      // this may never occur here and should in the Meta part
-      else if (StatusQuery.IsPitchBend(ExpandedRSE)) return 2;
-      else if (StatusQuery.IsSequencerSpecific(ExpandedRSE)) return GetMetaLen(offset, plus);
-      else if (StatusQuery.IsSystemCommon(ExpandedRSE)) return GetMetaLen(offset, plus);
-      else if (StatusQuery.IsSystemRealtime(ExpandedRSE)) return GetMetaLen(offset, plus);
-      return -1;
     }
 
     // 
@@ -272,25 +246,28 @@ namespace on.smfio
 
     string GetEventString(int offset, int plus)
     {
-      string bytestatus = $"{CurrentRunningStatus8:X4}";
-      int ExpandedRSE = CurrentRunningStatus8; // << 8;
-      bool passFail = !StatusQuery.IsMidiMessage(CurrentRunningStatus8); // what are we checking for here?
-      if (!StatusQuery.IsMidiMessage(CurrentRunningStatus8))
+      // string bytestatus = $"{this.CurrentRunningStatus8:X4}";
+      int Op = offset + plus, Op1 = offset + plus + 1;
+      bool passFail = !StatusQuery.IsMidiMessage(this.CurrentRunningStatus8); // what are we checking for here?
+      if (!StatusQuery.IsMidiMessage(this.CurrentRunningStatus8))
       {
-        Debug.Assert(false, string.Format("warning… {0:X2}", ExpandedRSE));
+        Debug.Assert(false, string.Format("warning… {0:X2}", CurrentRunningStatus8));
         return null;
       }
-      else
-      if (StatusQuery.IsNoteOn(ExpandedRSE)) return GetNoteMsg(0, offset + plus, StringRes.m9);
-      else if (StatusQuery.IsNoteOff(ExpandedRSE)) return GetNoteMsg(0, offset + plus, StringRes.m8);
-      else if (StatusQuery.IsKeyAftertouch(ExpandedRSE)) return string.Format(StringRes.mA, FileHandle[ReaderIndex, offset + plus], FileHandle[ReaderIndex, offset + plus + 1]);
-      else if (StatusQuery.IsControlChange(ExpandedRSE)) return string.Format(StringRes.mB, SmfString.ControlMap[FileHandle.Get8Bit(ReaderIndex, offset + plus)].Replace((char)0xa, (char)0x20).Trim(), FileHandle.Get8Bit(ReaderIndex, offset + plus + 1));
-      else if (StatusQuery.IsProgramChange(ExpandedRSE)) return SmfString.PatchMap[FileHandle[ReaderIndex, offset + plus]].Replace((char)0xa, (char)0x20).Trim();
-      else if (StatusQuery.IsChannelAftertouch(ExpandedRSE)) return StatusQuery.ChannelAftertouchRange.Name;
-      else if (StatusQuery.IsPitchBend(ExpandedRSE)) return StatusQuery.PitchBendRange.Name;
-      else if (StatusQuery.IsSequencerSpecific(ExpandedRSE)) return StatusQuery.SystemExclusiveRange.Name;
-      else if (StatusQuery.IsSystemCommon(ExpandedRSE)) return StatusQuery.SystemCommonMessageRange.Name;
-      else if (StatusQuery.IsSystemRealtime(ExpandedRSE)) return StatusQuery.SystemRealtimeRange.Name;
+      // metadata
+      if (StatusQuery.IsSequencerSpecific(CurrentRunningStatus8)) return StatusQuery.SystemExclusiveRange.Name;
+      else if (StatusQuery.IsNoteOn(CurrentRunningStatus8)) return GetNoteMsg(0, Op, StringRes.m9);
+      else if (StatusQuery.IsNoteOff(CurrentRunningStatus8)) return GetNoteMsg(0, Op, StringRes.m8);
+      // channel/voice
+      else if (0x21==CurrentRunningStatus8) return $"{FileHandle.Get8Bit(ReaderIndex, Op1)}";
+      else if (StatusQuery.IsKeyAftertouch(CurrentRunningStatus8)) return string.Format(StringRes.mA, FileHandle[ReaderIndex, Op], FileHandle[ReaderIndex, Op1]);
+      else if (StatusQuery.IsControlChange(CurrentRunningStatus8)) return string.Format(StringRes.mB, SmfString.ControlMap[FileHandle.Get8Bit(ReaderIndex, Op)].Replace((char)0xA, (char)0x20).Trim(), FileHandle.Get8Bit(ReaderIndex, Op1));
+      else if (StatusQuery.IsProgramChange(CurrentRunningStatus8)) return SmfString.PatchMap[FileHandle[ReaderIndex, Op]].Replace((char)0xA, (char)0x20).Trim();
+      else if (StatusQuery.IsChannelAftertouch(CurrentRunningStatus8)) return StatusQuery.ChannelAftertouchRange.Name;
+      else if (StatusQuery.IsPitchBend(CurrentRunningStatus8)) return StatusQuery.PitchBendRange.Name;
+      // system
+      else if (StatusQuery.IsSystemCommon(CurrentRunningStatus8)) return StatusQuery.SystemCommonMessageRange.Name;
+      else if (StatusQuery.IsSystemRealtime(CurrentRunningStatus8)) return StatusQuery.SystemRealtimeRange.Name;
       return null;
     }
 

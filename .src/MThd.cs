@@ -63,20 +63,11 @@ namespace on.smfio.chunk
     }
 
     #region Message Utility Functions
-    /// <returns>
-    /// loads two bytes (UInt16's allocation type/size) to Int32.
-    /// </returns>
-    public Int32 Get16BitInt32(int ntrack, int offset) {
-      var msg8 = Get8Bit(ntrack, offset);
-      //if (msg8 == 0xF0) return 0xFFF0; // FIXME: and this would be a hack
-      return ( Get8Bit(ntrack, offset) << 8 ) + Get8Bit( ntrack, offset+1 );
-    }
 
     public ushort Get16Bit(int ntrack, int offset)
     {
       uint msg8 = Get8Bit(ntrack, offset);
-      uint msg16 = msg8 << 8;
-      return Convert.ToUInt16(msg8 == 0xFF ? (msg16 + Get8Bit(ntrack, offset + 1)) : msg8);
+      return Convert.ToUInt16(msg8 == 0xFF ? ((msg8 << 8) + Get8Bit(ntrack, offset + 1)) : msg8);
     }
     /// <returns>tk[tkid].track[track_pos] which is a single byte where ‘tk’ is typeof(MTrk).</returns>
     public byte Get8Bit (int ntrack, int offset) { return this[ntrack, offset]; }
