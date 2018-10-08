@@ -67,13 +67,13 @@ namespace on.smfio.chunk
     {
       byte tempBit;
       int i = pTrackOffset;
-      if ((pDeltaVar = Data[i++]) > 0x7f)
+      if ((pDeltaVar = Data[i++]) > 0x7F)
       {
-        pDeltaVar &= 0x7f;
+        pDeltaVar &= 0x7F;
         do
         {
-          pDeltaVar = (pDeltaVar << 7) + ((tempBit = Data[i++]) & 0x7f);
-        } while (tempBit > 0x7f);
+          pDeltaVar = (pDeltaVar << 7) + ((tempBit = Data[i++]) & 0x7F);
+        } while (tempBit > 0x7F && i < Data.Length);
       }
       return i;
     }
