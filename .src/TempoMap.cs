@@ -106,6 +106,7 @@ namespace on.smfio
         if (longest < reader.TrackLength[nTrackIndex])
           longest = reader.TrackLength[nTrackIndex];
       }
+      if (list.Count == 0) list.Add(new TempoState(500000, reader.Division, 0, 0, 0.0));
       if (list[0].PulseMax <= longest) list[0].PulseMax = longest+12;
       // list[Count - 1].Second = 0.0;
       // list.Reverse();
