@@ -65,7 +65,7 @@ namespace on.smfio.Common
 		static public readonly StatRange SystemCommonMessageRange     = new StatRange("System Exclusive Message", Stat8.SystemExclusive, Stat8.EndOfExclusive);
 		
 
-    /// <summary>0xFF 0x7F (System Common)</summary>
+    /// <summary>0xFF 0x7F (Sequencer Specific Binary Data)</summary>
     static public bool IsSequencerSpecific(int msg) { return SequencerSpeceficRange.Match(msg); }
     
     /// <summary>0xF0 (System Common)</summary>
