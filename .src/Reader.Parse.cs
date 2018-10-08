@@ -260,9 +260,16 @@ namespace on.smfio
       else if (StatusQuery.IsNoteOn(CurrentRunningStatus8)) return GetNoteMsg(0, Op, StringRes.m9);
       else if (StatusQuery.IsNoteOff(CurrentRunningStatus8)) return GetNoteMsg(0, Op, StringRes.m8);
       // channel/voice
-      else if (0x21==CurrentRunningStatus8) return $"{FileHandle.Get8Bit(ReaderIndex, Op1)}";
+      else if (0x21==CurrentRunningStatus8) return FileHandle.Get8Bit(ReaderIndex, Op1).ToString();
       else if (StatusQuery.IsKeyAftertouch(CurrentRunningStatus8)) return string.Format(StringRes.mA, FileHandle[ReaderIndex, Op], FileHandle[ReaderIndex, Op1]);
-      else if (StatusQuery.IsControlChange(CurrentRunningStatus8)) return string.Format(StringRes.mB, SmfString.ControlMap[FileHandle.Get8Bit(ReaderIndex, Op)].Replace((char)0xA, (char)0x20).Trim(), FileHandle.Get8Bit(ReaderIndex, Op1));
+      else if (StatusQuery.IsControlChange(CurrentRunningStatus8))
+      {
+        // var shit = FileHandle[ReaderIndex].Data[offset+1];
+        var mapIndex = FileHandle.Get8Bit(ReaderIndex, Op);
+        var mapString1 = mapIndex > 127 ? $"{mapIndex}?" : SmfString.ControlMap[mapIndex].Trim();
+        var mapString2 = FileHandle.Get8Bit(ReaderIndex, Op1);
+        return string.Format(StringRes.mB, mapString1,mapString2 );
+      }
       else if (StatusQuery.IsProgramChange(CurrentRunningStatus8)) return SmfString.PatchMap[FileHandle[ReaderIndex, Op]].Replace((char)0xA, (char)0x20).Trim();
       else if (StatusQuery.IsChannelAftertouch(CurrentRunningStatus8)) return StatusQuery.ChannelAftertouchRange.Name;
       else if (StatusQuery.IsPitchBend(CurrentRunningStatus8)) return StatusQuery.PitchBendRange.Name;

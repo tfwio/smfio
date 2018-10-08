@@ -14,6 +14,7 @@ namespace on.smfio
 	/// TODO: OBSOLETE; Use StatusByte, Word or Integer in stead.
 	public enum MidiMsgType {
 		Undefined,
+    EOT,
 		MetaInf,
 		MetaStr,
 		/// <summary>0xFF7F</summary>
