@@ -1,23 +1,23 @@
 Bank Select
-Modulation Wheel Or Lever
+Modulation Wheel/Lever
 Breath Controller
 
 Foot Controller
 Portamento Time
-Data Entry Msb
+Data Entry MSB
 Channel Volume
 Balance
 
 Pan
 Expression Controller
-Lfo Rate (Effect Control 1)
-Lfo Osc Num (Eff 2)
-Osc Num
+LFO Rate (Effect Control 1)
+LFO OSC Num (Eff 2)
+OSC Num
 Fine Tune
-General Purpose Controller 1 (Osc Phase)
-Gpc 2 (Pulse Width)
-Gpc 3
-Gpc 4
+General Purpose Controller 1 (OSC Phase)
+General Purpose Controller 2 (Pulse Width)
+General Purpose Controller 3
+General Purpose Controller 4
 
 
 
@@ -30,53 +30,53 @@ Gpc 4
 
 
 
-Lsb For Control  0 (Bank Select)
-Lsb For Control  1 (Modulation Wheel Or Lever)
-Lsb For Control  2 (Breath Controller)
-Lsb For Control  3 ()
-Lsb For Control  4 (Foot Controller)
-Lsb For Control  5 (Portamento Time)
-Lsb For Control  6 (Data Entry)
-Lsb For Control  7 (Chanel Volume)
-Lsb For Control  8 (Balance)
-Lsb For Control  9 ()
-Lsb For Control 10 (Pan)
-Lsb For Control 11 (Expression Controller)
-Lsb For Control 12 (Effect Control 1)
-Lsb For Control 13 (Effect Control 2)
-Lsb For Control 14 
-Lsb For Control 15 
-Lsb For Control 16 (General Purpose Controller 1)
-Lsb For Control 17 (Gpc 2)
-Lsb For Control 18 (Gpc 3)
-Lsb For Control 19 (Gpc 4)
-Lsb For Control 20 
-Lsb For Control 21 
-Lsb For Control 22 
-Lsb For Control 23 
-Lsb For Control 24 
-Lsb For Control 25 
-Lsb For Control 26 
-Lsb For Control 27 
-Lsb For Control 28 
-Lsb For Control 29 
-Lsb For Control 30 
-Lsb For Control 31 
+LSB For Control  0 (Bank Select)
+LSB For Control  1 (Modulation Wheel Or Lever)
+LSB For Control  2 (Breath Controller)
+LSB For Control  3
+LSB For Control  4 (Foot Controller)
+LSB For Control  5 (Portamento Time)
+LSB For Control  6 (Data Entry)
+LSB For Control  7 (Chanel Volume)
+LSB For Control  8 (Balance)
+LSB For Control  9
+LSB For Control 10 (Pan)
+LSB For Control 11 (Expression Controller)
+LSB For Control 12 (Effect Control 1)
+LSB For Control 13 (Effect Control 2)
+LSB For Control 14 
+LSB For Control 15 
+LSB For Control 16 (General Purpose Controller 1)
+LSB For Control 17 (General Purpose Controller 2)
+LSB For Control 18 (General Purpose Controller 3)
+LSB For Control 19 (General Purpose Controller 4)
+LSB For Control 20 
+LSB For Control 21 
+LSB For Control 22 
+LSB For Control 23 
+LSB For Control 24 
+LSB For Control 25 
+LSB For Control 26 
+LSB For Control 27 
+LSB For Control 28 
+LSB For Control 29 
+LSB For Control 30 
+LSB For Control 31 
 Damper Pedal On/Off (Sustain)
 Portamento On/Off
 Sostenuto On/Off
 Soft Pedal On/Off
 Legato Footswitch On/Off
 Hold 2
-Sc 1 (Sound Variation)
-Sc 2 (Timbre/Harmonic Intens.)
-Sc 3 (Release Time)
-Sc 4 (Attack Time)
-Sc 5 (Brightness)
-Sc 6 (Decay Time - See Mma Rp-021)
-Sc 7 (Vibrato Rate)
-Sc 8 (Vibrato Depth)
-Sc 9 (Vibrato Delay)
+Sound Controller 1 (Sound Variation)
+Sound Controller 2 (Timbre)
+Sound Controller 3 (Release Time)
+Sound Controller 4 (Attack Time)
+Sound Controller 5 (Brightness)
+Sound Controller 6 (Decay Time - See Mma Rp-021)
+Sound Controller 7 (Vibrato Rate)
+Sound Controller 8 (Vibrato Depth)
+Sound Controller 9 (Vibrato Delay)
 Standard Control 10
 General Purpose Controller 5
 General Purpose Controller 6
@@ -96,10 +96,10 @@ Effects 4 Depth: Formerly Celeste Detune Depth
 Effects 5 Depth: Formerly Phaser Depth
 Data Increment (Data Entry +1)
 Data Decrement (Data Entry -1)
-Non-Registered Parameter Number - Lsb
-Non-Registered Parameter Number - Msb
-Registered Parameter Number - Msb
-Registered Parameter Number - Lsb
+Non-Registered Parameter Number - LSB
+Non-Registered Parameter Number - MSB
+Registered Parameter Number - MSB
+Registered Parameter Number - LSB
 
 
 
