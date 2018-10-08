@@ -90,7 +90,8 @@ namespace on.smfio
       switch ((StatusWord)msg32)
       {
         case StatusWord.SequenceNumber: /* 0xFF00 */ return MetaHelpers.meta_FF00(FileHandle[ReaderIndex, pTrackOffset + 3], FileHandle[ReaderIndex, pTrackOffset + 4]);
-        case StatusWord.ChannelPrefix:  /* 0xFF20 */ return FileHandle[ReaderIndex, pTrackOffset + 3].ToString();
+        case StatusWord.ChannelPrefix:  /* 0xFF20 */
+        case StatusWord.PortMessage:    /* 0xFF21 */ return FileHandle[ReaderIndex, pTrackOffset + 3].ToString();
         case StatusWord.SetTempo:       /* 0xFF51 */ return MetaHelpers.meta_FF51(Convert.ToInt32(FileHandle[ReaderIndex].ReadU24(pTrackOffset + 3)));
         case StatusWord.SMPTEOffset:    /* 0xFF54 */ return MetaHelpers.meta_FF54();
         case StatusWord.TimeSignature:  /* 0xFF58 */ return MetaHelpers.meta_FF58(FileHandle[ReaderIndex], pTrackOffset);
