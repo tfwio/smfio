@@ -52,6 +52,7 @@ namespace on.smfio
     MidiKeySignature KeySignature { get; set; }
 
     MidiTimeSignature TimeSignature { get; set; }
+    SmpteOffset SMPTE_Offset { get; set; }
 
     // =============================================
     // TIMING

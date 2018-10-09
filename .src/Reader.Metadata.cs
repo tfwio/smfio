@@ -82,7 +82,16 @@ namespace on.smfio
 		static public string meta_FF51(int num) { return string.Format(StringRes.msg_time_ms_pqn, 60000000.0, num, 60000000.0/num ); }
 		
 		/// ?
-		static public string meta_FF54() { return string.Format("SMPTE Offset"); }
+		static public string meta_FF54(IMidiParser reader, int offset) {
+		  reader.SMPTE_Offset.SetSMPTE(
+        reader.FileHandle[reader.ReaderIndex].Data[offset+3],
+        reader.FileHandle[reader.ReaderIndex].Data[offset+4],
+        reader.FileHandle[reader.ReaderIndex].Data[offset+5],
+        reader.FileHandle[reader.ReaderIndex].Data[offset+6],
+        reader.FileHandle[reader.ReaderIndex].Data[offset+7]
+		    );
+		  return string.Format("SMPTE Offset");
+		}
 		
 		/// Midi Time Signature
 		static public string meta_FF58(MTrk track, int offset, params int[] positions)

@@ -85,6 +85,7 @@
     <Compile Include="Common\KeySignatureType.cs" />
     <Compile Include="Common\MidiKeySignature.cs" />
     <Compile Include="Common\MidiTimeSignature.cs" />
+    <Compile Include="Common\SmpteOffset.cs" />
     <Compile Include="EnumFile.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="IMidiParser.cs" />

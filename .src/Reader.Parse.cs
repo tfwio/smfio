@@ -93,18 +93,16 @@ namespace on.smfio
         case StatusWord.ChannelPrefix:  /* 0xFF20 */
         case StatusWord.PortMessage:    /* 0xFF21 */ return FileHandle[ReaderIndex, pTrackOffset + 3].ToString();
         case StatusWord.SetTempo:       /* 0xFF51 */ return MetaHelpers.meta_FF51(Convert.ToInt32(FileHandle[ReaderIndex].ReadU24(pTrackOffset + 3)));
-        case StatusWord.SMPTEOffset:    /* 0xFF54 */ return MetaHelpers.meta_FF54();
+        case StatusWord.SMPTEOffset:    /* 0xFF54 */ return MetaHelpers.meta_FF54(this, pTrackOffset);
         case StatusWord.TimeSignature:  /* 0xFF58 */ return MetaHelpers.meta_FF58(FileHandle[ReaderIndex], pTrackOffset);
         case StatusWord.KeySignature:   /* 0xFF59 */ return MetaHelpers.PrintKeysignature(FileHandle[ReaderIndex], pTrackOffset);
         case StatusWord.EndOfTrack:     /* 0xFF2F */ return MetaHelpers.meta_FF2F();
-        case StatusWord.SequencerSpecific:  /* 0xFF7F */
-          return GetMetaBString(pTrackOffset).StringifyHex();
+        case StatusWord.SequencerSpecific:  /* 0xFF7F */ return GetMetaBString(pTrackOffset).StringifyHex();
         case StatusWord.SystemExclusive:    /* 0xF0 */
           int nlength = FileHandle[ReaderIndex].GetEndOfSystemExclusive(pTrackOffset) - pTrackOffset;
           int noffset = pTrackOffset;
           string nresult = FileHandle[ReaderIndex, pTrackOffset, nlength].StringifyHex();
           return nresult;
-           
         default: // check for a channel message
           if (CurrentRunningStatus8 == 0xF0)
           {

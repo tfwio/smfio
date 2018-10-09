@@ -18,7 +18,8 @@ namespace on.smfio
     
     public int Length { get; set; }
     
-    public byte[] Data { get { return GetSystemMessage(); } }
+    public override byte[] Data { get { return GetSystemMessage(); } set { data = value; } }
+    byte[] data;
     
     public byte[] GetSystemMessage()
     {

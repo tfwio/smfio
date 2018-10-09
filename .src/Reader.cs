@@ -117,7 +117,11 @@ namespace on.smfio
       set { timeSignature = value; }
     }
     MidiTimeSignature timeSignature = new MidiTimeSignature();
-
+    
+    public SmpteOffset SMPTE_Offset {
+      get { return smpte; } set { smpte = value; }
+    } SmpteOffset smpte = new SmpteOffset();
+    
     #endregion
     #region TIME (int) DivMeasure, DivBar, DivNote, FileDivision
 
@@ -142,6 +146,12 @@ namespace on.smfio
 
     #endregion
 
+    /// <summary>
+    /// Not to be confused with the trigger when a file
+    /// is loaded.
+    /// 
+    /// This is called before each track is parsed.
+    /// </summary>
     public virtual void ResetTiming()
     {
       CurrentRunningStatus8 = -1; // 0xFF
@@ -155,6 +165,9 @@ namespace on.smfio
     /// <inheritdoc/>
     public void Read()
     {
+      TempoMap.Clear();
+      smpte.SetSMPTE(0,0,0,0,0);
+      
       if (UseEventHandler) GetMemory();
       OnFileLoaded(EventArgs.Empty);
     }
@@ -257,7 +270,6 @@ namespace on.smfio
         case Stat16.SMPTEOffset:     // FF54
           MessageHandler(MidiMsgType.MetaInf, nTrackIndex, nTrackOffset, msg16, msg8, CurrentTrackPulse, CurrentRunningStatus8, false);
           DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
-          Log.ErrorMessage(error_smpte);
           break;
         case Stat16.TimeSignature:   // FF58
         case Stat16.KeySignature:    // FF59
@@ -265,12 +277,10 @@ namespace on.smfio
           DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
           break;
         case Stat16.SequencerSpecificMetaEvent:  // FF7F
-          Debug.Print("?---------sys");
           MessageHandler(MidiMsgType.SequencerSpecific, nTrackIndex, nTrackOffset, msg16, msg8, CurrentTrackPulse, CurrentRunningStatus8, false);
           DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
           break;
         case Stat16.SystemExclusive: // 0xF0
-          Debug.Print("?---------system exclusive");
           MessageHandler(MidiMsgType.SystemExclusive, nTrackIndex, nTrackOffset, msg16, msg8, CurrentTrackPulse, CurrentRunningStatus8, false);
           DELTA_Returned = FileHandle[nTrackIndex].GetEndOfSystemExclusive(nTrackOffset);
           break;
@@ -344,8 +354,14 @@ namespace on.smfio
           DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
           break;
         case Stat16.SMPTEOffset: // 0xFF54
+          SMPTE_Offset.SetSMPTE(
+            FileHandle.Tracks[nTrackIndex].Data[nTrackOffset+3],
+            FileHandle.Tracks[nTrackIndex].Data[nTrackOffset+4],
+            FileHandle.Tracks[nTrackIndex].Data[nTrackOffset+5],
+            FileHandle.Tracks[nTrackIndex].Data[nTrackOffset+6],
+            FileHandle.Tracks[nTrackIndex].Data[nTrackOffset+7]
+           );
           DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
-          Log.ErrorMessage(error_smpte);
           break;
         case Stat16.TimeSignature: // 0xFF58
           TimeSignature.SetSignature(
@@ -789,7 +805,7 @@ namespace on.smfio
     #region STR track info, reader status (caption/tooltip)
 
     public const string Resource_TrackLoaded =
-      "{12} MIDI Track — Format: v{11}, " +
+      "{12} MIDI Track — Format: v{11}, SMPTE: {13}," +
       "Track: {0,3:000},  PPQ: {3}, (first) Tempo: {4}\n" +
       "TSig: {5}/{6} Clocks: {7}, {8} 32nds, KeySig: {9} {10}";
 
@@ -797,6 +813,7 @@ namespace on.smfio
     {
       get
       {
+        var smpte_offset = $"{SMPTE_Offset}";
         return string.Format(
           Resource_TrackLoaded,
           /*  0 */ ReaderIndex,
@@ -811,7 +828,8 @@ namespace on.smfio
           /*  9 */ KeySignature.KeyType,
           /* 10 */ KeySignature.IsMajor ? "Major" : "Minor",
           /* 11 */ FileHandle.Format,
-          /* 12 */ StringRes.STRING_APP_NAME
+          /* 12 */ StringRes.STRING_APP_NAME,
+          /* 13 */ SMPTE_Offset
          );
       }
     }
