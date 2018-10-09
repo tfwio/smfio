@@ -23,7 +23,7 @@ using System.Drawing;
 using on.smfio.chunk;
 namespace on.smfio
 {
-  public static class MetaHelpers
+	public static class MetaHelpers
 	{
 		static public string MetaName(StatusByte id)
 		{
@@ -49,15 +49,15 @@ namespace on.smfio
 					//case MetaMsg32.SystemExclusive: return on.smfio.Common.ChannelType.SYSEX;
 					default: return "UNKNOWN MESSAGE";
 			}
-    }
-    /// <summary>
-    /// Convert Int32 to a status byte for translation to StatusString.
-    /// </summary>
-    /// <param name="msg32"></param>
-    static public string MetaNameFF(int msg32)
-    {
-      return MetaName((StatusByte)((byte)(msg32 & 0xFF)));
-    }
+		}
+		/// <summary>
+		/// Convert Int32 to a status byte for translation to StatusString.
+		/// </summary>
+		/// <param name="msg32"></param>
+		static public string MetaNameFF(int msg32)
+		{
+			return MetaName((StatusByte)((byte)(msg32 & 0xFF)));
+		}
 		
 		/// <summary>
 		/// Several incoming messages such as Metadata Text contain 0xFF as a
@@ -83,21 +83,21 @@ namespace on.smfio
 		
 		/// ?
 		static public string meta_FF54(IMidiParser reader, int offset) {
-		  reader.SMPTE_Offset.SetSMPTE(
-        reader.FileHandle[reader.ReaderIndex].Data[offset+3],
-        reader.FileHandle[reader.ReaderIndex].Data[offset+4],
-        reader.FileHandle[reader.ReaderIndex].Data[offset+5],
-        reader.FileHandle[reader.ReaderIndex].Data[offset+6],
-        reader.FileHandle[reader.ReaderIndex].Data[offset+7]
-		    );
-		  return string.Format("SMPTE Offset");
+			reader.SMPTE_Offset.SetSMPTE(
+				reader.FileHandle[reader.ReaderIndex].Data[offset+3],
+				reader.FileHandle[reader.ReaderIndex].Data[offset+4],
+				reader.FileHandle[reader.ReaderIndex].Data[offset+5],
+				reader.FileHandle[reader.ReaderIndex].Data[offset+6],
+				reader.FileHandle[reader.ReaderIndex].Data[offset+7]
+				);
+			return $"{reader.SMPTE_Offset}";
 		}
 		
 		/// Midi Time Signature
 		static public string meta_FF58(MTrk track, int offset, params int[] positions)
 		{
 			return string.Format(
-        StringRes.STRING_META_FF58_FMT,
+				StringRes.STRING_META_FF58_FMT,
 				track[offset+3],
 				Math.Pow(-track[offset+4],2),
 				track[offset+5],

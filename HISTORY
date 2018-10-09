@@ -6,10 +6,13 @@ Version History
 Goal(s)
 
 - consolidate, refactor
-- simple(r) example(s)
+- examples, utility features (like a console-app)
 - MIDI Format 1 to Format 0 (in memory)
-- Writer (file export/write)
-- SMPTE support
+- Writer (file export/write, various message-wrappers, smfio.view)
+
+0.2.1
+
+- read SMPTE Offset
 
 0.2.0
 
