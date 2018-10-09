@@ -188,7 +188,7 @@ namespace on.smfio
       MidiEventDelegate backup = MessageHandler;
       MessageHandler = PARSER_MidiDataList;
       ParseAll();
-      TempoMap.Sync(this);
+      TempoMap.Finalize(this);
       MessageHandler = backup;
     }
 
