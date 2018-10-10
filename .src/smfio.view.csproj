@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="IMidiParserUI_Lite.cs" />
+    <Compile Include="c3\DragDropFormsExtension.cs" />
     <Compile Include="ColorResources.cs" />
     <Compile Include="IMidiParserUI.cs" />
     <Compile Include="IUi.cs" />
@@ -106,6 +107,9 @@
       <Project>{96a731de-d50c-47d8-93fc-dc030d8e3c2e}</Project>
       <Name>smfio</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="c3" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

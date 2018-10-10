@@ -54,8 +54,20 @@ namespace SMFIOViewer
       numPpq.NumericUpDownControl.ReadOnly = true;
       numTempo.NumericUpDownControl.ReadOnly = true;
 
-      if ((args.Length > 0) && CheckFile(args[0]))
-        startupfile = args[0];
+      if ((args.Length > 0) && CheckFile(args[0])) startupfile = args[0];
+
+      this.ApplyDragDropMethod(
+        (sender,e)=>{
+          if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+        },
+        (sender,e)=>{
+          if (e.Data.GetDataPresent(DataFormats.FileDrop))
+          {
+            var strFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
+            LoadMidiFile(strFiles[0]);
+          }
+        }
+      );
     }
 
     protected override void OnLoad(EventArgs e)
