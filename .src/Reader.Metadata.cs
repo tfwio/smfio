@@ -82,7 +82,7 @@ namespace on.smfio
 		static public string meta_FF51(int num) { return string.Format(StringRes.msg_time_ms_pqn, 60000000.0, num, 60000000.0/num ); }
 		
 		/// ?
-		static public string meta_FF54(IMidiParser reader, int offset) {
+		static public string meta_FF54(IReader reader, int offset) {
 			reader.SMPTE_Offset.SetSMPTE(
 				reader.FileHandle[reader.ReaderIndex].Data[offset+3],
 				reader.FileHandle[reader.ReaderIndex].Data[offset+4],

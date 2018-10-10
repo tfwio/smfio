@@ -10,7 +10,7 @@ using CliEvent = System.EventArgs;
 
 namespace on.smfio
 {
-  public interface IMidiParser_Parser
+  public interface IReaderParser
   {
 
     // // =============================

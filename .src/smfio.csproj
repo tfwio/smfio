@@ -15,14 +15,14 @@
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <IntermediateOutputPath>$(SolutionDIr)/../build/obj/$(Platform)-$(Configuration)/</IntermediateOutputPath>
+    <IntermediateOutputPath>$(SolutionDir)/../build/obj/$(Platform)-$(Configuration)/</IntermediateOutputPath>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>smfio.snk</AssemblyOriginatorKeyFile>
     <DelaySign>False</DelaySign>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
-    <DocumentationFile>$(SolutionDIr)/../build/$(Platform)-$(Configuration)/gen.snd.midi.xml</DocumentationFile>
-    <OutputPath>$(SolutionDIr)/../build/$(Platform)-$(Configuration)/</OutputPath>
+    <DocumentationFile>$(SolutionDir)/../build/$(Platform)-$(Configuration)/gen.snd.midi.xml</DocumentationFile>
+    <OutputPath>$(SolutionDir)/../build/$(Platform)-$(Configuration)/</OutputPath>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
@@ -79,7 +79,6 @@
     <Compile Include="c3\StringByteExtension.cs" />
     <Compile Include="c3\StringHelper.cs" />
     <Compile Include="c3\SuperOld.cs" />
-    <!-- <Compile Include="ck.smf_head.cs" /> -->
     <Compile Include="Common\ChMessage8.cs" />
     <Compile Include="Common\ChMessageU16.cs" />
     <Compile Include="Common\KeySignatureType.cs" />
@@ -88,8 +87,8 @@
     <Compile Include="Common\SmpteOffset.cs" />
     <Compile Include="EnumFile.cs" />
     <Compile Include="Events.cs" />
-    <Compile Include="IMidiParser.cs" />
-    <Compile Include="IMidiParser.Parser.cs" />
+    <Compile Include="IReader.cs" />
+    <Compile Include="IReaderParser.cs" />
     <Compile Include="ITimeConfiguration.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="MidiMessage\ChannelMessage.cs" />

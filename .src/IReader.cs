@@ -11,8 +11,8 @@ using on.smfio.util;
 
 namespace on.smfio
 {
-	public interface IMidiParser:
-		IMidiParser_Parser,
+	public interface IReader:
+		IReaderParser,
 		INotifyPropertyChanged
   {
     MTrk this[int kTrackID] { get; }

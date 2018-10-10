@@ -22,7 +22,7 @@ namespace on.smfio
   /// Internally, we load three text files from a subdirectory named ‘ext’.
   /// Controller change values, drum kit names and instrument names.
   /// </summary>
-  public partial class Reader : IDisposable, IMidiParser
+  public partial class Reader : IDisposable, IReader
   {
 
     public MTrk this[int kTrackID] { get { return FileHandle[kTrackID]; } }

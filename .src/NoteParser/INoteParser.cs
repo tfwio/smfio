@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace on.smfio
 {
-  public interface INoteParser : IMidiParser
+  public interface INoteParser : IReader
   {
     /// <summary>
     /// This should perhaps be externalized as a parser extension.<br />

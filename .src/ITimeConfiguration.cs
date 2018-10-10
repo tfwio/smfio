@@ -59,6 +59,6 @@ namespace on.smfio.util
 
   public interface ITimeConfiguration : IMidiConfig, IAudioConfig
   {
-    void FromMidi(IMidiParser parser);
+    void FromMidi(IReader parser);
   }
 }

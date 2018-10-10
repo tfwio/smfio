@@ -12,7 +12,7 @@ using CliEvent = System.EventArgs;
 
 namespace on.smfio
 {
-  public partial class Reader : IMidiParser_Parser
+  public partial class Reader : IReaderParser
   {
 
     // 
