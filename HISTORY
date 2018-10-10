@@ -5,6 +5,7 @@ Version History
 
 Goal(s)
 
+- MThd.Division as timecode (E.G. SMPTE compatible delta-times)
 - consolidate, refactor
 - examples, utility features (like a console-app)
 - MIDI Format 1 to Format 0 (in memory)
