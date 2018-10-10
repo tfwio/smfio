@@ -9,13 +9,6 @@ namespace on.smfio
   /// </summary>
   static public class SmfString
   {
-    static SmfString()
-    {
-      ControlMap = new EnumFile("ext/cc.map");
-      PatchMap = new EnumFile("ext/inst.map");
-      DrumMap = new EnumFile("ext/dk.map");
-    }
-
     public static EnumFile ControlMap, PatchMap, DrumMap;
 
     static public readonly string[] KeysFlat = new string[] { "C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B" };

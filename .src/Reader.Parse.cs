@@ -264,11 +264,11 @@ namespace on.smfio
       {
         // var shit = FileHandle[ReaderIndex].Data[offset+1];
         var mapIndex = FileHandle.Get8Bit(ReaderIndex, Op);
-        var mapString1 = mapIndex > 127 ? $"{mapIndex}?" : SmfString.ControlMap[mapIndex].Trim();
+        var mapString1 = mapIndex > 127 ? $"{mapIndex}?" : EnumFile.CMAP[mapIndex].Trim();
         var mapString2 = FileHandle.Get8Bit(ReaderIndex, Op1);
         return string.Format(StringRes.mB, mapString1,mapString2 );
       }
-      else if (StatusQuery.IsProgramChange(CurrentRunningStatus8)) return SmfString.PatchMap[FileHandle[ReaderIndex, Op]].Replace((char)0xA, (char)0x20).Trim();
+      else if (StatusQuery.IsProgramChange(CurrentRunningStatus8)) return EnumFile.IMAP[FileHandle[ReaderIndex, Op]].Replace((char)0xA, (char)0x20).Trim();
       else if (StatusQuery.IsChannelAftertouch(CurrentRunningStatus8)) return StatusQuery.ChannelAftertouchRange.Name;
       else if (StatusQuery.IsPitchBend(CurrentRunningStatus8)) return StatusQuery.PitchBendRange.Name;
       // system
