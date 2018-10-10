@@ -101,20 +101,23 @@ namespace on.smfio
       return new TempoMap{list = new List<TempoState>(list)};
     }
     /// <summary>
-    /// This is to be called after all events have been processed
-    /// so that we can determine the pulse-length (in MIDI time)
-    /// of the entire SMF.
+    /// call this if
     /// 
-    /// If the `soft` flag is set to true, we'll only ensure that
-    /// we have a default tempo.
+    /// 1. all tracks have been parsed prior
+    /// 2. the Tempo Map track has been parsed prior but set `soft` to true for a soft finalization.
+    /// 
+    /// 
+    /// If `soft` flag is set to true, we'll only ensure that we have a default tempo.
     /// </summary>
-    /// <param name="reader"></param>
+    /// <param name="reader">IMidiParser</param>
     /// <param name="soft">if set to true, we won't finalize (or check to see if we have a tempo mapped beyond all EOTs.</param>
-    /// <param name="lastTick"></param>
-    public void Finalize(IMidiParser reader, bool soft=false, int lastTick=24)
+    /// <param name="lastTick">the Maximum value used with <see cref='TempoState.Match(long)'/></param>
+    public void Finalize(IReader reader, bool soft=false, int lastTick=24)
     {
-      if (Top.Pulse > 0) {
-        list.Add(new TempoState{MusPQN=500000, Pulse = 0, PulseMax = Top.Pulse, Second = 0.0});
+      if (list.Count >= 1)
+      {
+        if (Top.Pulse > 0)
+          list.Add(new TempoState{MusPQN=500000, Pulse = 0, PulseMax = Top.Pulse, Second = 0.0});
       }
 
       if (!soft) {
