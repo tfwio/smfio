@@ -17,10 +17,6 @@ namespace on.smfio
     public NoteParser(MidiEventDelegate handler) : base(handler) { }
     public NoteParser(string fileName) : base(fileName) { }
     
-    public SmpteOffset SMPTE_Offset {
-      get {return smpte;} set { smpte = value; }
-    } SmpteOffset smpte = new SmpteOffset();
-
     public List<MidiData> Notes {
       get { return notes; } set { notes = value; }
     } List<MidiData> notes = new List<MidiData>();
