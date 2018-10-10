@@ -11,7 +11,7 @@ namespace SMFIOViewer
 {
   static class MidiReaderExt
 	{
-    static IEnumerable<int> EnumerateTrackIndex(this IMidiParser parser)
+    static IEnumerable<int> EnumerateTrackIndex(this IReader parser)
 		{
 			for (int i = 0; i < parser.FileHandle.NumberOfTracks; i++)
 				yield return i;
@@ -22,7 +22,7 @@ namespace SMFIOViewer
 		/// </summary>
 		/// <param name="parser">the MIDI parser</param>
 		/// <returns></returns>
-		static public IEnumerable<KeyValuePair<int, string>> GetMidiTrackNameDictionary(this IMidiParser parser)
+		static public IEnumerable<KeyValuePair<int, string>> GetMidiTrackNameDictionary(this IReader parser)
 		{
 			foreach (int i in parser.EnumerateTrackIndex()) {
 				string trackname = string.Format(Strings.Filter_MidiTrack, i + 1);
@@ -36,7 +36,7 @@ namespace SMFIOViewer
 		/// <param name="parser"></param>
 		/// <param name="trackid"></param>
 		/// <returns></returns>
-		static public IEnumerable<MIDIMessage> MidiTrackDistinctChannels(this IMidiParser parser, int trackid)
+		static public IEnumerable<MIDIMessage> MidiTrackDistinctChannels(this IReader parser, int trackid)
 		{
       return parser.MidiDataList[trackid].Distinct(ChannelComparer);
 		}

@@ -12,7 +12,7 @@ namespace SMFIOViewer
 	//: INaudioVstWin
 	{
 		/// <summary></summary>
-		IMidiParser MidiParser { get; }
+		IReader MidiParser { get; }
 
 		/// <summary></summary>
 		void Action_MidiFileOpen();

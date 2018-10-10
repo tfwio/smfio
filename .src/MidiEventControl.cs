@@ -17,7 +17,7 @@ namespace SMFIOViewer
 {
 	public class MidiEventControl : MidiControlBase
 	{
-		IMidiParser Reader { get { return UserInterface.MidiParser; } }
+		IReader Reader { get { return UserInterface.MidiParser; } }
 		TempoMap map = null;
 
 		#region ListView/Registry
@@ -168,7 +168,8 @@ namespace SMFIOViewer
 		void GotMidiEventD(MidiMsgType msgType, int nTrackIndex, int nTrackOffset, int midiMsg32, byte midiMsg8, long pulse, int statusRunning, bool isRunningStatus)
 		{
 			if (Reader.TempoMap.Top.Pulse > 0) Reader.TempoMap.Finalize(Reader, true);
-      var tempo = !map.Top.Match(pulse) ? map.Seek(pulse) : map.Top;
+      var tempo = (!map.Top.Match(pulse) ? map.Seek(pulse) : map.Top) ?? TempoState.Default;
+      
 			double seconds = TimeUtil.GetSeconds(Division, tempo.MusPQN, (long)pulse-tempo.Pulse, tempo.Second);
 			string sseconds = TimeUtil.GetSSeconds(seconds);
 			string smbt = TimeUtil.GetMBT((long)pulse, Division);

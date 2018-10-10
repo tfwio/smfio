@@ -18,7 +18,7 @@ namespace SMFIOViewer
       Filter=Strings.FileFilter_MidiFile
     };
     
-    public IMidiParser MidiParser {
+    public IReader MidiParser {
       get { return midiParser; }
     } protected internal on.smfio.Reader midiParser;
     
@@ -117,27 +117,48 @@ namespace SMFIOViewer
       listBox1.DisplayMember = "Text";
     }
     
-    public void Action_MidiFileOpen()
-    {
-      Text = Strings.Dialog_Title_0;
+    public void Action_MidiFileOpen() { if (MidiFileDialog.ShowDialog() == DialogResult.OK) LoadMidiFile(MidiFileDialog.FileName); }
 
-      if (MidiFileDialog.ShowDialog() == DialogResult.OK)
+    void LoadMidiFile(string midiFile)
+    {
+      if (CheckFile(midiFile))
       {
-        if (File.Exists(MidiFileDialog.FileName))
+        bool hasError = true;
+        Exception ERR = null;
+        if (MidiParser != null)
         {
-          if (MidiParser != null)
+          MidiParser.Dispose();
+          midiParser = null;
+        }
+        try {
+          Action_MidiFileOpen(midiFile, 0);
+          hasError = false;
+        } catch(Exception error) {
+          ERR = error;
+        }
+        if (!hasError) Text = Strings.Dialog_Title_0;
+        else
+        {
+          string filter =
+            $"{ERR}\n\n"+
+            "Would you like to [debug] throw exception?\n\n" +
+            "• CANCEL to EXIT the application.\n" +
+            "• NO to continue\n" +
+            "• YES to throw the exception (for debugging)";
+          switch (MessageBox.Show(filter, $"{ERR.Source}", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Error, MessageBoxDefaultButton.Button3))
           {
-            MidiParser.Dispose();
-            midiParser = null;
+            case DialogResult.Yes:
+              //throw ERR;
+              throw new Exception(ERR.Message, ERR);
+            case DialogResult.Cancel: Application.Exit(); break;
           }
-          Action_MidiFileOpen(MidiFileDialog.FileName, 0);
+
         }
       }
     }
     
     public void Action_MidiFileOpen(string filename, int trackNo)
     {
-      
       if (string.IsNullOrEmpty(filename))
         return;
       if (!System.IO.File.Exists(filename)) {
