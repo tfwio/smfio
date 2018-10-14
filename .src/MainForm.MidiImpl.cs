@@ -130,30 +130,30 @@ namespace SMFIOViewer
           MidiParser.Dispose();
           midiParser = null;
         }
-        try {
-          Action_MidiFileOpen(midiFile, 0);
-          hasError = false;
-        } catch(Exception error) {
-          ERR = error;
-        }
-        if (!hasError) Text = Strings.Dialog_Title_0;
-        else
-        {
-          string filter =
-            $"{ERR}\n\n"+
-            "Would you like to [debug] throw exception?\n\n" +
-            "• CANCEL to EXIT the application.\n" +
-            "• NO to continue\n" +
-            "• YES to throw the exception (for debugging)";
-          switch (MessageBox.Show(filter, $"{ERR.Source}", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Error, MessageBoxDefaultButton.Button3))
-          {
-            case DialogResult.Yes:
-              //throw ERR;
-              throw new Exception(ERR.Message, ERR);
-            case DialogResult.Cancel: Application.Exit(); break;
-          }
-
-        }
+        // try {
+        Action_MidiFileOpen(midiFile, 0);
+        hasError = false;
+        // } catch(Exception error) {
+        //   ERR = error;
+        // }
+        // if (!hasError) Text = Strings.Dialog_Title_0;
+        // else
+        // {
+        //   string filter =
+        //     $"{ERR}\n\n"+
+        //     "Would you like to [debug] throw exception?\n\n" +
+        //     "• CANCEL to EXIT the application.\n" +
+        //     "• NO to continue\n" +
+        //     "• YES to throw the exception (for debugging)";
+        //   switch (MessageBox.Show(filter, $"{ERR.Source}", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Error, MessageBoxDefaultButton.Button3))
+        //   {
+        //     case DialogResult.Yes:
+        //       //throw ERR;
+        //       throw new Exception(ERR.Message, ERR);
+        //     case DialogResult.Cancel: Application.Exit(); break;
+        //   }
+        // 
+        // }
       }
     }
     
