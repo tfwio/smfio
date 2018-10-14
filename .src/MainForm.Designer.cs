@@ -47,6 +47,7 @@ namespace SMFIOViewer
     private void InitializeComponent()
     {
       this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.splitContainer2 = new System.Windows.Forms.SplitContainer();
       this.tree = new System.Windows.Forms.TreeView();
@@ -260,6 +261,7 @@ namespace SMFIOViewer
       this.ClientSize = new System.Drawing.Size(587, 324);
       this.Controls.Add(this.splitContainer1);
       this.Controls.Add(this.toolStrip1);
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Name = "MainForm";
       this.Text = "SMFIOViewer";
       this.splitContainer1.Panel1.ResumeLayout(false);
