@@ -123,8 +123,8 @@ namespace SMFIOViewer
     {
       if (CheckFile(midiFile))
       {
-        bool hasError = true;
-        Exception ERR = null;
+        // bool hasError = true;
+        // Exception ERR = null;
         if (MidiParser != null)
         {
           MidiParser.Dispose();
@@ -132,7 +132,7 @@ namespace SMFIOViewer
         }
         // try {
         Action_MidiFileOpen(midiFile, 0);
-        hasError = false;
+        // hasError = false;
         // } catch(Exception error) {
         //   ERR = error;
         // }
