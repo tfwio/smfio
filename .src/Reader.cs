@@ -224,8 +224,6 @@ namespace on.smfio
 
     /// <summary>
     /// Parse Metadata
-    /// 
-    /// This method is particularly suited to 
     /// </summary>
     public virtual int GetNTrackMessage(int nTrackIndex, int nTrackOffset, int delta)
     {
