@@ -126,7 +126,7 @@ namespace on.smfio
 		/// scanning for tempo-changes, time-signatures and so forth.
 		/// </summary>
 		/// <param name="trackNo"></param>
-		void ParseTrackMeta(int trackNo);
+		void ParseTempoMap(int trackNo);
 
     int GetTrackMessage(int position, int delta);
 

@@ -188,12 +188,12 @@ namespace on.smfio
     {
       FileHandle = GetMthd(MidiFileName);
       TempoMap.Clear();
-      ParseTrackMeta(0); // pre-scan? ;)
+      ParseTempoMap(0); // pre-scan? ;)
       Parse();
       // Log.ErrorMessage("Parsed the default track.");
     }
 
-    /// <seealso cref="ParseTrackMeta(int)"/>
+    /// <seealso cref="ParseTempoMap(int)"/>
     void Parse()
     {
       MidiEventDelegate backup = MessageHandler;
@@ -601,7 +601,7 @@ namespace on.smfio
     MTrk NTrack { get { return FileHandle.Tracks[ReaderIndex]; } }
 
     /// <inheritdoc/>
-    public void ParseTrackMeta(int tk)
+    public void ParseTempoMap(int tk)
     {
       long delta;
       int i = 0;
