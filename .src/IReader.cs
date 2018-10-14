@@ -20,20 +20,6 @@ namespace on.smfio
     byte[] this[int kTrackID, int kTrackOffset, int kSize] { get; }
 
     // =============================================
-    // CHANNEL
-    // =============================================
-
-    /// <summary>
-    /// if not -1, the Midi Track @SelectedTrackNumber will contain data primary to a view.
-    /// </summary>
-    int SelectedTrackChannel { get; }
-		
-		/// <summary>
-		/// A set of midi data channels (not track-number) used for filtering data for ui.
-		/// </summary>
-		List<int> ChannelFilter { get; }
-
-    // =============================================
     // DATA (DictionaryList<int,MidiMessage>)
     // =============================================
 		
@@ -91,8 +77,6 @@ namespace on.smfio
 
     bool UseEventHandler { get; }
 		
-		bool HasTrackReaderDelegate { get; }
-
 		/// <summary>
 		/// this is a test currently in use;
 		/// A list of delegates contains a enumerable number of parsers,
@@ -108,8 +92,6 @@ namespace on.smfio
     // =============================================
 
     int ReaderIndex { get; set; }
-		
-		MidiReaderLoadTrackDelegate LoadTrack { get; set; }
 		
 		/// <summary>
 		/// Specifically targeting Meta information helpful for a main-parse

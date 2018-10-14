@@ -32,8 +32,6 @@ namespace on.smfio
     /// 
     /// It just may be that we are probing for the end of a
     /// message chunk to the boundary of a delta-time (or RealTime).
-    /// 
-    /// FIXME: This is much bulkier than necessary.
     /// </summary>
     int Increment(int offset, int seek)
     {
@@ -59,8 +57,6 @@ namespace on.smfio
 
       return -1;
     }
-
-    public string GetMbtString(long value) { return TimeUtil.GetMBT(value, Division); }
 
     // 
     // META STRING
@@ -113,34 +109,6 @@ namespace on.smfio
           string msg = string.Format(StringRes.String_Unknown_Message, CurrentRunningStatus8, FileHandle[ReaderIndex, pTrackOffset, 2].StringifyHex());
           return Strings.Encoding.GetString(FileHandle[ReaderIndex, pTrackOffset, FileHandle[ReaderIndex, pTrackOffset + 2] + 3]);
       }
-    }
-
-    /// <inheritdoc/>
-    public int GetMetaLen(int offset, int plus) { return FileHandle[ReaderIndex, offset + 2]; }
-
-    /// <inheritdoc/>
-    public byte[] GetMetaValue(int offset)
-    {
-      switch ((StatusWord)FileHandle.Get16Bit(ReaderIndex, offset))
-      {
-        case StatusWord.SequenceNumber:    return FileHandle[ReaderIndex, offset, 5]; // 0xff00
-        case StatusWord.ChannelPrefix:     return FileHandle[ReaderIndex, offset, 4]; // 0xff20
-        case StatusWord.SetTempo:          return FileHandle[ReaderIndex, offset, 6]; // 0xff51
-        case StatusWord.SMPTEOffset:       return FileHandle[ReaderIndex, offset, 4]; // 0xff54
-        case StatusWord.TimeSignature:     return FileHandle[ReaderIndex, offset, 7]; // 0xff58
-        case StatusWord.KeySignature:      return FileHandle[ReaderIndex, offset, 5]; // 0xff59
-        case StatusWord.EndOfTrack:        return FileHandle[ReaderIndex, offset, 2]; // 0xff2f
-        case StatusWord.SequencerSpecific: return FileHandle[ReaderIndex, offset, 3]; // 0xff7f
-        case StatusWord.SystemExclusive:   return FileHandle[ReaderIndex, offset, 4]; // 0xff7f
-        default:
-          Log.ErrorMessage(StringRes.String_Unknown_Message, CurrentRunningStatus8, FileHandle[ReaderIndex, offset + 1]);
-          return FileHandle[ReaderIndex, offset, FileHandle[ReaderIndex, offset + 2] + 3];
-      }
-    }
-
-    /// <inheritdoc/>
-    public byte[] GetMetaData(int offset) {
-      return FileHandle[ReaderIndex, offset, FileHandle[ReaderIndex, offset + 2] + 3];
     }
 
     // 

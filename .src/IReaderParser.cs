@@ -13,15 +13,6 @@ namespace on.smfio
   public interface IReaderParser
   {
 
-    // // =============================
-    // // TIME
-    // // =============================
-
-    // /// <summary>Measure:Bar:Ticks</summary>
-    // /// <param name="value">Pulses</param>
-    // /// <returns>Measure:Bar:Quarters:Ticks +/- Quarters</returns>
-    // string GetMbtString(long value);
-
     // =============================
     // META
     // =============================
@@ -38,32 +29,12 @@ namespace on.smfio
     /// <returns></returns>		
     string GetMessageString(int offset);
 
-    /// <summary>
-    /// There is no plus (its not used).
-    /// Reason being, I've not ever encountered a RSE Meta event.
-    /// </summary>
-    /// <param name="offset"></param>
-    /// <param name="plus"></param>
-    /// <returns></returns>
-    int GetMetaLen(int offset, int plus);
-
-    /// <summary>Documentation needed</summary>
-    /// <param name="offset"></param>
-    /// <returns></returns>
-    byte[] GetMetaValue(int offset);
-
-    /// <summary>Documentation needed</summary>
-    /// <param name="offset"></param>
-    /// <returns></returns>
-    byte[] GetMetaData(int offset);
-
     /// <summary>Documentation needed</summary>
     /// <param name="offset"></param>
     /// <returns></returns>
     byte[] GetMetaBString(int offset);
 
     //		byte[] GetMetaStringValue(int offset);
-    //		byte[] GetMetaValue(int offset);
 
     // =================================
     // CH (string)

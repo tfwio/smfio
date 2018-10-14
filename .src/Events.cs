@@ -5,11 +5,6 @@ namespace on.smfio
   /// <param name="sender"></param>
   /// <param name="e"></param>
   public delegate void MidiMessageHandler(object sender, MidiMessageEvent e);
-  /// <summary></summary>
-  /// <param name="track"></param>
-  /// <param name="offset"></param>
-  /// <returns></returns>
-  public delegate int MidiReaderLoadTrackDelegate(int track, int offset);
 
   /// <summary>
   /// A callback to help parsing incoming (parser) messages.
