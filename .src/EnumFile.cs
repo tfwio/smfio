@@ -11,13 +11,12 @@ namespace on.smfio
     string[] data_map;
     
     public string this[int index] { get { return (index > (Length - 1)) ? null : data_map[index]; } }
-    
     public int Length { get { return data_map.Length; } }
     
     public EnumFile(string file) { Load(file); }
-    static public EnumFile CMAP { get { return new EnumFile{data_map="ext/cc.map".GetLocalFile("on.smf.ext.cc.map".GetAssemblyString<EnumFile>()) }; } }
-    static public EnumFile DMAP { get { return new EnumFile { data_map = "ext/dk.map".GetLocalFile("on.smf.ext.dk.map".GetAssemblyString<EnumFile>()) }; } }
-    static public EnumFile IMAP { get { return new EnumFile{data_map="ext/inst.map".GetLocalFile("on.smf.ext.inst.map".GetAssemblyString<EnumFile>()) }; } }
+    static public EnumFile CMAP { get; private set; } = new EnumFile { data_map = "ext/cc.map".GetLocalFile("on.smfio.ext.cc.map".GetAssemblyString<EnumFile>()) };
+    static public EnumFile DMAP { get; private set; } = new EnumFile { data_map = "ext/dk.map".GetLocalFile("on.smfio.ext.dk.map".GetAssemblyString<EnumFile>()) };
+    static public EnumFile IMAP { get; private set; } = new EnumFile { data_map = "ext/inst.map".GetLocalFile("on.smfio.ext.inst.map".GetAssemblyString<EnumFile>()) };
     void Load(string file)
     {
       if (!System.IO.File.Exists(file))
@@ -42,14 +41,15 @@ namespace on.smfio
   }
   static class LocalFileExtension {
     static public string[] GetAssemblyString<T>(this string resource) {
-      return typeof(T).Assembly.GetEmbeddedResourceString(resource);
-
+      var asm = typeof(T).Assembly;
+      return asm.GetEmbeddedResourceString(resource);
     }
     static public string[] GetLocalFile(this string inputFile, params string[] NullValue)
     {
+      var asm = System.Reflection.Assembly.GetExecutingAssembly();
       var file = new System.IO.FileInfo(
         System.IO.Path.Combine(
-          new System.IO.FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).Directory.FullName,
+          new System.IO.FileInfo(asm.Location).Directory.FullName,
           inputFile
         )
       );
@@ -59,11 +59,9 @@ namespace on.smfio
     static public string[] GetEmbeddedResourceString(this System.Reflection.Assembly asm, string resID, char separator = (char)0x0A)
     {
       string[] result = null;
-      using (var strm = typeof(EnumFile).Assembly.GetManifestResourceStream(resID))
-      using (var reader = new System.IO.StreamReader(strm))
-      {
-        result = reader.ReadToEnd().Split(separator);
-      }
+      using (var strm = asm.GetManifestResourceStream(resID))
+        using (var reader = new System.IO.StreamReader(strm))
+          result = reader.ReadToEnd().Split(separator);
       return result;
     }
     static public string[] GetLines(this string enumText, char split = (char)0x0A)
