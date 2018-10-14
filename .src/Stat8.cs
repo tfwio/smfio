@@ -44,6 +44,16 @@ namespace on.smfio
     public const byte Marker                     = 0x06;
     /// <summary>(0xFF) 0x07</summary>
     public const byte Cue                        = 0x07;
+    /// <summary>(0xFF) 0x08</summary>
+    public const byte MetaStrFF08                = 0x08;
+    /// <summary>(0xFF) 0x09</summary>
+    public const byte MetaStrFF09                = 0x09;
+    /// <summary>(0xFF) 0x0A</summary>
+    public const byte MetaStrFF0A                = 0x0A;
+    /// <summary>(0xFF) 0x0B</summary>
+    public const byte MetaStrFF0B                = 0x0B;
+    /// <summary>(0xFF) 0x0C</summary>
+    public const byte MetaStrFF0C                = 0x0C;
     /// <summary>(0xFF) 0x20</summary>
     public const byte ChannelPrefix              = 0x20;
 

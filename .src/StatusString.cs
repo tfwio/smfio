@@ -36,6 +36,16 @@ namespace on.smfio
     public const string Marker         = "Marker";
     /// Cue
     public const string CuePoint       = "Cue Point";
+    /// Unknown Metadata String 0xFF08
+    public const string MetaStrFF08    = "0xFF08";
+    /// Unknown Metadata String 0xFF09
+    public const string MetaStrFF09    = "0xFF09";
+    /// Unknown Metadata String 0xFF0A
+    public const string MetaStrFF0A    = "0xFF0A";
+    /// Unknown Metadata String 0xFF0A
+    public const string MetaStrFF0B    = "0xFF0B";
+    /// Unknown Metadata String 0xFF0A
+    public const string MetaStrFF0C    = "0xFF0C";
     /// Cue Point
     public const string Channel        = "Chanel";
     /// Port

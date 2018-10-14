@@ -243,6 +243,7 @@ namespace on.smfio
       ushort msg16 = FileHandle.Get16Bit(nTrackIndex, nTrackOffset);
       byte msg8 = (byte)(msg16 & 0xFF);
       CurrentStatus = msg16;
+      var hexMsg = $"{msg16:X2}";
       
       switch (msg16)
       {
@@ -254,6 +255,11 @@ namespace on.smfio
         case Stat16.Lyric:           // FF05
         case Stat16.Marker:          // FF06
         case Stat16.Cue:             // FF07
+        case Stat16.MetaStrFF08:     // FF08 -- added since 09 was found to be used as text.
+        case Stat16.MetaStrFF09:     // FF09 -- encountered - engine?
+        case Stat16.MetaStrFF0A:     // FF0A -- encountered
+        case Stat16.MetaStrFF0B:     // FF0B
+        case Stat16.MetaStrFF0C:     // FF0C -- encountered
           MessageHandler(MidiMsgType.MetaStr, nTrackIndex, nTrackOffset, msg16, msg8, CurrentTrackPulse, CurrentRunningStatus8, false);
           DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
           break;
@@ -330,8 +336,8 @@ namespace on.smfio
       int DELTA_Returned = delta;
       var msg16 = FileHandle.Get16Bit(nTrackIndex, nTrackOffset);
       byte msg8 = (byte)(msg16 & 0xFF);
-      
       CurrentStatus = msg16; // This is just an attempt at aligning running status.
+      var hexMsg = $"{msg16:X2}";
       
       switch (msg16)
       {
@@ -344,6 +350,11 @@ namespace on.smfio
         case Stat16.Lyric:          // 0xFF05
         case Stat16.Marker:         // 0xFF06
         case Stat16.Cue:            // 0xFF07
+        case Stat16.MetaStrFF08:    // FF08
+        case Stat16.MetaStrFF09:    // FF09
+        case Stat16.MetaStrFF0A:    // FF0A
+        case Stat16.MetaStrFF0B:    // FF0B
+        case Stat16.MetaStrFF0C:    // FF0C
         case Stat16.ChannelPrefix:  // 0xFF20
         case Stat16.PortMessage:    /* 0xFF21 */ DELTA_Returned = NTrack.DeltaSeek(nTrackOffset); break;
         case Stat16.EndOfTrack:     /* 0xFF2F */ DELTA_Returned = NTrack.Data.Length-1; break;

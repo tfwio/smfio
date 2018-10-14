@@ -46,6 +46,16 @@ namespace on.smfio
     public const ushort Marker                  = 0xFF06;
     /// <summary>0xFF07</summary>
     public const ushort Cue                     = 0xFF07;
+    /// <summary>0xFF08</summary>
+    public const ushort MetaStrFF08             = 0xFF08;
+    /// <summary>0xFF09 - encountered</summary>
+    public const ushort MetaStrFF09             = 0xFF09;
+    /// <summary>0xFF0A</summary>
+    public const ushort MetaStrFF0A             = 0xFF0A;
+    /// <summary>0xFF0A</summary>
+    public const ushort MetaStrFF0B             = 0xFF0B;
+    /// <summary>0xFF0A</summary>
+    public const ushort MetaStrFF0C             = 0xFF0C;
     /// <summary>0xFF20</summary>
     public const ushort ChannelPrefix           = 0xFF20;
     /// <summary>0xFF21</summary>

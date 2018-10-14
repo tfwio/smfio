@@ -37,7 +37,12 @@ namespace on.smfio
 					case StatusByte.InstrumentName:      return StatusString.InstrumentName;
 					case StatusByte.Lyric:               return StatusString.LyricMarker;
 					case StatusByte.Marker:              return StatusString.Marker;
-					case StatusByte.Cue:                 return StatusString.CuePoint;
+          case StatusByte.Cue:                 return StatusString.CuePoint;
+          case StatusByte.MetaStrFF08:         return StatusString.MetaStrFF08;
+          case StatusByte.MetaStrFF09:         return StatusString.MetaStrFF09;
+          case StatusByte.MetaStrFF0A:         return StatusString.MetaStrFF0A;
+          case StatusByte.MetaStrFF0B:         return StatusString.MetaStrFF0B;
+          case StatusByte.MetaStrFF0C:         return StatusString.MetaStrFF0C;
 					case StatusByte.ChannelPrefix:       return StatusString.Channel;
 					case StatusByte.PortMessage:         return StatusString.Port;
 					case StatusByte.SetTempo:            return StatusString.Tempo;

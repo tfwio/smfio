@@ -38,6 +38,16 @@ namespace on.smfio
     Marker                     = Stat8.Marker,
     /// <summary>0x07</summary>
     Cue                        = Stat8.Cue,
+    /// <summary>0x08</summary>
+    MetaStrFF08                = Stat8.MetaStrFF08,
+    /// <summary>0x09</summary>
+    MetaStrFF09                = Stat8.MetaStrFF09,
+    /// <summary>0x0A</summary>
+    MetaStrFF0A                = Stat8.MetaStrFF0A,
+    /// <summary>0x0B</summary>
+    MetaStrFF0B                = Stat8.MetaStrFF0B,
+    /// <summary>0x0C</summary>
+    MetaStrFF0C                = Stat8.MetaStrFF0C,
     /// <summary>0x20</summary>
     ChannelPrefix              = Stat8.ChannelPrefix,
     /// <summary>0x21</summary>
