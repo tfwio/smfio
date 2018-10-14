@@ -66,14 +66,22 @@
     <Compile Include="c3\DoubleMathExtension.cs" />
     <Compile Include="c3\DPoint.cs" />
     <Compile Include="c3\FloatPoint.cs" />
-    <Compile Include="c3\Internals\CustomControlView.cs" />
+    <Compile Include="c3\Internals\CustomControlView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="c3\Internals\MouseState.cs" />
     <Compile Include="c3\Internals\MouseStateExtension.cs" />
     <Compile Include="c3\Internals\Renderer_SelectionBox.cs" />
     <Compile Include="c3\Internals\RenderStateType.cs" />
-    <Compile Include="c3\Internals\SplashForm.cs" />
-    <Compile Include="c3\Internals\ToolStripUpDown.cs" />
-    <Compile Include="c3\Internals\ViewPoint.cs" />
+    <Compile Include="c3\Internals\SplashForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="c3\Internals\ToolStripUpDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="c3\Internals\ViewPoint.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="c3\IO.EndianUtility.cs" />
     <Compile Include="c3\NumericExtensions.cs" />
     <Compile Include="c3\StringByteExtension.cs" />
@@ -123,22 +131,17 @@
     <Compile Include="TimeUtil.cs" />
     <Compile Include="xg\XgNrpn.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="c3" />
-    <Folder Include="c3\Internals" />
-    <Folder Include="Properties" />
-    <Folder Include="xg" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ext\cc.map">
+    <EmbeddedResource Include="ext\cc.map">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ext\dk.map">
+    </EmbeddedResource>
+    <EmbeddedResource Include="ext\dk.map">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ext\inst.map">
+    </EmbeddedResource>
+    <EmbeddedResource Include="ext\inst.map">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
