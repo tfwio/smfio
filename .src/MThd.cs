@@ -29,7 +29,12 @@ namespace on.smfio.chunk
     
     public short Format { get { return BitConverter.ToInt16(ByteFormat,0); } } byte[] ByteFormat; // ( 0 | 1 | 2 )
 
-    public short NumberOfTracks { get { return BitConverter.ToInt16(ByteNTrack,0); } } byte[] ByteNTrack; // NumberOf Tracks
+    internal void OverrideNumberOfTracks(short newTrackCount)
+    {
+      var bytes = BitConverter.GetBytes(newTrackCount);
+      ByteNTrack = bytes;
+    }
+    public short NumberOfTracks { get { return BitConverter.ToInt16(ByteNTrack,0); } internal set { OverrideNumberOfTracks(value); } } byte[] ByteNTrack; // NumberOf Tracks
 
     public short Division { get { return BitConverter.ToInt16(ByteDivision,0); } } byte[] ByteDivision; // division
 

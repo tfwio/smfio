@@ -24,6 +24,7 @@ namespace on.smfio
   /// </summary>
   public partial class Reader : IDisposable, IReader
   {
+    public bool FileIsIncomplete { get; set; } = false;
 
     public MTrk this[int kTrackID] { get { return FileHandle[kTrackID]; } }
     public byte this[int kTrackID, int kTrackOffset] { get { return FileHandle[kTrackID, kTrackOffset]; } }
@@ -38,14 +39,24 @@ namespace on.smfio
     /// <returns></returns>
     MTHd GetMthd(string fileName)
     {
+      int i = 0;
+      bool hasError = false;
       MTHd FileHandle = null;
       using (var STREAM = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
         using (var READER = new BinaryReader(STREAM))
       {
         FileHandle = new MTHd(READER);
         FileHandle.Tracks = new MTrk[FileHandle.NumberOfTracks];
-        for (int i = 0; i < FileHandle.NumberOfTracks; i++)
+        for (i = 0; i < FileHandle.NumberOfTracks; i++)
+        {
+          if (READER.BaseStream.Position >= READER.BaseStream.Length) {
+            FileHandle.OverrideNumberOfTracks((short)i);
+            FileIsIncomplete = true;
+            hasError = true;
+          }
+          if (hasError) continue;
           FileHandle.Tracks[i] = new MTrk(READER);
+        }
       }
       return FileHandle;
     }
