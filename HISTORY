@@ -11,6 +11,30 @@ Goal(s)
 - MIDI Format 1 to Format 0 (in memory)
 - Writer (file export/write, various message-wrappers, smfio.view)
 
+0.2.2
+
+- Tempo Map: accept (calculating time) cases where
+  first SetTempo event comes at `pulse > 0`.
+  Ineternally, we read all the tracks before re-calculating
+  (`.Finalize()`) so that we know just how long the
+  midi file is.
+- Added Metadata String recognition of additional
+  undocumented Metadata Status Message Events.
+  0xFF08 to 0xFF0C.
+- Switched Metadata String (parser/reader) Encoding
+  to that of the System.Text.Encoding.Default since
+ 'it just works' better as opposed to UTF-8. It just
+  seems to be used by the majority of midi files I'd
+  encountered.
+- Rename IMidiReader/IMidiParser to IReader/IParser.
+- Fix EnumFile usage.
+  Prior transitory usage failed in cases when
+  drag-dropping a file into the application and the CWD
+  seems to be that of the incoming file in which case
+  the app can't find the external text files containing
+  human readable instrument patches, etc.
+
+
 0.2.1
 
 - read SMPTE Offset
