@@ -7,7 +7,8 @@ namespace System
   /// </summary>
   static class Strings
   {
-    internal static System.Text.Encoding Encoding = System.Text.Encoding.UTF8;
+    internal static System.Text.Encoding Encoding = System.Text.Encoding.Default;
+    
     public const string Filter_MidiTrack = "MTrk {0}";
     public const string AutomationUnitToString = "{{AutomationUnit: Value={0}, DeltaMode={1}}}";
     public const string DeltaArgumentException = "Expected: DeltaType.Samples and DeltaType.Pulses";
