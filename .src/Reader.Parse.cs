@@ -123,24 +123,15 @@ namespace on.smfio
     {
       switch ((StatusWord)FileHandle.Get16Bit(ReaderIndex, offset))
       {
-        /* 0xff00 */
-        case StatusWord.SequenceNumber: return FileHandle[ReaderIndex, offset, 5];
-        /* 0xff20 */
-        case StatusWord.ChannelPrefix: return FileHandle[ReaderIndex, offset, 4];
-        /* 0xff51 */
-        case StatusWord.SetTempo: return FileHandle[ReaderIndex, offset, 6];
-        /* 0xff54 */
-        case StatusWord.SMPTEOffset: return FileHandle[ReaderIndex, offset, 4];
-        /* 0xff58 */
-        case StatusWord.TimeSignature: return FileHandle[ReaderIndex, offset, 7];
-        /* 0xff59 */
-        case StatusWord.KeySignature: return FileHandle[ReaderIndex, offset, 5];
-        /* 0xff2f */
-        case StatusWord.EndOfTrack: return FileHandle[ReaderIndex, offset, 2];
-        /* 0xff7f */
-        case StatusWord.SequencerSpecific: return FileHandle[ReaderIndex, offset, 3];
-        /* 0xff7f */
-        case StatusWord.SystemExclusive: return FileHandle[ReaderIndex, offset, 4];
+        case StatusWord.SequenceNumber:    return FileHandle[ReaderIndex, offset, 5]; // 0xff00
+        case StatusWord.ChannelPrefix:     return FileHandle[ReaderIndex, offset, 4]; // 0xff20
+        case StatusWord.SetTempo:          return FileHandle[ReaderIndex, offset, 6]; // 0xff51
+        case StatusWord.SMPTEOffset:       return FileHandle[ReaderIndex, offset, 4]; // 0xff54
+        case StatusWord.TimeSignature:     return FileHandle[ReaderIndex, offset, 7]; // 0xff58
+        case StatusWord.KeySignature:      return FileHandle[ReaderIndex, offset, 5]; // 0xff59
+        case StatusWord.EndOfTrack:        return FileHandle[ReaderIndex, offset, 2]; // 0xff2f
+        case StatusWord.SequencerSpecific: return FileHandle[ReaderIndex, offset, 3]; // 0xff7f
+        case StatusWord.SystemExclusive:   return FileHandle[ReaderIndex, offset, 4]; // 0xff7f
         default:
           Log.ErrorMessage(StringRes.String_Unknown_Message, CurrentRunningStatus8, FileHandle[ReaderIndex, offset + 1]);
           return FileHandle[ReaderIndex, offset, FileHandle[ReaderIndex, offset + 2] + 3];
