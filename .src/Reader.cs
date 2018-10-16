@@ -23,7 +23,86 @@ namespace on.smfio
   /// </summary>
   public partial class Reader : IDisposable, IReader
   {
+    #region MidiMessage Collection
+    /// <summary>
+    /// This can be set during `.ctor` or set here explicitly before
+    /// calling a a Parse or Read function.  
+    /// The message List generated is a simple message structure (class)
+    /// containing only pulse-count, status and byte data (array) at this
+    /// time and may in the future elaborate specific types depending
+    /// on the status-type.
+    /// </summary>
+    /// <value></value>
     public bool GenerateMessageList { get; set; }
+
+    public DictionaryList<int, MidiMessage> MidiMessageCollection {
+      get { return midiMessageCollection; }
+    } DictionaryList<int, MidiMessage> midiMessageCollection = new DictionaryList<int, MidiMessage>();
+
+    #endregion
+
+    #region Modest VSTSMFUI related
+    
+    /// <inheritdoc/>
+    public DictionaryList<int, MIDIMessageVST> MidiVSTMessageList
+    {
+      get { return midiVSTMessageList; }
+      set { midiVSTMessageList = value; }
+    }
+    
+    DictionaryList<int, MIDIMessageVST> midiVSTMessageList = new DictionaryList<int, MIDIMessageVST>();
+    /// <summary>
+    /// This should be explicitly be set to TRUE if the VST Message List
+    /// is to be populated.
+    /// </summary>
+    public bool GenerateVSTMessageList { get; set; }
+
+    void VSTMessageListHandler(MidiMsgType msgType, int nTrackIndex, int nTrackOffset, int midiMsg32, byte midiMsg8, long pulse, int delta, bool isRunningStatus)
+    {
+      switch (msgType)
+      {
+        case MidiMsgType.MetaStr:
+          midiVSTMessageList.AddV(ReaderIndex, new MetaMessageVST(MidiMsgType.MetaStr, pulse, midiMsg32, GetMetaBString(nTrackOffset)));
+          break;
+        case MidiMsgType.MetaInf:
+          byte[] bytes = GetMetaBString(nTrackOffset);
+          var midiMsg = new MetaMessageVST(pulse, midiMsg32, bytes);
+          midiVSTMessageList.AddV(ReaderIndex, midiMsg);
+          break;
+        case MidiMsgType.SystemExclusive:
+          Debug.WriteLine("Skip System Exclusive Message (for now)");
+          break;
+        case MidiMsgType.ChannelVoice:
+        case MidiMsgType.NoteOff:
+        case MidiMsgType.NoteOn:
+          midiVSTMessageList.AddV(ReaderIndex, new ChannelMessageVST(pulse, midiMsg32, GetEventValue(nTrackOffset)));
+          break;
+        case MidiMsgType.SequencerSpecific:
+          midiVSTMessageList.AddV(ReaderIndex, new SequencerSpecificVST(pulse, midiMsg32, GetEventValue(nTrackOffset)));
+          break;
+        case MidiMsgType.EOT:
+          midiVSTMessageList.AddV(ReaderIndex, new MetaMessageVST(pulse, midiMsg32));
+          break;
+        default:
+          if (isRunningStatus) MidiVSTMessageList.AddV(ReaderIndex, new ChannelMessageVST(pulse, delta, GetRseEventValue(nTrackOffset)));
+          else MidiVSTMessageList.AddV(ReaderIndex, new ChannelMessageVST(pulse, delta, GetEventValue(nTrackOffset)));
+          break;
+      }
+    }
+
+    /// <summary>
+    /// <seealso cref="ParseTempoMap(int)"/>
+    /// </summary>
+    void GetVSTMessageList()
+    {
+      MidiEventDelegate backup = MessageHandler; // override default message handler.
+      MessageHandler = VSTMessageListHandler;      // set it to our vst message-list parser.
+      ParseAll();
+      TempoMap.Finalize(this);
+      MessageHandler = backup;
+    }
+
+    #endregion
 
     public MTrk this[int kTrackID] { get { return FileHandle[kTrackID]; } }
     public byte this[int kTrackID, int kTrackOffset] { get { return FileHandle[kTrackID, kTrackOffset]; } }
@@ -42,15 +121,7 @@ namespace on.smfio
     }
 
     #endregion
-
-    /// <inheritdoc/>
-    public DictionaryList<int, MIDIMessageVST> MidiVSTMessageList
-    {
-      get { return midiVSTMessageList; }
-      set { midiVSTMessageList = value; }
-    }
-    DictionaryList<int, MIDIMessageVST> midiVSTMessageList = new DictionaryList<int, MIDIMessageVST>();
-
+    
     public int CurrentRunningStatus8 { get; private set; }
     public int CurrentRunningStatus16 { get; private set; }
     public int CurrentStatus { get; private set; }
@@ -60,35 +131,32 @@ namespace on.smfio
     /// </summary>
     public long CurrentTrackPulse { get; private set; }
 
-    #region TIME
+    #region TempoMap Track info: TempoMap, KeySignature, TimeSignature, SMPTE_Offset
+
     /// <inheritdoc/>
-    public TempoMap TempoMap
-    {
+    public TempoMap TempoMap {
       get { return tempoMap; }
-    }
-    TempoMap tempoMap = new TempoMap();
+    } TempoMap tempoMap = new TempoMap();
 
     /// <inheritdoc/>
     public MidiKeySignature KeySignature
     {
       get { return keySignature; }
       set { keySignature = value; }
-    }
-    MidiKeySignature keySignature = new MidiKeySignature();
+    } MidiKeySignature keySignature = new MidiKeySignature();
 
     /// <inheritdoc/>
-    public MidiTimeSignature TimeSignature
-    {
+    public MidiTimeSignature TimeSignature {
       get { return timeSignature; }
       set { timeSignature = value; }
-    }
-    MidiTimeSignature timeSignature = new MidiTimeSignature();
+    } MidiTimeSignature timeSignature = new MidiTimeSignature();
     
     public SmpteOffset SMPTE_Offset {
       get { return smpte; } set { smpte = value; }
     } SmpteOffset smpte = new SmpteOffset();
     
     #endregion
+
     #region TIME (int) DivMeasure, DivBar, DivNote, FileDivision
 
     /// <summary>Bar x4</summary>
@@ -144,30 +212,13 @@ namespace on.smfio
       FileHandle = new MThd(MidiFileName);
       if (!(TempoMap.Count == 0)) TempoMap.Clear();
       ParseTempoMap(0); // pre-scan? ;)
-      Parse();
-    }
-
-    /// <seealso cref="ParseTempoMap(int)"/>
-    void Parse()
-    {
-      MidiEventDelegate backup = MessageHandler;
-      MessageHandler = PARSER_MidiDataList;
-      ParseAll();
-      TempoMap.Finalize(this);
-      MessageHandler = backup;
+      if (GenerateVSTMessageList) GetVSTMessageList();
     }
 
     #endregion
 
-    #region MESSAGE PARSER GetMsgTyp
-
     MidiMsgType GetMsgTyp(int status, MidiMsgType def = MidiMsgType.ChannelVoice)
     {
-      return GetMsgTyp(Convert.ToByte(status & 0xFF), def);
-    }
-    MidiMsgType GetMsgTyp(byte status, MidiMsgType def = MidiMsgType.ChannelVoice)
-    {
-      // Debug.Print("? {0:X}", status);
       switch (status & 0xF0)
       {
         case 0x80: return MidiMsgType.NoteOff;
@@ -180,7 +231,6 @@ namespace on.smfio
       }
     }
 
-    #endregion
     #region MESSAGE PARSER GetTrackMessage, GetNTrackMessage, ?
 
     /// <summary></summary>
@@ -414,7 +464,9 @@ namespace on.smfio
     /// there were multiple parser implementations being used and/or
     /// selectively assigned such has become the case currently where
     /// we have <see cref="GetTempoMap(int, int, int)"/> and
-    /// <see cref="GetNTrackMessage(int, int, int)"/>.
+    /// <see cref="GetNTrackMessage(int, int, int)"/> which also
+    /// includes the dependent parser-handlers such as the (now demarked VST)
+    /// <see cref="MIDIMessageVST"/> and derived message types.
     /// 
     /// Presently this is the only handler supplied and yet it
     /// will eventually be privately used, exposing only
@@ -443,8 +495,7 @@ namespace on.smfio
     public Reader(bool useEventHandler, bool generateMessageList=false)
     {
       GenerateMessageList = generateMessageList;
-      if (UseEventHandler = useEventHandler)
-        MessageHandler = OnMidiMessage;
+      if (UseEventHandler = useEventHandler) MessageHandler = OnMidiMessage;
     }
 
     public Reader(MidiEventDelegate handler, bool generateMessageList=false) :
@@ -577,39 +628,6 @@ namespace on.smfio
       }
     }
 
-    void PARSER_MidiDataList(MidiMsgType msgType, int nTrackIndex, int nTrackOffset, int midiMsg32, byte midiMsg8, long pulse, int delta, bool isRunningStatus)
-    {
-      switch (msgType)
-      {
-        case MidiMsgType.MetaStr:
-          midiVSTMessageList.AddV(ReaderIndex, new MetaMessageVST(MidiMsgType.MetaStr, pulse, midiMsg32, GetMetaBString(nTrackOffset)));
-          break;
-        case MidiMsgType.MetaInf:
-          byte[] bytes = GetMetaBString(nTrackOffset);
-          var midiMsg = new MetaMessageVST(pulse, midiMsg32, bytes);
-          midiVSTMessageList.AddV(ReaderIndex, midiMsg);
-          break;
-        case MidiMsgType.SystemExclusive:
-          Debug.WriteLine("Skip System Exclusive Message (for now)");
-          break;
-        case MidiMsgType.ChannelVoice:
-        case MidiMsgType.NoteOff:
-        case MidiMsgType.NoteOn:
-          midiVSTMessageList.AddV(ReaderIndex, new ChannelMessageVST(pulse, midiMsg32, GetEventValue(nTrackOffset)));
-          break;
-        case MidiMsgType.SequencerSpecific:
-          midiVSTMessageList.AddV(ReaderIndex, new SequencerSpecificVST(pulse, midiMsg32, GetEventValue(nTrackOffset)));
-          break;
-        case MidiMsgType.EOT:
-          midiVSTMessageList.AddV(ReaderIndex, new MetaMessageVST(pulse, midiMsg32));
-          break;
-        default:
-          if (isRunningStatus) MidiVSTMessageList.AddV(ReaderIndex, new ChannelMessageVST(pulse, delta, GetRseEventValue(nTrackOffset)));
-          else MidiVSTMessageList.AddV(ReaderIndex, new ChannelMessageVST(pulse, delta, GetEventValue(nTrackOffset)));
-          break;
-      }
-    }
-
     #endregion
 
     #region TRACK
@@ -628,7 +646,10 @@ namespace on.smfio
     }
     internal int selectedTrackNumber;
 
-    ///<summary>a track is selected</summary>
+    ///<summary>
+    /// FIXME: Ensure this isn't used redundantly.  
+    /// a track is selected
+    /// </summary>
     public virtual string TrackSelectAction()
     {
       GetDivision();
