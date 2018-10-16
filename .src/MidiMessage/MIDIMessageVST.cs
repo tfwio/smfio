@@ -7,9 +7,11 @@ using on.smfio.util;
 namespace on.smfio
 {
   /// <summary>
-  /// This was at some time used to prepare MIDI Events for use in (VSTNet) host.
+  /// This was at some time used to prepare MIDI Events for use in (VSTNet) host.  
+  /// Its name and all events for this have been moved or renamed appending VST
+  /// to the end of the class id for this reason.
   /// </summary>
-  public class MIDIMessage
+  public class MIDIMessageVST
   {
     // #region Check Range
 
@@ -21,7 +23,7 @@ namespace on.smfio
     /// <param name="min">first sample in search block</param>
     /// <param name="max">last sample in search block</param>
     /// <returns>True if delta-time is contained within sample ranges min and max</returns>
-    public bool IsContained(SampleClock c, Loop b, double min, double max)
+    public bool IsContained(SampleClockVST c, Loop b, double min, double max)
     {
       double samplePos = c.SolveSamples(Pulse).Samples32;
       return samplePos >= min && samplePos < max && samplePos < b.End;
@@ -33,7 +35,7 @@ namespace on.smfio
     /// <param name="c">must have Division and PPQ set.</param>
     /// <param name="b">We currently check the end position of the loop.</param>
     /// <returns>True if delta-time is contained within sample ranges min and max</returns>
-    public bool IsContained(SampleClock c, Loop b)
+    public bool IsContained(SampleClockVST c, Loop b)
     {
       double samplePos = c.SolveSamples(Pulse).Samples32;
       return samplePos >= b.Begin && samplePos < b.End;
@@ -62,7 +64,7 @@ namespace on.smfio
     /// <param name="pPulse">Pulses (timing foundation)</param>
     /// <param name="pIntMessage">Must be a length of 4 bytes.</param>
     /// <param name="pMsgData">Must be a length of 4 bytes.</param>
-    public MIDIMessage(MidiMsgType pMsgType, long pPulse, int pIntMessage, params byte[] pMsgData)
+    public MIDIMessageVST(MidiMsgType pMsgType, long pPulse, int pIntMessage, params byte[] pMsgData)
     {
       Pulse = pPulse;
       MessageFlag = pMsgType;

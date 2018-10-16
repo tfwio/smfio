@@ -20,14 +20,14 @@ namespace on.smfio
     /// </summary>
     double Tick     { get; }
 
-    SampleClock SolveSamples(long pulse);
-    SampleClock SolveSamples(long pulse, ITimeConfiguration settings);
-    SampleClock SolvePPQ(long sampleOffset, ITimeConfiguration settings);
+    SampleClockVST SolveSamples(long pulse);
+    SampleClockVST SolveSamples(long pulse, ITimeConfiguration settings);
+    SampleClockVST SolvePPQ(long sampleOffset, ITimeConfiguration settings);
   }
-  public class SampleClock : ISampleClock
+  public class SampleClockVST : ISampleClock
   {
-    public SampleClock() { }
-    public SampleClock(ITimeConfiguration conf)
+    public SampleClockVST() { }
+    public SampleClockVST(ITimeConfiguration conf)
     {
       Fs = conf.Rate;
       Division = conf.Division;
@@ -97,7 +97,7 @@ namespace on.smfio
       return (TimeUtil.s60 / tempo * rate) * (p / division);
     }
 
-    public SampleClock SolvePPQ(long samples, int fs, double tempo, short division, bool inTicks = true)
+    public SampleClockVST SolvePPQ(long samples, int fs, double tempo, short division, bool inTicks = true)
     {
       Fs = fs;
       Tempo = tempo;
@@ -107,7 +107,7 @@ namespace on.smfio
       return this;
       //return this.Copy();
     }
-    public SampleClock SolvePPQ(long samples, int fs, uint muspqn, short division, bool inTicks = true)
+    public SampleClockVST SolvePPQ(long samples, int fs, uint muspqn, short division, bool inTicks = true)
     {
       Fs = fs;
       MusPQN = muspqn;
@@ -117,7 +117,7 @@ namespace on.smfio
       return this;
       //return this.Copy();
     }
-    public SampleClock SolvePPQ(long sampleOffset, ITimeConfiguration conf)
+    public SampleClockVST SolvePPQ(long sampleOffset, ITimeConfiguration conf)
     {
       Fs = conf.Rate;
       MusPQN = conf.MusPQN;
@@ -127,13 +127,13 @@ namespace on.smfio
       return this;
     }
 
-    public SampleClock SolveSamples(long pulse)
+    public SampleClockVST SolveSamples(long pulse)
     {
       this.Pulse = pulse;
       //return this.Copy();
       return this;
     }
-    public SampleClock SolveSamples(long pulse, ITimeConfiguration settings)
+    public SampleClockVST SolveSamples(long pulse, ITimeConfiguration settings)
     {
       this.Pulse = pulse;
       this.Division = settings.Division;
@@ -142,7 +142,7 @@ namespace on.smfio
       return this;
       //return this.Copy();
     }
-    public SampleClock SolveSamples(long pulse, int fs, uint muspqn, short division, bool inTicks = true)
+    public SampleClockVST SolveSamples(long pulse, int fs, uint muspqn, short division, bool inTicks = true)
     {
       Pulse = pulse;
       Fs = fs;
@@ -152,7 +152,7 @@ namespace on.smfio
       return this;
       //return this.Copy();
     }
-    public SampleClock SolveSamples(long pulse, int fs, double tempo, short division, bool inTicks = true)
+    public SampleClockVST SolveSamples(long pulse, int fs, double tempo, short division, bool inTicks = true)
     {
       Pulse = pulse;
       Fs = fs;
@@ -190,9 +190,9 @@ namespace on.smfio
       }
     }
 
-    public SampleClock Copy()
+    public SampleClockVST Copy()
     {
-      return new SampleClock
+      return new SampleClockVST
       {
         Division = Division,
         Fs = Fs,

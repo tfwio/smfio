@@ -10,10 +10,14 @@ namespace on.smfio
   public class MidiData
   {
     // TODO: Validate actually channel byte?
-    public byte? Channel;
+    public int? Channel { get; set; }
+
     public char CharChannel { get { return Channel.HasValue ? (char)Channel.Value : (char)0; } }
 
-    public long Pulse;
+    public long Pulse { get; set; }
+
+    public byte[] Data { get; set; }
+    
     public MidiData(byte? c, long pulse)
     {
       this.Channel = c;

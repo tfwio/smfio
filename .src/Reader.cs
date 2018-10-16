@@ -45,12 +45,12 @@ namespace on.smfio
 
     #region PROP
     /// <inheritdoc/>
-    public DictionaryList<int, MIDIMessage> MidiDataList
+    public DictionaryList<int, MIDIMessageVST> MidiDataList
     {
       get { return midiDataList; }
       set { midiDataList = value; }
     }
-    DictionaryList<int, MIDIMessage> midiDataList = new DictionaryList<int, MIDIMessage>();
+    DictionaryList<int, MIDIMessageVST> midiDataList = new DictionaryList<int, MIDIMessageVST>();
 
     #endregion
 
@@ -589,11 +589,11 @@ namespace on.smfio
       switch (msgType)
       {
         case MidiMsgType.MetaStr:
-          midiDataList.AddV(ReaderIndex, new MetaMessage(MidiMsgType.MetaStr, pulse, midiMsg32, GetMetaBString(nTrackOffset)));
+          midiDataList.AddV(ReaderIndex, new MetaMessageVST(MidiMsgType.MetaStr, pulse, midiMsg32, GetMetaBString(nTrackOffset)));
           break;
         case MidiMsgType.MetaInf:
           byte[] bytes = GetMetaBString(nTrackOffset);
-          var midiMsg = new MetaMessage(pulse, midiMsg32, bytes);
+          var midiMsg = new MetaMessageVST(pulse, midiMsg32, bytes);
           midiDataList.AddV(ReaderIndex, midiMsg);
           break;
         case MidiMsgType.SystemExclusive:
@@ -602,17 +602,17 @@ namespace on.smfio
         case MidiMsgType.ChannelVoice:
         case MidiMsgType.NoteOff:
         case MidiMsgType.NoteOn:
-          midiDataList.AddV(ReaderIndex, new ChannelMessage(pulse, midiMsg32, GetEventValue(nTrackOffset)));
+          midiDataList.AddV(ReaderIndex, new ChannelMessageVST(pulse, midiMsg32, GetEventValue(nTrackOffset)));
           break;
         case MidiMsgType.SequencerSpecific:
-          midiDataList.AddV(ReaderIndex, new SequencerSpecific(pulse, midiMsg32, GetEventValue(nTrackOffset)));
+          midiDataList.AddV(ReaderIndex, new SequencerSpecificVST(pulse, midiMsg32, GetEventValue(nTrackOffset)));
           break;
         case MidiMsgType.EOT:
-          midiDataList.AddV(ReaderIndex, new MetaMessage(pulse, midiMsg32));
+          midiDataList.AddV(ReaderIndex, new MetaMessageVST(pulse, midiMsg32));
           break;
         default:
-          if (isRunningStatus) MidiDataList.AddV(ReaderIndex, new ChannelMessage(pulse, delta, GetRseEventValue(nTrackOffset)));
-          else MidiDataList.AddV(ReaderIndex, new ChannelMessage(pulse, delta, GetEventValue(nTrackOffset)));
+          if (isRunningStatus) MidiDataList.AddV(ReaderIndex, new ChannelMessageVST(pulse, delta, GetRseEventValue(nTrackOffset)));
+          else MidiDataList.AddV(ReaderIndex, new ChannelMessageVST(pulse, delta, GetEventValue(nTrackOffset)));
           break;
       }
     }

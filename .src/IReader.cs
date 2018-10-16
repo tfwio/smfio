@@ -25,7 +25,7 @@ namespace on.smfio
     // DATA (DictionaryList<int,MidiMessage>)
     // =============================================
 		
-		DictionaryList<int,MIDIMessage> MidiDataList { get; }
+		DictionaryList<int,MIDIMessageVST> MidiDataList { get; }
 
     // =============================================
     // DATA (Back-Reference)
