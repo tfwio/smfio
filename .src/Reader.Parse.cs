@@ -72,13 +72,52 @@ namespace on.smfio
     }
 
     /// <inheritdoc/>
-    public byte[] GetMetaBString(int offset)
+    public byte[] GetMetaBString(int nTrackOffset) { return GetMetaBString(ReaderIndex, nTrackOffset); }
+
+    /// <inheritdoc/>
+    public byte[] GetMetaBString(int nTrackIndex, int nTrackOffset)
     {
       long result = 0;
-      int nextOffset = FileHandle.ReadDelta(ReaderIndex, offset + 2, out result);
-      return FileHandle[ReaderIndex, nextOffset, Convert.ToInt32(result)];
+      int nextOffset = FileHandle.ReadDelta(nTrackIndex, nTrackOffset + 2, out result);
+      return FileHandle[nTrackIndex, nextOffset, Convert.ToInt32(result)];
     }
 
+    /// <summary>
+    ///  if dealing with a running status message, we would simply 
+    /// tell nTrackOffset-1?
+    /// </summary>
+    byte[] GetMessageBytes(int nTrackIndex, int nTrackOffset, ushort status)
+    {
+      if (status >= 0xFF00 && status <= 0xFF0C) return GetMetaBString(nTrackIndex, nTrackOffset);
+      ushort channelStatus = (ushort)(status & 0xFFF0);
+      ushort channelValue = (ushort)(status & 0x000F);
+
+      switch (status)
+      {
+        // metadata messages
+        case Stat16.SequenceNumber:
+        case Stat16.ChannelPrefix:
+        case Stat16.PortMessage:
+        case Stat16.SetTempo:
+        case Stat16.SMPTEOffset:
+        case Stat16.TimeSignature:
+        case Stat16.KeySignature:
+        case Stat16.SequencerSpecificMetaEvent:
+          return GetMetaBString(nTrackIndex, nTrackOffset);
+        case Stat16.EndOfTrack:  return new byte[0];
+        // channel messages
+        case Stat16.NoteOff:
+        case Stat16.NoteOn:
+        case Stat16.PolyphonicKeyPressure:
+        case Stat16.ControlChange:
+        case Stat16.PitchWheel:
+          return FileHandle[nTrackIndex, nTrackOffset + 1, 2];
+        case Stat16.ProgramChange:
+        case Stat16.ChannelPressure:
+          return FileHandle[nTrackIndex, nTrackOffset + 1, 1];
+       }
+      return new byte[0];
+    }
     /// <inheritdoc/>
     public string GetMessageString(int pTrackOffset)
     {

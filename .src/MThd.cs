@@ -10,9 +10,18 @@ namespace on.smfio.chunk
   /// This is the main SMF File Capsule
   /// <para>• SMF ‘MThd’ header</para>
   /// </summary>
-  public class MTHd
+  public class MThd
   {
-    // FIXME: never used
+    /// <summary>
+    /// Indicates an error in reading the SMF file.  
+    /// In the instance this is set to TRUE, the file contained
+    /// less tracks then advertised, and the reader has continuted
+    /// to read the existing tracks, marking the file as incomplete.  
+    /// I've incorporated this having noticed that Winamp's MIDI player
+    /// can actually play a 'broken' MIDI file (a particular case)
+    /// as mentioned here.
+    /// </summary>
+    public bool FileIsIncomplete { get; set; } = false;
     // public MemoryStream GetStream(int trackId) { return new MemoryStream(Tracks[trackId].track); }
     public MTrk this[int ntrack] { get { return Tracks[ntrack]; } }
     public byte this[int ntrack, int offset] { get { return this[ntrack].Data[offset]; } }
@@ -50,7 +59,22 @@ namespace on.smfio.chunk
     /// </summary>
     /// <param name="br">System.IO.BinaryReader</param>
     /// <param name="tracks">track byte stream.</param>
-    public MTHd ( BinaryReader br , params MTrk[] tracks )
+    public MThd ( BinaryReader br , params MTrk[] tracks )
+    {
+      ReadMThd(br, tracks);
+    }
+
+    /// <summary>MTHD loader.</summary>
+    /// <param name="fileName"></param>
+    public MThd(string fileName)
+    {
+      ReadMThdAndTracks(fileName);
+    }
+
+    #endregion
+
+    /// <summary>Read MTrk structure</summary>
+    void ReadMThd(BinaryReader br, params MTrk[] tracks)
     {
       ByteHead     = br.ReadBytes(4);
       ByteSize     = EndianUtil.Flip(br.ReadBytes(4));
@@ -60,7 +84,28 @@ namespace on.smfio.chunk
       Tracks = tracks;
       //tk =  br.ReadBytes(4);
     }
-    #endregion
+    void ReadMThdAndTracks(string fileName)
+    {
+      int i = 0;
+      bool hasError = false;
+      using (var STREAM = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+      using (var READER = new BinaryReader(STREAM))
+      {
+        ReadMThd(READER);
+        Tracks = new MTrk[NumberOfTracks];
+        for (i = 0; i < NumberOfTracks; i++)
+        {
+          if (READER.BaseStream.Position >= READER.BaseStream.Length)
+          {
+            OverrideNumberOfTracks((short)i);
+            FileIsIncomplete = true;
+            hasError = true;
+          }
+          if (hasError) continue;
+          Tracks[i] = new MTrk(READER);
+        }
+      }
+    }
 
     public int ReadDelta(int pTrackID, int pTrackOffset, out long pDeltaVar)
     {

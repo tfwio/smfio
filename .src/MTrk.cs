@@ -96,7 +96,7 @@ namespace on.smfio.chunk
 		  // 	
 		  // }
 
-      public byte[] GetData(MTHd pHandle, int pTrackID) { return pHandle[pTrackID, Offset, Size];}
+      public byte[] GetData(MThd pHandle, int pTrackID) { return pHandle[pTrackID, Offset, Size];}
 			public byte[] GetData(MTrk pTrack) { return pTrack[Offset, Size].ToArray(); }
     }
 	}
