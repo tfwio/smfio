@@ -19,6 +19,8 @@ namespace on.smfio
     byte this[int kTrackID, int kTrackOffset] { get; }
     byte[] this[int kTrackID, int kTrackOffset, int kSize] { get; }
 
+		bool GenerateMessageList { get; set; }
+
     // =============================================
     // DATA (DictionaryList<int,MidiMessage>)
     // =============================================
@@ -110,13 +112,10 @@ namespace on.smfio
 		/// <param name="trackNo"></param>
 		void ParseTempoMap(int trackNo);
 
-    int GetTrackMessage(int position, int delta);
-
     // =============================================
     // PARSE TRACK (EVENT)
     // =============================================
 
-    event EventHandler<TempoChangedEventArgs> TempoChangedEvent;
 		event EventHandler<MidiMessageEvent> ProcessMidiMessage;
 		event EventHandler<ProgressChangedEventArgs> TrackLoadProgressChanged;
 		event EventHandler AfterTrackLoaded;

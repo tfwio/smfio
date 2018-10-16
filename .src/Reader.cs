@@ -23,6 +23,7 @@ namespace on.smfio
   /// </summary>
   public partial class Reader : IDisposable, IReader
   {
+    public bool GenerateMessageList { get; set; }
 
     public MTrk this[int kTrackID] { get { return FileHandle[kTrackID]; } }
     public byte this[int kTrackID, int kTrackOffset] { get { return FileHandle[kTrackID, kTrackOffset]; } }
@@ -184,12 +185,6 @@ namespace on.smfio
 
     #endregion
     #region MESSAGE PARSER GetTrackMessage, GetNTrackMessage, ?
-    /// MESSAGE PARSER
-    /// get track (selected) message
-    public virtual int GetTrackMessage(int nTrackOffset, int delta)
-    {
-      return GetNTrackMessage(ReaderIndex, nTrackOffset, delta);
-    }
 
     /// <summary></summary>
     public virtual int GetNTrackMessage(int nTrackIndex, int nTrackOffset, int delta)
@@ -202,33 +197,33 @@ namespace on.smfio
       if (msg16 >= 0xFF00 && msg16 <= 0xFF0C)
       {
         MessageHandler(MidiMsgType.MetaStr, nTrackIndex, nTrackOffset, msg16, msg8, CurrentTrackPulse, CurrentRunningStatus8, false);
-        DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
+        DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
         return ++DELTA_Returned;
       }
       switch (msg16)
       {
         case Stat16.EndOfTrack:      // FF2F
           MessageHandler(MidiMsgType.EOT, nTrackIndex, nTrackOffset, msg16, msg8, CurrentTrackPulse, CurrentRunningStatus8, false);
-          DELTA_Returned = NTrack.Data.Length;// NTrack.DeltaSeek(nTrackOffset);
+          DELTA_Returned = FileHandle.Tracks[nTrackIndex].Data.Length;
           break;
         case Stat16.ChannelPrefix:   // FF20
         case Stat16.PortMessage:     // FF21?
         case Stat16.SetTempo:        // FF51
           MessageHandler(MidiMsgType.MetaInf, nTrackIndex, nTrackOffset, msg16, msg8, CurrentTrackPulse, CurrentRunningStatus8, false);
-          DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
+          DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
           break;
         case Stat16.SMPTEOffset:     // FF54
           MessageHandler(MidiMsgType.MetaInf, nTrackIndex, nTrackOffset, msg16, msg8, CurrentTrackPulse, CurrentRunningStatus8, false);
-          DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
+          DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
           break;
         case Stat16.TimeSignature:   // FF58
         case Stat16.KeySignature:    // FF59
           MessageHandler(MidiMsgType.MetaInf, nTrackIndex, nTrackOffset, msg16, msg8, CurrentTrackPulse, CurrentRunningStatus8, false);
-          DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
+          DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
           break;
         case Stat16.SequencerSpecificMetaEvent:  // FF7F
           MessageHandler(MidiMsgType.SequencerSpecific, nTrackIndex, nTrackOffset, msg16, msg8, CurrentTrackPulse, CurrentRunningStatus8, false);
-          DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
+          DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
           break;
         case Stat16.SystemExclusive: // 0xF0
           MessageHandler(MidiMsgType.SystemExclusive, nTrackIndex, nTrackOffset, msg16, msg8, CurrentTrackPulse, CurrentRunningStatus8, false);
@@ -278,6 +273,15 @@ namespace on.smfio
     /// In MIDI Format 1, this would be the first track (index = 0).  
     /// Otherwise Format 0: index = 0 and with  
     /// Format 2, each track will essentially be like a Format 0 track.
+    /// 
+    /// This method collects information from the 'tempo map' track such as
+    /// 
+    /// - Tempo Information
+    /// - SMPTE Offset
+    /// - Time Signature
+    /// - Key Signatuer
+    /// - Sequencer Specific Data
+    /// - System Exclusive Data (in tempo map)
     /// </summary>
     int GetTempoMap(int nTrackIndex, int nTrackOffset, int delta)
     {
@@ -288,20 +292,19 @@ namespace on.smfio
       // var hexMsg = $"{msg16:X2}";
       if (msg16 >= 0xFF00 && msg16 <= 0xFF0C)
       {
-        DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
+        DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
         return ++DELTA_Returned;
       }
       switch (msg16)
       {
         // text
         case Stat16.ChannelPrefix:  // 0xFF20
-        case Stat16.PortMessage:    /* 0xFF21 */ DELTA_Returned = NTrack.DeltaSeek(nTrackOffset); break;
-        case Stat16.EndOfTrack:     /* 0xFF2F */ DELTA_Returned = NTrack.Data.Length-1; break;
+        case Stat16.PortMessage:    /* 0xFF21 */ DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset); break;
+        case Stat16.EndOfTrack:     /* 0xFF2F */ DELTA_Returned = FileHandle.Tracks[nTrackIndex].Data.Length-1; break;
         case Stat16.SetTempo: // 0xFF51
           var muspqn = FileHandle[ReaderIndex].ReadU24(nTrackOffset + 3);
           TempoMap.Push(muspqn, Division, CurrentTrackPulse);
-          OnTempoChanged(DELTA_Returned, muspqn);
-          DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
+          DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
           break;
         case Stat16.SMPTEOffset: // 0xFF54
           SMPTE_Offset.SetSMPTE(
@@ -311,7 +314,7 @@ namespace on.smfio
             FileHandle.Tracks[nTrackIndex].Data[nTrackOffset+6],
             FileHandle.Tracks[nTrackIndex].Data[nTrackOffset+7]
            );
-          DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
+          DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
           break;
         case Stat16.TimeSignature: // 0xFF58
           TimeSignature.SetSignature(
@@ -320,15 +323,15 @@ namespace on.smfio
             (int)this[nTrackIndex, nTrackOffset + 5],
             (int)this[nTrackIndex, nTrackOffset + 6]
            );
-          DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
+          DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
           break;
         case Stat16.KeySignature: // 0xFF59
           byte b = (this[nTrackIndex, nTrackOffset + 3]);
           KeySignature.SetSignature((KeySignatureType)b, this[nTrackIndex, nTrackOffset + 4] == 0);
-          DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
+          DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
           break;
         case Stat16.SequencerSpecificMetaEvent: // 0xFF7F
-          DELTA_Returned = NTrack.DeltaSeek(nTrackOffset);
+          DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
           break;
         case Stat16.SystemExclusive:
           var pLastIndex = FileHandle[nTrackIndex].GetEndOfSystemExclusive(nTrackOffset);
@@ -401,20 +404,6 @@ namespace on.smfio
     #endregion
     #region MESSAGE properties/events
 
-    public event EventHandler<TempoChangedEventArgs> TempoChangedEvent;
-
-    /// <summary>
-    /// ¡This delta may not be correct? Wha? Why delta and not the RunningStatus?
-    /// </summary>
-    /// <param name="delta"></param>
-    /// <param name="tValue"></param>
-    protected virtual void OnTempoChanged(int delta, uint tValue)
-    {
-      var handler = TempoChangedEvent;
-      if (handler != null)
-        handler(this, new TempoChangedEventArgs(delta, tValue));
-    }
-
     /// MESSAGE properties/events
     public List<MidiEventDelegate> MessageHandlers
     {
@@ -422,10 +411,23 @@ namespace on.smfio
     }
     List<MidiEventDelegate> messageHandlers = new List<MidiEventDelegate>();
 
-    /// MESSAGE properties/events
+    /// <summary>
+    /// This is a place-holder for delegating the parsers primary
+    /// parsing function (mechanism).  Its here because during development
+    /// there were multiple parser implementations being used and/or
+    /// selectively assigned such has become the case currently where
+    /// we have <see cref="GetTempoMap(int, int, int)"/> and
+    /// <see cref="GetNTrackMessage(int, int, int)"/>.
+    /// 
+    /// Presently this is the only handler supplied and yet it
+    /// will eventually be privately used, exposing only
+    /// MidiMessages in a prospective event handler and
+    /// on completion of parsing all tracks, a collection
+    /// of events will be accessable.
+    /// </summary>
     public MidiEventDelegate MessageHandler = null;
 
-    /// MESSAGE properties/events
+    /// <summary><see cref="MessageHandler"/></summary>
     public event EventHandler<MidiMessageEvent> ProcessMidiMessage;
     #endregion
 
@@ -438,18 +440,22 @@ namespace on.smfio
 
     #region .ctor
 
-    public Reader() : this(true)
+    public Reader() : this(true, false)
     {
     }
-    public Reader(bool useEventHandler)
+    public Reader(bool useEventHandler, bool generateMessageList=false)
     {
+      GenerateMessageList = generateMessageList;
       if (UseEventHandler = useEventHandler)
         MessageHandler = OnMidiMessage;
     }
 
-    public Reader(MidiMessageHandler handler) : this(true) { }
-    public Reader(MidiEventDelegate handler) : this(false) { MessageHandler = handler; }
-    public Reader(string fileName) : this(true)
+    public Reader(MidiEventDelegate handler, bool generateMessageList=false) :
+      this(false, generateMessageList)
+    {
+      MessageHandler = handler;
+    }
+    public Reader(string fileName, bool generateMessageList=false) : this(true, generateMessageList)
     {
       MidiFileName = fileName;
     }
@@ -457,7 +463,7 @@ namespace on.smfio
     #endregion
 
     #region ¿¡WHAT?!
-    ///	(¿¡WHAT?!) this is only called on errors
+    ///	<summary>(¿¡WHAT?!) only called on error?</summary>
     /// <inheritdoc/>
     public int GetOffset(int offset)
     {
@@ -494,11 +500,6 @@ namespace on.smfio
 
     #region READ META TRACK
 
-    /// <summary>
-    /// Retruns the SMF Track at <see cref="ReaderIndex"/>
-    /// </summary>
-    MTrk NTrack { get { return FileHandle.Tracks[ReaderIndex]; } }
-
     /// <inheritdoc/>
     public void ParseTempoMap(int tk)
     {
@@ -527,7 +528,7 @@ namespace on.smfio
       int i = 0;
       CurrentTrackPulse = 0;
 
-      while (i < NTrack.Data.Length)
+      while (i < FileHandle.Tracks[ReaderIndex].Data.Length)
       {
         i = FileHandle[ReaderIndex].DeltaRead(i, out mSevenBitDelta);
         
@@ -538,7 +539,7 @@ namespace on.smfio
 
       OnAfterTrackLoaded(EventArgs.Empty);
 
-      return NTrack.Data.Length;
+      return FileHandle.Tracks[ReaderIndex].Data.Length;
     }
     #region READ (PARSE) ALL TRACKS
 
@@ -580,7 +581,7 @@ namespace on.smfio
 
       }
       // OnAfterTrackLoaded(EventArgs.Empty);
-      // return NTrack.track.Length;
+      // return FileHandle.Tracks[ReaderIndex].track.Length;
     }
 
     void PARSER_MidiDataList(MidiMsgType msgType, int nTrackIndex, int nTrackOffset, int midiMsg32, byte midiMsg8, long pulse, int delta, bool isRunningStatus)
