@@ -121,7 +121,7 @@ namespace on.smfio
     }
 
     #endregion
-    
+
     public int CurrentRunningStatus8 { get; private set; }
     public int CurrentRunningStatus16 { get; private set; }
     public int CurrentStatus { get; private set; }
@@ -211,7 +211,11 @@ namespace on.smfio
     {
       FileHandle = new MThd(MidiFileName);
       if (!(TempoMap.Count == 0)) TempoMap.Clear();
-      ParseTempoMap(0); // pre-scan? ;)
+      ParseTempoMap(0);
+      // we're no longer parsing all tracks by default now.
+      // this means that TempoMap.Finalize() can not determine the total
+      // pulse length of the MIDI 'song' or all MIDI tracks.
+      // That said, we're not going to have to update how the TempoMap works.
       if (GenerateVSTMessageList) GetVSTMessageList();
     }
 
