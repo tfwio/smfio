@@ -43,16 +43,13 @@ namespace on.smfio
 
     #endregion
 
-    #region PROP
     /// <inheritdoc/>
-    public DictionaryList<int, MIDIMessageVST> MidiDataList
+    public DictionaryList<int, MIDIMessageVST> MidiVSTMessageList
     {
-      get { return midiDataList; }
-      set { midiDataList = value; }
+      get { return midiVSTMessageList; }
+      set { midiVSTMessageList = value; }
     }
-    DictionaryList<int, MIDIMessageVST> midiDataList = new DictionaryList<int, MIDIMessageVST>();
-
-    #endregion
+    DictionaryList<int, MIDIMessageVST> midiVSTMessageList = new DictionaryList<int, MIDIMessageVST>();
 
     public int CurrentRunningStatus8 { get; private set; }
     public int CurrentRunningStatus16 { get; private set; }
@@ -547,16 +544,15 @@ namespace on.smfio
     long totlen = 0;
     public List<long> TrackLength { get; private set; } = new List<long>();
     /// <summary>
-    /// Parse all tracks to mididatalist
+    /// Parse all tracks to (vst) mididatalist and our internal delegation.
     /// </summary>
-    /// <returns>The length (in bytes) of the track.</returns>
     public void ParseAll()
     {
-      MidiDataList.Clear();
+      MidiVSTMessageList.Clear();
       TrackLength.Clear();
       for (int i = 0; i < FileHandle.NumberOfTracks; i++)
       {
-        MidiDataList.CreateKey(i);
+        MidiVSTMessageList.CreateKey(i);
         TrackLength.Add(-1);
       }
       CurrentTrackPulse = 0;
@@ -578,10 +574,7 @@ namespace on.smfio
           
           TrackLength[nTrackIndex] = CurrentTrackPulse;
         }
-
       }
-      // OnAfterTrackLoaded(EventArgs.Empty);
-      // return FileHandle.Tracks[ReaderIndex].track.Length;
     }
 
     void PARSER_MidiDataList(MidiMsgType msgType, int nTrackIndex, int nTrackOffset, int midiMsg32, byte midiMsg8, long pulse, int delta, bool isRunningStatus)
@@ -589,12 +582,12 @@ namespace on.smfio
       switch (msgType)
       {
         case MidiMsgType.MetaStr:
-          midiDataList.AddV(ReaderIndex, new MetaMessageVST(MidiMsgType.MetaStr, pulse, midiMsg32, GetMetaBString(nTrackOffset)));
+          midiVSTMessageList.AddV(ReaderIndex, new MetaMessageVST(MidiMsgType.MetaStr, pulse, midiMsg32, GetMetaBString(nTrackOffset)));
           break;
         case MidiMsgType.MetaInf:
           byte[] bytes = GetMetaBString(nTrackOffset);
           var midiMsg = new MetaMessageVST(pulse, midiMsg32, bytes);
-          midiDataList.AddV(ReaderIndex, midiMsg);
+          midiVSTMessageList.AddV(ReaderIndex, midiMsg);
           break;
         case MidiMsgType.SystemExclusive:
           Debug.WriteLine("Skip System Exclusive Message (for now)");
@@ -602,17 +595,17 @@ namespace on.smfio
         case MidiMsgType.ChannelVoice:
         case MidiMsgType.NoteOff:
         case MidiMsgType.NoteOn:
-          midiDataList.AddV(ReaderIndex, new ChannelMessageVST(pulse, midiMsg32, GetEventValue(nTrackOffset)));
+          midiVSTMessageList.AddV(ReaderIndex, new ChannelMessageVST(pulse, midiMsg32, GetEventValue(nTrackOffset)));
           break;
         case MidiMsgType.SequencerSpecific:
-          midiDataList.AddV(ReaderIndex, new SequencerSpecificVST(pulse, midiMsg32, GetEventValue(nTrackOffset)));
+          midiVSTMessageList.AddV(ReaderIndex, new SequencerSpecificVST(pulse, midiMsg32, GetEventValue(nTrackOffset)));
           break;
         case MidiMsgType.EOT:
-          midiDataList.AddV(ReaderIndex, new MetaMessageVST(pulse, midiMsg32));
+          midiVSTMessageList.AddV(ReaderIndex, new MetaMessageVST(pulse, midiMsg32));
           break;
         default:
-          if (isRunningStatus) MidiDataList.AddV(ReaderIndex, new ChannelMessageVST(pulse, delta, GetRseEventValue(nTrackOffset)));
-          else MidiDataList.AddV(ReaderIndex, new ChannelMessageVST(pulse, delta, GetEventValue(nTrackOffset)));
+          if (isRunningStatus) MidiVSTMessageList.AddV(ReaderIndex, new ChannelMessageVST(pulse, delta, GetRseEventValue(nTrackOffset)));
+          else MidiVSTMessageList.AddV(ReaderIndex, new ChannelMessageVST(pulse, delta, GetEventValue(nTrackOffset)));
           break;
       }
     }
