@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+<Project ToolsVersion="4.0" 
+  xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <PropertyGroup>
     <ProjectGuid>{5A70B240-14B9-4A2F-8C5B-497A67012A72}</ProjectGuid>
     <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -20,11 +21,11 @@
     <AssemblyOriginatorKeyFile>smfio.snk</AssemblyOriginatorKeyFile>
     <DelaySign>False</DelaySign>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
-    <DocumentationFile>$(SolutionDIr)/../build/$(Platform)-$(Configuration)/gen.snd.midi.xml</DocumentationFile>
-    <IntermediateOutputPath>$(SolutionDIr)/../build/obj/$(Platform)-$(Configuration)/</IntermediateOutputPath>
-    <OutputPath>$(SolutionDir)/../build/$(Platform)-$(Configuration)/</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)\..\build\obj\$(Platform)-$(Configuration)</IntermediateOutputPath>
+    <OutputPath>$(SolutionDir)\..\build\$(Platform)-$(Configuration)</OutputPath>
     <NoWarn>1591</NoWarn>
     <NoWin32Manifest>False</NoWin32Manifest>
+    <BaseIntermediateOutputPath>$(SolutionDir)\..\build\obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,20 +34,12 @@
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <FileAlignment>4096</FileAlignment>
   </PropertyGroup>
-  <!-- <PropertyGroup Condition=" '$(Platform)' == 'Win32' ">
-    <PlatformTarget>x86</PlatformTarget>
-    <BaseAddress>4194304</BaseAddress>
-    <RegisterForComInterop>False</RegisterForComInterop>
-    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-    <FileAlignment>4096</FileAlignment>
-  </PropertyGroup> -->
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>True</DebugSymbols>
     <DebugType>Full</DebugType>
     <DefineConstants>DEBUG;TRACE;NOCOR3</DefineConstants>
     <Optimize>False</Optimize>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugSymbols>False</DebugSymbols>
@@ -54,12 +47,10 @@
     <DefineConstants>TRACE;NOCOR3</DefineConstants>
     <Optimize>True</Optimize>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
-    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
-    <DocumentationFile>..\..\..\build\AnyCPU-Debug\smfio.xml</DocumentationFile>
     <ErrorReport>prompt</ErrorReport>
     <DebugType>Full</DebugType>
   </PropertyGroup>
@@ -67,22 +58,22 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Win32' ">
     <DebugSymbols>true</DebugSymbols>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <DocumentationFile>..\..\..\build\AnyCPU-Debug\smfio.xml</DocumentationFile>
     <FileAlignment>4096</FileAlignment>
     <NoWarn>1591</NoWarn>
     <DebugType>Full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>$(SolutionDIr)/../build/$(Platform)-$(Configuration)/gen.snd.midi.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Win32' ">
-    <DocumentationFile>E:\dev\home\projects\modest-smf-vstnet\Solution\/../build/AnyCPU-Release/gen.snd.midi.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <FileAlignment>4096</FileAlignment>
     <NoWarn>1591</NoWarn>
     <DebugType>None</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>$(SolutionDIr)/../build/$(Platform)-$(Configuration)/gen.snd.midi.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp">
@@ -100,30 +91,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <!-- <Compile Include="ck.smf_head.cs" /> -->
     <Compile Include="c3\IO.EndianUtility.cs" />
     <Compile Include="c3\StringHelper.cs" />
-    <Compile Include="ck.smf_mthd.cs" />
-    <Compile Include="ck.smf_mtrk.cs" />
     <Compile Include="Common\ChMessage8.cs" />
     <Compile Include="Common\ChMessageU16.cs" />
     <Compile Include="Common\KeySignatureType.cs" />
-    <Compile Include="Common\MetaHelpers.cs" />
-    <Compile Include="Common\MetaMsg32.cs" />
-    <Compile Include="Common\MetaMsg8.cs" />
     <Compile Include="Common\MidiKeySignature.cs" />
     <Compile Include="Common\MidiTimeSignature.cs" />
-    <Compile Include="Common\Smf.Meta.ChannelType.cs" />
-    <Compile Include="Common\Smf.MidiMessageInfo.cs" />
-    <Compile Include="Common\Smf.NoteRange.cs" />
-    <Compile Include="Common\Stat8.cs" />
-    <Compile Include="Common\Stat16.cs" />
-    <Compile Include="Common\Stat32.cs" />
-    <Compile Include="Common\StatUShort.cs" />
+    <Compile Include="Common\SmpteOffset.cs" />
     <Compile Include="EnumFile.cs" />
     <Compile Include="Events.cs" />
-    <Compile Include="IMidiParser.cs" />
-    <Compile Include="IMidiParser.Parser.cs" />
+    <Compile Include="IReader.cs" />
+    <Compile Include="IReaderParser.cs" />
     <Compile Include="ITimeConfiguration.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="MidiMessage\ChannelMessageVST.cs" />
@@ -134,10 +113,8 @@
     <Compile Include="MidiMessage\SystemExclusiveVST.cs" />
     <Compile Include="MidiMessage.cs" />
     <Compile Include="MidiMsgType.cs" />
-    <Compile Include="MidiReader.cs" />
-    <Compile Include="MidiReader.Parse.cs" />
-    <Compile Include="MidiSystem.cs" />
-    <Compile Include="MidiUtil.cs" />
+    <Compile Include="MThd.cs" />
+    <Compile Include="MTrk.cs" />
     <Compile Include="NoteParser\INoteParser.cs" />
     <Compile Include="NoteParser\Loop.cs" />
     <Compile Include="NoteParser\MBT.cs" />
@@ -145,33 +122,40 @@
     <Compile Include="NoteParser\MidiNote.cs" />
     <Compile Include="NoteParser\NoteParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reader.cs" />
+    <Compile Include="Reader.Metadata.cs" />
+    <Compile Include="Reader.MIDIVstMessageList.cs" />
+    <Compile Include="Reader.Parse.cs" />
     <Compile Include="SmfString.cs" />
+    <Compile Include="Stat16.cs" />
+    <Compile Include="Stat32.cs" />
+    <Compile Include="Stat8.cs" />
+    <Compile Include="StatRange.cs" />
+    <Compile Include="StatusByte.cs" />
+    <Compile Include="StatusQuery.cs" />
+    <Compile Include="StatusString.cs" />
+    <Compile Include="StatusWord.cs" />
     <Compile Include="TempoMap.cs" />
     <Compile Include="strings.cs" />
     <Compile Include="TimeUtil.cs" />
     <Compile Include="xg\XgNrpn.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\System.Cor3.Lite\System.Cor3.Lite.csproj">
-      <Project>{e88ac1ae-b545-4a2c-b136-3e42dc75ef7f}</Project>
-      <Name>System.Cor3.Lite</Name>
+    <EmbeddedResource Include="ext\cc.map">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ext\dk.map">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ext\inst.map">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Cor3.Lite\Cor3.Lite.csproj">
+      <Project>{af1d9870-a3c0-41fc-9c70-47e23b5e1ed1}</Project>
+      <Name>Cor3.Lite</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ext\cc.map">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ext\dk.map">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ext\inst.map">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="app.config">
-      <SubType>Designer</SubType>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -181,5 +165,8 @@
     <BaseAddress>4194304</BaseAddress>
     <RegisterForComInterop>False</RegisterForComInterop>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DocumentationFile>$(SolutionDIr)/../build/$(Platform)-$(Configuration)/gen.snd.midi.xml</DocumentationFile>
   </PropertyGroup>
 </Project>
