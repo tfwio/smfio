@@ -116,20 +116,12 @@ namespace SMFIOViewer
     void TracksToListBoxContext()
     {
       listBoxContextMenuStrip.Items.Clear();
-      List<int> channels = new List<int>();
       foreach (KeyValuePair<int,string> track in MidiParser.GetMidiTrackNameDictionary())
       {
-        channels.Clear();
-        ToolStripMenuItem tn = new ToolStripMenuItem(track.Value);
+        var tn = new ToolStripMenuItem(track.Value);
         tn.Tag = track.Key;
         listBoxContextMenuStrip.Items.Add(tn);
-        
-        foreach (MIDIMessageVST i in MidiParser.MidiTrackDistinctChannels(track.Key))
-          if (i is ChannelMessageVST)
-            channels.Add(i.ChannelBit);
       }
-      channels.Clear();
-      channels = null;
     }
     
     void InitializeModestForm(IList<MasterViewContainer> tasks)
