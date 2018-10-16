@@ -124,8 +124,8 @@ namespace SMFIOViewer
         tn.Tag = track.Key;
         listBoxContextMenuStrip.Items.Add(tn);
         
-        foreach (MIDIMessage i in MidiParser.MidiTrackDistinctChannels(track.Key))
-          if (i is ChannelMessage)
+        foreach (MIDIMessageVST i in MidiParser.MidiTrackDistinctChannels(track.Key))
+          if (i is ChannelMessageVST)
             channels.Add(i.ChannelBit);
       }
       channels.Clear();
