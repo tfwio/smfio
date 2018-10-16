@@ -38,7 +38,7 @@ namespace SMFIOViewer
 		/// <returns></returns>
 		static public IEnumerable<MIDIMessageVST> MidiTrackDistinctChannels(this IReader parser, int trackid)
 		{
-      return parser.MidiDataList[trackid].Distinct(ChannelComparer);
+      return parser.MidiVSTMessageList[trackid].Distinct(ChannelComparer);
 		}
 		
     class MidiChannelComparer : IEqualityComparer<MIDIMessageVST>

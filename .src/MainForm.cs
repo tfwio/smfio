@@ -172,11 +172,11 @@ namespace SMFIOViewer
       ((sender as ToolStripMenuItem).Tag as Control).Show();
       ((sender as ToolStripMenuItem).Tag as Control).Invalidate();
     }
-
+    
     /// <summary>
     /// This is a placeholder for MidiParser.TrackSelectAction
     /// </summary>
-    /// <seealso cref="on.smfio.MidiReader.TrackSelectAction()">on.smfio.MidiReader.TrackSelectAction()</seealso>
+    /// <seealso cref="on.smfio.MidiReader.TrackSelectAction()"/>
     Func<string> LoadTracks = null;
     
     void StartLoad()
