@@ -1,11 +1,23 @@
 /* Date: 11/12/2005 - Time: 4:19 PM */
-
-
 using System;
 using System.Diagnostics;
-
 namespace on.smfio
 {
+  /// <summary>
+  ///   
+  /// **Reader.MIDIVstMessageList.cs**  
+  /// This file (partial class implementation) represents a particular
+  /// use-case as found in "modest vstsmfui" which is a strange brute-force,
+  /// prototype VSTHost implementation lacking tempo-changes and many other features.
+  /// 
+  /// The implementation was (yet still at this time) lacking various
+  /// needed characteristics.  One major reason it was written was to test
+  /// out weather or not I could use this parser as a VSTHost implementation.
+  /// 
+  /// This remains here so that 'modest' can be migrated out of these features
+  /// and into the newer MidiMessage semantic where we collect midi message events
+  /// in a very general form such as <see cref="MidiMessage"/>.
+  /// </summary>
   public partial class Reader
   {
     /// <inheritdoc/>
@@ -60,13 +72,18 @@ namespace on.smfio
     /// </summary>
     void GetVSTMessageList(string smfFilePath)
     {
+      ResetTempoMap();
       FileHandle = new chunk.MThd(smfFilePath);
-      if (!(TempoMap.Count == 0)) TempoMap.Clear();
       ParseTempoMap(0);
-      MidiEventDelegate backup = MessageHandler;   // override default message handler.
-      MessageHandler = VSTMessageListHandler;      // set it to our vst message-list parser.
+
+      // override default message handler.
+      MidiEventDelegate backup = MessageHandler;
+      MessageHandler = VSTMessageListHandler;
+
       ParseAll();
       TempoMap.Finalize(this);
+
+      // put back the message handler.
       MessageHandler = backup;
     }
   }
