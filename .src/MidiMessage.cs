@@ -22,10 +22,10 @@ namespace on.smfio
       MidiFormat = collection.MidiFormat;
       Division = collection.Division;
       // 
-      TempoMap = collection.TempoMap.Copy();
-      KeySignature = collection.KeySignature.Copy();
-      TimeSignature = collection.TimeSignature.Copy();
-      SMPTE = collection.SMPTE.Copy();
+      if (collection.TempoMap!=null) TempoMap = collection.TempoMap.Copy();
+      if (collection.KeySignature!=null) KeySignature = collection.KeySignature.Copy();
+      if (collection.TimeSignature!=null) TimeSignature = collection.TimeSignature.Copy();
+      if (collection.SMPTE!=null) SMPTE = collection.SMPTE.Copy();
     }
 
     void CopyReaderTempoMap(Reader reader)
