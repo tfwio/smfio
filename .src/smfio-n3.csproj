@@ -91,6 +91,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="c3\EnumDescriptionAttributeExtension.cs" />
     <Compile Include="c3\IO.EndianUtility.cs" />
     <Compile Include="c3\StringHelper.cs" />
     <Compile Include="Common\ChMessage8.cs" />

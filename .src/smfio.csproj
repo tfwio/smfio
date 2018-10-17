@@ -82,6 +82,7 @@
     <Compile Include="c3\Internals\ViewPoint.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="c3\EnumDescriptionAttributeExtension.cs" />
     <Compile Include="c3\IO.EndianUtility.cs" />
     <Compile Include="c3\NumericExtensions.cs" />
     <Compile Include="c3\StringByteExtension.cs" />

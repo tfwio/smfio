@@ -19,22 +19,52 @@
 
 namespace on.smfio.Common
 {
-	public enum KeySignatureType : byte
+
+  // https://unicode-table.com/en/blocks/musical-symbols/
+  public enum KeySignatureType : byte
 	{
-		CFlat = 0xF0, // -7
-		GFlat = 0xFA, // -6
-		DFlat = 0xFB, // -5
-		AFlat = 0xFC, // -4
-		EFlat = 0xFD, // -3
-		BFlat = 0xFE, // -2
-		FFlat = 0xFF, // -1
-		C = 0,        // 0
-		GSharp = 1,   // 1
-		DSharp = 2,   // 2
-		ASharp = 3,   // 3
-		ESharp = 4,   // 4
-		BSharp =5,    // 5
-		FSharp = 6,   // 6
-		CSharp = 7,   // 7
+    /// <summary>C&#x266D;</summary>
+    [System.ComponentModel.Description("C\u266D")]
+    CFlat = 0xF0, // -7
+    /// <summary>G&#x266D;</summary>
+    [System.ComponentModel.Description("C\u266D")]
+    GFlat = 0xFA, // -6
+    /// <summary>D&#x266D;</summary>
+    [System.ComponentModel.Description("C\u266D")]
+    DFlat = 0xFB, // -5
+    /// <summary>A&#x266D;</summary>
+    [System.ComponentModel.Description("C\u266D")]
+    AFlat = 0xFC, // -4
+    /// <summary>E&#x266D;</summary>
+    [System.ComponentModel.Description("C\u266D")]
+    EFlat = 0xFD, // -3
+    /// <summary>B&#x266D;</summary>
+    [System.ComponentModel.Description("C\u266D")]
+    BFlat = 0xFE, // -2
+    /// <summary>F&#x266D;</summary>
+    [System.ComponentModel.Description("C\u266D")]
+    FFlat = 0xFF, // -1
+    [System.ComponentModel.Description("C\u266D")]
+    C = 0,        // 0
+    [System.ComponentModel.Description("C")]
+    GSharp = 1,   // 1
+    /// <summary>D#</summary>
+    [System.ComponentModel.Description("D#")]
+    DSharp = 2,   // 2
+    /// <summary>A#</summary>
+    [System.ComponentModel.Description("A#")]
+    ASharp = 3,   // 3
+    /// <summary>E#</summary>
+    [System.ComponentModel.Description("E#")]
+    ESharp = 4,   // 4
+    /// <summary>B#</summary>
+    [System.ComponentModel.Description("B#")]
+    BSharp =5,    // 5
+    /// <summary>F#</summary>
+    [System.ComponentModel.Description("F#")]
+    FSharp = 6,   // 6
+    /// <summary>C#</summary>
+    [System.ComponentModel.Description("C#")]
+    CSharp = 7,   // 7
 	}
 }

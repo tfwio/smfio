@@ -673,9 +673,9 @@ namespace on.smfio
     #region STR track info, reader status (caption/tooltip)
 
     public const string Resource_TrackLoaded =
-      "{12} MIDI Track — Format: v{11}, SMPTE: {13}," +
+      "{11} MIDI Track — Format: v{10}, SMPTE: {12}," +
       "Track: {0,3:000},  PPQ: {3}, (first) Tempo: {4}\n" +
-      "TSig: {5}/{6} Clocks: {7}, {8} 32nds, KeySig: {9} {10}";
+      "TSig: {5}/{6} Clocks: {7}, {8} 32nds, KeySig: {9}";
 
     string StringTrackInfo
     {
@@ -692,11 +692,10 @@ namespace on.smfio
           /*  6 */ TimeSignature.Denominator,
           /*  7 */ TimeSignature.Clocks,
           /*  8 */ TimeSignature.ThirtySeconds,
-          /*  9 */ KeySignature.KeyType,
-          /* 10 */ KeySignature.IsMajor ? "Major" : "Minor",
-          /* 11 */ FileHandle.Format,
-          /* 12 */ StringRes.STRING_APP_NAME,
-          /* 13 */ SMPTE
+          /*  9 */ KeySignature.KeyType.GetEnumDescriptionAttribute(),
+          /* 10 */ FileHandle.Format,
+          /* 11 */ StringRes.STRING_APP_NAME,
+          /* 12 */ SMPTE
          );
       }
     }
