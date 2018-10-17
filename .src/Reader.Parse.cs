@@ -104,6 +104,9 @@ namespace on.smfio
         case Stat16.SequencerSpecificMetaEvent:
           return GetMetaBString(nTrackIndex, nTrackOffset);
         case Stat16.EndOfTrack:  return new byte[0];
+      }
+      switch (status & 0xF0)
+      {
         // channel messages
         case Stat16.NoteOff:
         case Stat16.NoteOn:
@@ -114,7 +117,6 @@ namespace on.smfio
         case Stat16.ProgramChange:
         case Stat16.ChannelPressure:
           return FileHandle[nTrackIndex, nTrackOffset + 1, 1];
-        //default: throw new Exception($"Unknown MIDI message type for status: {status:X2}");
        }
       return new byte[0];
     }
