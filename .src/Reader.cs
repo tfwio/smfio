@@ -139,7 +139,7 @@ namespace on.smfio
       TempoMap.Clear();
       smpte.SetSMPTE(0,0,0,0,0);
       
-      if (UseEventHandler) GetMemory();
+      if (UserDefinedMessageHandler) GetMemory();
       OnFileLoaded(EventArgs.Empty);
     }
 
@@ -174,7 +174,17 @@ namespace on.smfio
 
     #region MESSAGE PARSER GetTrackMessage, GetNTrackMessage, ?
 
-    /// <summary></summary>
+    /// <summary>
+    /// provides **default parser semantic** in that from here we delegate
+    /// each message to <see cref="MessageHandler"/>.  
+    /// `MessageHandler` can be set via the constructor, or explicitly after
+    /// initializing (creating/.ctor) `Reader`.
+    /// 
+    /// Additionally, <see cref="OnMidiMessage(MidiMsgType, int, int, int, byte, long, int, bool)"/>
+    /// exists and can be set as the default message-handler in which case any assigned
+    /// event handler(s) (`ProcessMidiMessage`) or delegates (`MessageHandler`)
+    /// can and will be used.
+    /// </summary>
     public virtual int GetNTrackMessage(int nTrackIndex, int nTrackOffset, int delta)
     {
       int DELTA_Returned = delta;
@@ -396,8 +406,7 @@ namespace on.smfio
     public List<MidiEventDelegate> MessageHandlers
     {
       get { return messageHandlers; }
-    }
-    List<MidiEventDelegate> messageHandlers = new List<MidiEventDelegate>();
+    } List<MidiEventDelegate> messageHandlers = new List<MidiEventDelegate>();
 
     /// <summary>
     /// This is a place-holder for delegating the parsers primary
@@ -424,29 +433,35 @@ namespace on.smfio
     #region Boolean Handler-Flags
 
     /// <inheritdoc/>
-    public bool UseEventHandler { get; private set; }
+    public bool UserDefinedMessageHandler { get; private set; }
 
     #endregion
 
     #region .ctor
 
+    /// <summary>
+    /// initializes Reader allowing user defined events by default.
+    /// </summary>
     public Reader() : this(true, false)
     {
     }
-    public Reader(bool useEventHandler, bool generateMessageList=false)
+
+    public Reader(MidiEventDelegate handler, bool generateMessageList=false)
+    : this(true, generateMessageList)
     {
-      GenerateMessageList = generateMessageList;
-      if (UseEventHandler = useEventHandler) MessageHandler = OnMidiMessage;
+      MessageHandlers.Add(handler);
     }
 
-    public Reader(MidiEventDelegate handler, bool generateMessageList=false) :
-      this(false, generateMessageList)
-    {
-      MessageHandler = handler;
-    }
-    public Reader(string fileName, bool generateMessageList=false) : this(true, generateMessageList)
+    public Reader(string fileName, bool generateMessageList=false)
+    : this(true, generateMessageList)
     {
       MidiFileName = fileName;
+    }
+
+    protected Reader(bool userDefinedEvents, bool generateMessageList = false)
+    {
+      GenerateMessageList = generateMessageList;
+      if (UserDefinedMessageHandler = userDefinedEvents) MessageHandler = OnMidiMessage;
     }
 
     #endregion

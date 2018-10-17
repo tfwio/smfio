@@ -11,8 +11,7 @@ namespace on.smfio
 {
   public class NoteParser : Reader, INoteParser
   {
-    public NoteParser() : base(true) { }
-    public NoteParser(bool useEventHandler) : base(useEventHandler) { }
+    public NoteParser() : base() { }
     public NoteParser(MidiEventDelegate handler) : base(handler) { }
     public NoteParser(string fileName) : base(fileName) { }
     

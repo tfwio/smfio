@@ -77,7 +77,7 @@ namespace on.smfio
 			int delta,
 			bool isRunningStatus);
 
-    bool UseEventHandler { get; }
+    bool UserDefinedMessageHandler { get; }
 		
 		/// <summary>
 		/// this is a test currently in use;
