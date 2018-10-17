@@ -27,10 +27,7 @@ namespace on.smfio
 		{
 			SetSignature(ksigtype,ismaj);
 		}
-		public void Reset()
-		{
-			IsMajor = true;
-			KeyType = KeySignatureType.C;
-		}
+		public void Reset() { IsMajor = true; KeyType = KeySignatureType.C; }
+		public MidiKeySignature Copy() { return new MidiKeySignature(KeyType, IsMajor); }
 	}
 }
