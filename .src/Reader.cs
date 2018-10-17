@@ -123,7 +123,11 @@ namespace on.smfio
       MidiVSTMessageList.Clear();
     }
     /// <summary>
-    /// Clears SMPTE and TempoMap
+    /// A default read operation generally designated for UI application and
+    /// various event handlers (BeforeFileLoaded, FileLoaded, etc...).
+    /// 
+    /// This method clears TempoMap (MIDI metadata messages including TempoMap)
+    /// before it starts and parses the first track of a MIDI/SMF file (I.E. the Tempo Map).
     /// </summary>
     public void Read()
     {
