@@ -28,6 +28,7 @@ namespace on.smfio
 
     public SmpteOffset() : this(0,0,0,0,0) {}
     public SmpteOffset(byte h, byte m, byte s, byte fr, byte ff) { SetSMPTE(h,m,s,fr,ff); }
+    public void Reset() { SetSMPTE(0, 0, 0, 0, 0); }
     public void SetSMPTE(byte h, byte m, byte s, byte fr, byte ff) { bHH = h; bM = m; bSS = s; bFR = fr; bFF = ff; }
     public bool IsEmpty { get { return (bHH == 0) & (bM == 0) & (bSS == 0) & (bFR == 0) & (bFF == 0); } }
     public override string ToString() { return IsEmpty ? "[none; uses MIDI Clock]" : $"{Hour:#,#00}:{bM:00}:{bSS:00}:{bFR:00}:{bFF:00} @{SmpteTypeString}"; }

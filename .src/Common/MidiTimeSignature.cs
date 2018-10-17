@@ -24,5 +24,10 @@ namespace on.smfio
 		{
 			SetSignature(n,d,c,t32);
 		}
+
+		public void Reset()
+		{
+      SetSignature(4, 4, 24, 0);
+    }
 	}
 }

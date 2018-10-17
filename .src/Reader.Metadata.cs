@@ -88,14 +88,14 @@ namespace on.smfio
 		
 		/// ?
 		static public string meta_FF54(IReader reader, int offset) {
-			reader.SMPTE_Offset.SetSMPTE(
+			reader.SMPTE.SetSMPTE(
 				reader.FileHandle[reader.ReaderIndex].Data[offset+3],
 				reader.FileHandle[reader.ReaderIndex].Data[offset+4],
 				reader.FileHandle[reader.ReaderIndex].Data[offset+5],
 				reader.FileHandle[reader.ReaderIndex].Data[offset+6],
 				reader.FileHandle[reader.ReaderIndex].Data[offset+7]
 				);
-			return $"{reader.SMPTE_Offset}";
+			return $"{reader.SMPTE}";
 		}
 		
 		/// Midi Time Signature

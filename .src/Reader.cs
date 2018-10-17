@@ -84,7 +84,7 @@ namespace on.smfio
       set { timeSignature = value; }
     } MidiTimeSignature timeSignature = new MidiTimeSignature();
     
-    public SmpteOffset SMPTE_Offset {
+    public SmpteOffset SMPTE {
       get { return smpte; } set { smpte = value; }
     } SmpteOffset smpte = new SmpteOffset();
     
@@ -117,8 +117,11 @@ namespace on.smfio
     /// </summary>
     public void Read()
     {
+      SMPTE.Reset();
+      TimeSignature.Reset();
+      KeySignature.Reset();
       TempoMap.Clear();
-      smpte.SetSMPTE(0, 0, 0, 0, 0);
+
       MidiMessageCollection.Clear();
       MidiVSTMessageList.Clear();
 
@@ -278,7 +281,7 @@ namespace on.smfio
           DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
           break;
         case Stat16.SMPTEOffset: // 0xFF54
-          SMPTE_Offset.SetSMPTE(
+          SMPTE.SetSMPTE(
             FileHandle.Tracks[nTrackIndex].Data[nTrackOffset+3],
             FileHandle.Tracks[nTrackIndex].Data[nTrackOffset+4],
             FileHandle.Tracks[nTrackIndex].Data[nTrackOffset+5],
@@ -693,7 +696,7 @@ namespace on.smfio
           /* 10 */ KeySignature.IsMajor ? "Major" : "Minor",
           /* 11 */ FileHandle.Format,
           /* 12 */ StringRes.STRING_APP_NAME,
-          /* 13 */ SMPTE_Offset
+          /* 13 */ SMPTE
          );
       }
     }
