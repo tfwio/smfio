@@ -111,7 +111,6 @@ namespace on.smfio
       CurrentTrackPulse = 0;
     }
 
-    #region FILE read, getmem
     void ResetTempoMap()
     {
       SMPTE.Reset();
@@ -144,17 +143,7 @@ namespace on.smfio
       OnFileLoaded(EventArgs.Empty);
     }
 
-    /// <inheritdoc/>
-    public void GetMemory()
-    {
-      FileHandle = new MThd(MidiFileName);
-      if (!(TempoMap.Count == 0)) TempoMap.Clear();
-      ParseTempoMap(0);
-    }
-
-    #endregion
-
-    #region MESSAGE PARSER GetTrackMessage, GetTempoMap, ?
+    #region MESSAGE PARSER: GetTrackMessage, GetTempoMap
 
     /// <summary>
     /// provides **default parser semantic** in that from here we delegate
@@ -423,12 +412,8 @@ namespace on.smfio
     public event EventHandler<MidiMessageEvent> ProcessMidiMessage;
     #endregion
 
-    #region Boolean Handler-Flags
-
     /// <inheritdoc/>
     public bool UserDefinedMessageHandler { get; private set; }
-
-    #endregion
 
     #region .ctor
 
@@ -540,9 +525,16 @@ namespace on.smfio
     }
     #region READ (PARSE) ALL TRACKS
 
-    // when IsTrackSelected, the total number of ticks in the track.
+    /// <summary>when `IsTrackSelected=true`, provides the total number of ticks in the track.</summary>
     long totlen = 0;
+
+    /// <summary>
+    /// This is set during the call to <see cref="ParseALL"/>.  
+    /// After a successfull call to the above, this provides
+    /// a list containing total number of pulses or ticks in each track (including EOT message).
+    /// </summary>
     public List<long> TrackLength { get; private set; } = new List<long>();
+
     /// <summary>
     /// Parse all tracks to (vst) mididatalist and our internal delegation.
     /// </summary>
