@@ -36,9 +36,9 @@ namespace on.smfio
     /// <value></value>
     public bool GenerateMessageList { get; set; }
 
-    public DictionaryList<int, MidiMessage> MidiMessageCollection {
+    public MidiMessageCollection MidiMessages {
       get { return midiMessageCollection; }
-    } DictionaryList<int, MidiMessage> midiMessageCollection = new DictionaryList<int, MidiMessage>();
+    } MidiMessageCollection midiMessageCollection = new MidiMessageCollection();
 
     #endregion
 
@@ -111,35 +111,34 @@ namespace on.smfio
       CurrentTrackPulse = 0;
     }
 
-    void ResetTempoMap()
+    internal void ResetTempoMap()
     {
+      TempoMap.Clear();
       SMPTE.Reset();
       TimeSignature.Reset();
       KeySignature.Reset();
-      TempoMap.Clear();
 
-      MidiMessageCollection.Clear();
+      MidiMessages.Clear();
       MidiVSTMessageList.Clear();
     }
     /// <summary>
-    /// A default read operation generally designated for UI application and
-    /// various event handlers (BeforeFileLoaded, FileLoaded, etc...).
+    /// A default read operation generally designated for UI application.
+    /// It triggers BeforeFileLoaded and FileLoaded events.  
+    /// This could otherwise be thought of as a `Initialize()` function
+    /// collecting general characteristics of a SMF/MIDI file.
     /// 
-    /// This method clears TempoMap (MIDI metadata messages including TempoMap)
-    /// before it starts and parses the first track of a MIDI/SMF file (I.E. the Tempo Map).
+    /// - clears TempoMap (MIDI metadata messages including TempoMap)
+    /// - parses the first track of a MIDI/SMF file (I.E. the Tempo Map)
+    /// - No tracks other than the TempoMap (track 0) are parsed and
+    ///   no parser delegates or event handlers are used.
     /// </summary>
     public void Read()
     {
       OnBeforeFileLoaded(EventArgs.Empty);
-      ResetTempoMap();
 
-      if (UserDefinedMessageHandler)
-      {
-        FileHandle = new MThd(MidiFileName);
-        if (!(TempoMap.Count == 0)) TempoMap.Clear();
-        ParseTempoMap(0);
-      }
-
+      FileHandle = new MThd(MidiFileName);
+      ParseTempoMap(0);
+      
       OnFileLoaded(EventArgs.Empty);
     }
 
@@ -366,7 +365,7 @@ namespace on.smfio
     {
       if (GenerateMessageList)
         // we need to first clear the MidiMessageCollection!
-        MidiMessageCollection.AddV(
+        MidiMessages.AddV(
           nTrackIndex,
           new MidiMessage(
             (ushort)midiMsg32,
@@ -485,6 +484,7 @@ namespace on.smfio
     /// <inheritdoc/>
     public void ParseTempoMap(int tk)
     {
+      ResetTempoMap();
       long delta;
       int i = 0;
       selectedTrackNumber = tk;
@@ -529,7 +529,7 @@ namespace on.smfio
     long totlen = 0;
 
     /// <summary>
-    /// This is set during the call to <see cref="ParseALL"/>.  
+    /// This is set during the call to <see cref="ParseAll"/>.  
     /// After a successfull call to the above, this provides
     /// a list containing total number of pulses or ticks in each track (including EOT message).
     /// </summary>

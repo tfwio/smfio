@@ -2,6 +2,68 @@ using System;
 
 namespace on.smfio
 {
+  public class MidiMessageCollection : DictionaryList<int, MidiMessage>
+  {
+    public short MidiFormat { get; set; }
+    
+    public TempoMap TempoMap { get; set; }
+    public SmpteOffset SMPTE { get; set; }
+    public MidiTimeSignature TimeSignature { get; set; }
+    public MidiKeySignature KeySignature { get; set; }
+    
+    public short Division { get; set; }
+    public MidiMessageCollection(): base()
+    {
+    }
+
+    public MidiMessageCollection(MidiMessageCollection collection)
+    : base((System.Collections.Generic.IDictionary<int, System.Collections.Generic.List<MidiMessage>>)collection)
+    {
+      MidiFormat = collection.MidiFormat;
+      Division = collection.Division;
+      // 
+      TempoMap = collection.TempoMap.Copy();
+      KeySignature = collection.KeySignature.Copy();
+      TimeSignature = collection.TimeSignature.Copy();
+      SMPTE = collection.SMPTE.Copy();
+    }
+
+    void CopyReaderTempoMap(Reader reader)
+    {
+      MidiFormat = reader.FileHandle.Format;
+      Division = reader.Division;
+      // 
+      TempoMap = reader.TempoMap.Copy();
+      KeySignature = reader.KeySignature.Copy();
+      TimeSignature = reader.TimeSignature.Copy();
+      SMPTE = reader.SMPTE.Copy();
+    }
+
+    static public MidiMessageCollection FromFile(string smfFilePath)
+    {
+      MidiMessageCollection collection = null;
+      using (Reader reader= new Reader(){ GenerateMessageList = true })
+      {
+        reader.FileHandle = new chunk.MThd(smfFilePath);
+
+        reader.MidiMessages.Division = reader.Division;
+        reader.MidiMessages.MidiFormat = reader.FileHandle.Format;
+
+        reader.ParseTempoMap(0);
+
+        reader.MessageHandler = reader.OnMidiMessage;
+
+        reader.ParseAll();
+        reader.TempoMap.Finalize(reader);
+
+        collection = new MidiMessageCollection(reader.MidiMessages);
+        collection.CopyReaderTempoMap(reader);
+
+        reader.ResetTempoMap();
+      }
+      return collection;
+    }
+  }
   /// <summary>
   /// note that a track index would be accessable by way of the track (List or
   /// Collection) containing the message.

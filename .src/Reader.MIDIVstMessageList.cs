@@ -72,7 +72,6 @@ namespace on.smfio
     /// </summary>
     void GetVSTMessageList(string smfFilePath)
     {
-      ResetTempoMap();
       FileHandle = new chunk.MThd(smfFilePath);
       ParseTempoMap(0);
 
