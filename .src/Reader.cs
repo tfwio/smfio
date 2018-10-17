@@ -94,28 +94,8 @@ namespace on.smfio
     
     #endregion
 
-    #region TIME (int) DivMeasure, DivBar, DivNote, FileDivision
-
-    /// <summary>Bar x4</summary>
-    public static int DivMeasure { get; private set; }
-
-    /// <summary>Quarter x4</summary>
-    public int DivBar { get; private set; }
-
-    /// <summary>PPQ (division) x4</summary>
-    public int DivQuarter { get; private set; }
-
     /// <summary>Midi header-&gt;Division.</summary>
     public short Division { get { return FileHandle.Division; } }
-
-    public void GetDivision()
-    {
-      DivQuarter = Division * 4;
-      DivBar = DivQuarter * 4;
-      DivMeasure = DivBar * 4;
-    }
-
-    #endregion
 
     /// <summary>
     /// Not to be confused with the trigger when a file is loaded.
@@ -136,13 +116,16 @@ namespace on.smfio
 
     #region FILE read, getmem
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Clears SMPTE and TempoMap
+    /// </summary>
     public void Read()
     {
       TempoMap.Clear();
       smpte.SetSMPTE(0, 0, 0, 0, 0);
       MidiMessageCollection.Clear();
       MidiVSTMessageList.Clear();
+
       OnBeforeFileLoaded(EventArgs.Empty);
 
       // if (GenerateMessageList) 
@@ -613,7 +596,6 @@ namespace on.smfio
     /// </summary>
     public virtual string TrackSelectAction()
     {
-      GetDivision();
       ResetTrackTiming();
 
       if (ReaderIndex >= 0)

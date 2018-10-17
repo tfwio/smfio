@@ -62,8 +62,6 @@ namespace on.smfio
     /// </summary>
     void ResetTrackTiming();
 		
-		void GetDivision();
-
     // =============================================
     // MIDIEVENT MESSAGE (HANDLERS)
     // =============================================
