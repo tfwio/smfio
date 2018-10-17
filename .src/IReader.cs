@@ -50,8 +50,17 @@ namespace on.smfio
     long CurrentTrackPulse { get; }
 		
 		int CurrentRunningStatus8 { get; }
-		
-		void ResetTiming();
+
+    /// <summary>
+    /// Not to be confused with the trigger when a file is loaded.
+    /// This is called before each track is parsed.
+    /// 
+    /// Callers:  
+    /// - <see cref="on.smfio.Reader.ClearAll"/>  
+    /// - <see cref="on.smfio.Reader.ParseAll"/>  
+    /// - <see cref="on.smfio.IReader.TrackSelectAction"/>
+    /// </summary>
+    void ResetTrackTiming();
 		
 		void GetDivision();
 
@@ -94,12 +103,12 @@ namespace on.smfio
     // =============================================
 
     int ReaderIndex { get; set; }
-		
-		/// <summary>
-		/// Specifically targeting Meta information helpful for a main-parse
-		/// algorithm.
-		/// </summary>
-		string TrackSelectAction();
+
+    ///<summary>
+    /// This is primarily for use in UI.  
+    /// Refresh a track into a list or view.
+    /// </summary>
+    string TrackSelectAction();
 		
 		long ParseTrack();
 		
