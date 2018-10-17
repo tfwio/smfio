@@ -45,10 +45,6 @@ namespace on.smfio
     public byte this[int kTrackID, int kTrackOffset] { get { return FileHandle[kTrackID, kTrackOffset]; } }
     public byte[] this[int kTrackID, int kTrackOffset, int kSize] { get { return FileHandle[kTrackID, kTrackOffset, kSize]; } }
 
-    const int default_Fs = 44100;
-    const int default_Tempo = 120;
-    const int default_Division = 480;
-
     #region INotifyPropertyChanged (isn't used)
 
     public event PropertyChangedEventHandler PropertyChanged;
