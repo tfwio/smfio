@@ -39,6 +39,19 @@ namespace on.smfio
       SMPTE = reader.SMPTE.Copy();
     }
 
+    public void RecalculateDeltas()
+    {
+      foreach (var trackList in this)
+      {
+        long lastPulse = 0;
+        foreach (var msg in trackList.Value)
+        {
+          msg.Delta = msg.Pulse - lastPulse;
+          lastPulse = msg.Pulse;
+        }
+      }
+    }
+
     static public MidiMessageCollection FromFile(string smfFilePath)
     {
       MidiMessageCollection collection = null;
@@ -58,7 +71,7 @@ namespace on.smfio
 
         collection = new MidiMessageCollection(reader.MidiMessages);
         collection.CopyReaderTempoMap(reader);
-
+        collection.RecalculateDeltas();
         reader.ResetTempoMap();
       }
       return collection;
@@ -81,11 +94,16 @@ namespace on.smfio
       get
       {
         if (0xFF00 == (Status & 0xFF00)) return false;
-        int t1 = Status & 0xF0;
-        if ((Status <= 0x80) && (Status >= 0xE0)) return true;
+        int stat = Status & 0xF0;
+        if ((stat >= 0x80) && (stat <= 0xE0)) return true;
         return false;
       }
     }
+
+    public bool IsMetadataText {
+      get { return Status >= 0xFF01 && Status <= 0xFF0D; }
+    }
+
     /// <summary>
     /// Channel will be assigned for particular channel messages.  
     /// If the message contains metadata, of course there would be no
@@ -97,7 +115,7 @@ namespace on.smfio
     /// Delta would be assined during write operations while the
     /// `Tick` value is automatically calculated during `Read`.
     /// </summary>
-    public uint? Delta { get; set; }
+    public long Delta { get; set; }
 
     /// <summary>
     /// Status describes the type of message and optionally the channel
@@ -124,6 +142,7 @@ namespace on.smfio
     public byte[] Data { get; set; }
 
     public string HexDataString { get { return Data.StringifyHex(); } }
+    public string MetadataText { get { return IsMetadataText ? Strings.Encoding.GetString(Data) : "[Error: Not Metadata Text!]"; } }
 
     public MidiMessage() {}
 
