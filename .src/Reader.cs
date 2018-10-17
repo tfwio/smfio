@@ -18,6 +18,7 @@ using on.smfio.Common;
 namespace on.smfio
 {
   /// <summary>
+  /// **Reader.cs**  
   /// Internally, we load three text files from a subdirectory named ‘ext’.
   /// Controller change values, drum kit names and instrument names.
   /// </summary>
@@ -111,11 +112,7 @@ namespace on.smfio
     }
 
     #region FILE read, getmem
-
-    /// <summary>
-    /// Clears SMPTE and TempoMap
-    /// </summary>
-    public void Read()
+    void ResetTempoMap()
     {
       SMPTE.Reset();
       TimeSignature.Reset();
@@ -124,10 +121,15 @@ namespace on.smfio
 
       MidiMessageCollection.Clear();
       MidiVSTMessageList.Clear();
-
+    }
+    /// <summary>
+    /// Clears SMPTE and TempoMap
+    /// </summary>
+    public void Read()
+    {
       OnBeforeFileLoaded(EventArgs.Empty);
+      ResetTempoMap();
 
-      // if (GenerateMessageList) 
       if (UserDefinedMessageHandler)
       {
         FileHandle = new MThd(MidiFileName);
