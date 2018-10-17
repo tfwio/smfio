@@ -117,6 +117,11 @@ namespace on.smfio
         case Stat16.ProgramChange:
         case Stat16.ChannelPressure:
           return FileHandle[nTrackIndex, nTrackOffset + 1, 1];
+        // system exclusive message
+        case Stat16.SystemExclusive:
+          int nlength = FileHandle[nTrackIndex].GetEndOfSystemExclusive(nTrackOffset) - nTrackOffset;
+          int noffset = nTrackOffset;
+          return FileHandle[nTrackIndex, nTrackOffset, nlength];
        }
       return new byte[0];
     }
