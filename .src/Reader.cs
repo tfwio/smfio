@@ -64,7 +64,7 @@ namespace on.smfio
     public int CurrentStatus { get; private set; }
 
     /// <summary>
-    /// Current Track's pulse ocunt in ticks per quarter-note.
+    /// Current Track's pulse count in ticks per quarter-note.
     /// </summary>
     public long CurrentTrackPulse { get; private set; }
 
@@ -118,14 +118,17 @@ namespace on.smfio
     #endregion
 
     /// <summary>
-    /// Not to be confused with the trigger when a file
-    /// is loaded.
-    /// 
+    /// Not to be confused with the trigger when a file is loaded.
     /// This is called before each track is parsed.
+    /// 
+    /// Callers:  
+    /// - <see cref="on.smfio.Reader.ClearAll"/>  
+    /// - <see cref="on.smfio.Reader.ParseAll"/>  
+    /// - <see cref="on.smfio.IReader.TrackSelectAction"/>
     /// </summary>
-    public virtual void ResetTiming()
+    public virtual void ResetTrackTiming()
     {
-      CurrentRunningStatus8 = -1; // 0xFF
+      CurrentRunningStatus8 = -1; // 0xFF == -1
       CurrentRunningStatus16 = -1;
       CurrentStatus = -1;
       CurrentTrackPulse = 0;
@@ -137,9 +140,19 @@ namespace on.smfio
     public void Read()
     {
       TempoMap.Clear();
-      smpte.SetSMPTE(0,0,0,0,0);
-      
-      if (UserDefinedMessageHandler) GetMemory();
+      smpte.SetSMPTE(0, 0, 0, 0, 0);
+      MidiMessageCollection.Clear();
+      MidiVSTMessageList.Clear();
+      OnBeforeFileLoaded(EventArgs.Empty);
+
+      // if (GenerateMessageList) 
+      if (UserDefinedMessageHandler)
+      {
+        FileHandle = new MThd(MidiFileName);
+        if (!(TempoMap.Count == 0)) TempoMap.Clear();
+        ParseTempoMap(0);
+      }
+
       OnFileLoaded(EventArgs.Empty);
     }
 
@@ -149,30 +162,11 @@ namespace on.smfio
       FileHandle = new MThd(MidiFileName);
       if (!(TempoMap.Count == 0)) TempoMap.Clear();
       ParseTempoMap(0);
-      // we're no longer parsing all tracks by default now.
-      // this means that TempoMap.Finalize() can not determine the total
-      // pulse length of the MIDI 'song' or all MIDI tracks.
-      // That said, we're not going to have to update how the TempoMap works.
-      if (GenerateVSTMessageList) GetVSTMessageList();
     }
 
     #endregion
 
-    MidiMsgType GetMsgTyp(int status, MidiMsgType def = MidiMsgType.ChannelVoice)
-    {
-      switch (status & 0xF0)
-      {
-        case 0x80: return MidiMsgType.NoteOff;
-        case 0x90: return MidiMsgType.NoteOn;
-        case 0xB0: return MidiMsgType.ControllerChange;
-        case 0xF0: return MidiMsgType.SystemExclusive;
-        case 0xF7: return MidiMsgType.SequencerSpecific;
-        // case 12: return MsgType.CC;
-        default: return def;
-      }
-    }
-
-    #region MESSAGE PARSER GetTrackMessage, GetNTrackMessage, ?
+    #region MESSAGE PARSER GetTrackMessage, GetTempoMap, ?
 
     /// <summary>
     /// provides **default parser semantic** in that from here we delegate
@@ -244,7 +238,7 @@ namespace on.smfio
               else
               {
                 DELTA_Returned = delta1;
-                MessageHandler(GetMsgTyp(CurrentRunningStatus8), nTrackIndex, nTrackOffset, CurrentRunningStatus16, (byte)CurrentRunningStatus8, CurrentTrackPulse, CurrentRunningStatus8, true);
+                MessageHandler(GetMidiMessageType(CurrentRunningStatus8), nTrackIndex, nTrackOffset, CurrentRunningStatus16, (byte)CurrentRunningStatus8, CurrentTrackPulse, CurrentRunningStatus8, true);
               }
             }
             //else if (StatusQuery.IsMidiMessage(msg32))
@@ -254,7 +248,7 @@ namespace on.smfio
               CurrentRunningStatus8 = msg8;
               CurrentRunningStatus16 = msg16;
               DELTA_Returned = GetNextPosition(nTrackOffset);
-              MessageHandler(GetMsgTyp(CurrentRunningStatus8), nTrackIndex, nTrackOffset, msg16, msg8, CurrentTrackPulse, CurrentRunningStatus8, false);
+              MessageHandler(GetMidiMessageType(CurrentRunningStatus8), nTrackIndex, nTrackOffset, msg16, msg8, CurrentTrackPulse, CurrentRunningStatus8, false);
               DELTA_Returned++;
               return DELTA_Returned;
             }
@@ -381,6 +375,7 @@ namespace on.smfio
 
     /// MESSAGE methods
 
+
     /// <inheritdoc/>
     public void OnMidiMessage(
       MidiMsgType msgType,
@@ -392,6 +387,16 @@ namespace on.smfio
       int delta,
       bool isRunningStatus)
     {
+      if (GenerateMessageList)
+        // we need to first clear the MidiMessageCollection!
+        MidiMessageCollection.AddV(
+          nTrackIndex,
+          new MidiMessage(
+            (ushort)midiMsg32,
+            pulse,
+            GetMessageBytes(nTrackIndex, nTrackOffset, (ushort)midiMsg32)
+            ));
+
       if (ProcessMidiMessage != null)
         ProcessMidiMessage(this, new MidiMessageEvent(msgType, nTrackIndex, nTrackOffset, midiMsg32, midiMsg8, pulse, delta, isRunningStatus));
 
@@ -491,7 +496,7 @@ namespace on.smfio
 
     void ClearAll()
     {
-      ResetTiming();
+      ResetTrackTiming();
       FileHandle = default(MThd);
       MidiFileName = null;
       selectedTrackNumber = -1;
@@ -567,7 +572,7 @@ namespace on.smfio
       {
         for (int nTrackIndex = 0; nTrackIndex < FileHandle.NumberOfTracks; nTrackIndex++)
         {
-          ResetTiming();
+          ResetTrackTiming();
           selectedTrackNumber = nTrackIndex; // without triggering the event.
           long delta = 0;
           int nTrackOffset = 0;
@@ -603,13 +608,14 @@ namespace on.smfio
     internal int selectedTrackNumber;
 
     ///<summary>
-    /// FIXME: Ensure this isn't used redundantly.  
-    /// a track is selected
+    /// This is primarily for use in UI.  
+    /// Refresh a track into a list or view.
     /// </summary>
     public virtual string TrackSelectAction()
     {
       GetDivision();
-      ResetTiming();
+      ResetTrackTiming();
+
       if (ReaderIndex >= 0)
       {
         totlen = ParseTrack();
@@ -636,6 +642,12 @@ namespace on.smfio
     protected virtual void OnClearView(CliEvent e)
     {
       if (ClearView != null) ClearView(this, e);
+    }
+
+    public event CliHandler BeforeFileLoaded;
+    protected virtual void OnBeforeFileLoaded(CliEvent e)
+    {
+      if (BeforeFileLoaded != null) BeforeFileLoaded(this, e);
     }
 
     public event CliHandler FileLoaded;
@@ -711,7 +723,7 @@ namespace on.smfio
     #endregion
 
     // obsolete (not replaced, just absolute junk)
-    #region Failed Progress Attempt
+    #region (Failed) Progress Attempt
 
     public event EventHandler<ProgressChangedEventArgs> TrackLoadProgressChanged;
 
@@ -723,5 +735,22 @@ namespace on.smfio
     }
 
     #endregion
+
+
+    internal static MidiMsgType GetMidiMessageType(int status, MidiMsgType def = MidiMsgType.ChannelVoice)
+    {
+      switch (status & 0xF0)
+      {
+        case 0x80: return MidiMsgType.NoteOff;
+        case 0x90: return MidiMsgType.NoteOn;
+        case 0xB0: return MidiMsgType.ControllerChange;
+        case 0xF0: return MidiMsgType.SystemExclusive;
+        case 0xF7: return MidiMsgType.SequencerSpecific;
+        // case 12: return MsgType.CC;
+        default: return def;
+      }
+    }
+
+
   }
 }

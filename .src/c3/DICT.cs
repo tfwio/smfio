@@ -111,7 +111,18 @@ namespace System
 			{
 				if (!CreateKey(val)) ErrorMsg(val);
 			}
-		}
+    }
+
+    /// <summary>
+    /// Clear each list before clearing the initial dictionary.
+    /// </summary>
+    public void ClearAll()
+    {
+      foreach (var key in this.Keys) this[key].Clear();
+      Clear();
+      //GC.Collect();
+    }
+		
 		public DICT_List() : base() {}
 		public DICT_List(TKey id,TValue[] value) : base() {}
 		public DICT_List(IDictionary<TKey,List<TValue>> d) : base(d) {}
@@ -162,6 +173,16 @@ namespace System
 		public void TryAddKeys(params TKey[] keys)
 		{
 			foreach (TKey val in keys) if (!CreateKey(val)) ErrorMsg(val);
+		}
+
+		/// <summary>
+		/// Clear each list before clearing the initial dictionary.
+		/// </summary>
+		public void ClearAll()
+		{
+			foreach (var key in this.Keys) this[key].Clear();
+			Clear();
+			//GC.Collect();
 		}
 		
 		public DictionaryList() : base() {}

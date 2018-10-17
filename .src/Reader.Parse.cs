@@ -83,8 +83,7 @@ namespace on.smfio
     }
 
     /// <summary>
-    ///  if dealing with a running status message, we would simply 
-    /// tell nTrackOffset-1?
+    /// if dealing with a running status message, we would simply tell nTrackOffset-1?
     /// </summary>
     byte[] GetMessageBytes(int nTrackIndex, int nTrackOffset, ushort status)
     {
@@ -115,6 +114,7 @@ namespace on.smfio
         case Stat16.ProgramChange:
         case Stat16.ChannelPressure:
           return FileHandle[nTrackIndex, nTrackOffset + 1, 1];
+        default: throw new Exception($"Unknown MIDI message type for status: {status:X2}");
        }
       return new byte[0];
     }

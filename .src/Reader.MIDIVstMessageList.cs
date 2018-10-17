@@ -25,12 +25,12 @@ namespace on.smfio
       switch (msgType)
       {
         case MidiMsgType.MetaStr:
-          midiVSTMessageList.AddV(ReaderIndex, new MetaMessageVST(MidiMsgType.MetaStr, pulse, midiMsg32, GetMetaBString(nTrackOffset)));
+          MidiVSTMessageList.AddV(ReaderIndex, new MetaMessageVST(MidiMsgType.MetaStr, pulse, midiMsg32, GetMetaBString(nTrackOffset)));
           break;
         case MidiMsgType.MetaInf:
           byte[] bytes = GetMetaBString(nTrackOffset);
           var midiMsg = new MetaMessageVST(pulse, midiMsg32, bytes);
-          midiVSTMessageList.AddV(ReaderIndex, midiMsg);
+          MidiVSTMessageList.AddV(ReaderIndex, midiMsg);
           break;
         case MidiMsgType.SystemExclusive:
           Debug.WriteLine("Skip System Exclusive Message (for now)");
@@ -38,13 +38,13 @@ namespace on.smfio
         case MidiMsgType.ChannelVoice:
         case MidiMsgType.NoteOff:
         case MidiMsgType.NoteOn:
-          midiVSTMessageList.AddV(ReaderIndex, new ChannelMessageVST(pulse, midiMsg32, GetEventValue(nTrackOffset)));
+          MidiVSTMessageList.AddV(ReaderIndex, new ChannelMessageVST(pulse, midiMsg32, GetEventValue(nTrackOffset)));
           break;
         case MidiMsgType.SequencerSpecific:
-          midiVSTMessageList.AddV(ReaderIndex, new SequencerSpecificVST(pulse, midiMsg32, GetEventValue(nTrackOffset)));
+          MidiVSTMessageList.AddV(ReaderIndex, new SequencerSpecificVST(pulse, midiMsg32, GetEventValue(nTrackOffset)));
           break;
         case MidiMsgType.EOT:
-          midiVSTMessageList.AddV(ReaderIndex, new MetaMessageVST(pulse, midiMsg32));
+          MidiVSTMessageList.AddV(ReaderIndex, new MetaMessageVST(pulse, midiMsg32));
           break;
         default:
           if (isRunningStatus) MidiVSTMessageList.AddV(ReaderIndex, new ChannelMessageVST(pulse, delta, GetRseEventValue(nTrackOffset)));
@@ -54,11 +54,16 @@ namespace on.smfio
     }
 
     /// <summary>
+    /// This is for the most part a stand-alone parser.
+    /// 
     /// <seealso cref="ParseTempoMap(int)"/>
     /// </summary>
-    void GetVSTMessageList()
+    void GetVSTMessageList(string smfFilePath)
     {
-      MidiEventDelegate backup = MessageHandler; // override default message handler.
+      FileHandle = new chunk.MThd(smfFilePath);
+      if (!(TempoMap.Count == 0)) TempoMap.Clear();
+      ParseTempoMap(0);
+      MidiEventDelegate backup = MessageHandler;   // override default message handler.
       MessageHandler = VSTMessageListHandler;      // set it to our vst message-list parser.
       ParseAll();
       TempoMap.Finalize(this);

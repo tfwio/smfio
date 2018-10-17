@@ -55,6 +55,7 @@ namespace on.smfio
 					default: return "UNKNOWN MESSAGE";
 			}
 		}
+		
 		/// <summary>
 		/// Convert Int32 to a status byte for translation to StatusString.
 		/// </summary>
@@ -77,7 +78,6 @@ namespace on.smfio
 		}
 		
 
-		#region Moved
 		#region Meta helpers
 		
 		/// Seq No (0xFF00)
@@ -120,7 +120,6 @@ namespace on.smfio
 		
 		#endregion
 
-		#endregion
 	}
 
 }
