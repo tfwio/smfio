@@ -370,7 +370,7 @@ namespace on.smfio
           new MidiMessage(
             (ushort)midiMsg32,
             pulse,
-            GetMessageBytes(nTrackIndex, nTrackOffset, (ushort)midiMsg32)
+            GetMessageBytes(nTrackIndex, isRunningStatus ? nTrackOffset-1 : nTrackOffset, (ushort)midiMsg32)
             ));
 
       if (ProcessMidiMessage != null)
