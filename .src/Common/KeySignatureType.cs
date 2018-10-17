@@ -21,20 +21,20 @@ namespace on.smfio.Common
 {
 	public enum KeySignatureType : byte
 	{
-		SevenFlats_C_Flat = 0xF0,
-		SixFlats_G_Flat = 0xFA,
-		FiveFlats_D_Flat = 0xFB,
-		FourFlats_A_Flat = 0xFC,
-		ThreeFlats_E_Flat = 0xFD,
-		TwoFlats_B_Flat = 0xFE,
-		OneFlats_F = 0xFF,
-		C = 0,
-		OneSharp_G = 1,
-		TwoSharp_D = 2,
-		ThreeSharp_A = 3,
-		FourSharp_E = 4,
-		FiveSharp_B =5,
-		SixSharp_F = 6,
-		SevenSharp_C = 7,
+		CFlat = 0xF0, // -7
+		GFlat = 0xFA, // -6
+		DFlat = 0xFB, // -5
+		AFlat = 0xFC, // -4
+		EFlat = 0xFD, // -3
+		BFlat = 0xFE, // -2
+		FFlat = 0xFF, // -1
+		C = 0,        // 0
+		GSharp = 1,   // 1
+		DSharp = 2,   // 2
+		ASharp = 3,   // 3
+		ESharp = 4,   // 4
+		BSharp =5,    // 5
+		FSharp = 6,   // 6
+		CSharp = 7,   // 7
 	}
 }

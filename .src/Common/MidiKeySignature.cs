@@ -27,5 +27,10 @@ namespace on.smfio
 		{
 			SetSignature(ksigtype,ismaj);
 		}
+		public void Reset()
+		{
+			IsMajor = true;
+			KeyType = KeySignatureType.C;
+		}
 	}
 }
