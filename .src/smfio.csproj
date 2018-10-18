@@ -88,8 +88,6 @@
     <Compile Include="c3\StringByteExtension.cs" />
     <Compile Include="c3\StringHelper.cs" />
     <Compile Include="c3\SuperOld.cs" />
-    <Compile Include="Common\ChMessage8.cs" />
-    <Compile Include="Common\ChMessageU16.cs" />
     <Compile Include="Common\KeySignatureType.cs" />
     <Compile Include="Common\MidiKeySignature.cs" />
     <Compile Include="Common\MidiTimeSignature.cs" />
@@ -125,7 +123,6 @@
     <Compile Include="Stat16.cs" />
     <Compile Include="StatRange.cs" />
     <Compile Include="StatusQuery.cs" />
-    <Compile Include="StatusString.cs" />
     <Compile Include="StatusWord.cs" />
     <Compile Include="TempoMap.cs" />
     <Compile Include="strings.cs" />
