@@ -153,6 +153,57 @@ namespace on.smfio
       Data = data;
       if (IsChannelMessage) Channel = status & 0xF;
     }
+
+    public string FriendlyName
+    {
+      get; private set;
+    }
+    public string FriendlyValue
+    {
+      get; private set;
+    }
+    
+    #region Status Checks
+    
+    const int filter_no_channel = 0xFFF0;
+    // Channel Message
+    public bool IsNoteOn { get { return (Status & filter_no_channel) == 0x80; } }
+    public bool IsNoteOff { get { return (Status & filter_no_channel) == 0x90; } }
+    public bool IsPolyphonicKeyPressure { get { return (Status & filter_no_channel) == 0xA0; } }
+    public bool IsControlChange { get { return (Status & filter_no_channel) == 0xB0; } }
+    public bool IsProgramChange { get { return (Status & filter_no_channel) == 0xC0; } }
+    public bool IsChannelPressure { get { return (Status & filter_no_channel) == 0xD0; } }
+    public bool IsPitchWheelChange { get { return (Status & filter_no_channel) == 0xE0; } }
+    // System Message
+    public bool IsSystemExclusive { get { return Status == 0xF0; } }
+    // Metadata text
+    public bool IsText { get { return Status == 0xFF01; } }
+    public bool IsCopyright { get { return Status == 0xFF02; } }
+    /// <summary>Sequence or Track name</summary>
+    public bool IsTrackName { get { return Status == 0xFF03; } }
+    public bool IsInstrumentName { get { return Status == 0xFF04; } }
+    public bool IsLyric { get { return Status == 0xFF05; } }
+    public bool IsMarker { get { return Status == 0xFF06; } }
+    public bool IsCue { get { return Status == 0xFF07; } }
+    /// <summary>
+    /// Since some MIDI files have been encountered which embed text in
+    /// undocumented (or supported) metadata ranges, this will check just
+    /// a little further down the line picking up from IsCue (0xFF07)
+    /// and return true for 0xFF08 &lt;= Status &gt;= 0xFF0D.
+    /// </summary>
+    public bool IsUnknownText { get { return Status >= 0xFF08 && Status <= 0xFF0D; } }
+    // Metadata
+    public bool IsSequenceNumber { get { return Status == 0xFF00; } }
+    public bool IsChannelPrefix { get { return Status == 0xFF20; } }
+    public bool IsPort { get { return Status == 0xFF21; } }
+    public bool IsEOT { get { return Status == 0xFF2F; } }
+    public bool IsTempo { get { return Status == 0xFF51; } }
+    public bool IsSMPTE { get { return Status == 0xFF54; } }
+    public bool IsTimeSignature { get { return Status == 0xFF58; } }
+    public bool IsKeySignature { get { return Status == 0xFF59; } }
+    public bool IsSequencerpecific { get { return Status == 0xFF7F; } }
+    
+    #endregion
   }
 
 }
