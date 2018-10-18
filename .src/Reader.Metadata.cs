@@ -24,67 +24,75 @@ using on.smfio.chunk;
 namespace on.smfio
 {
 	public static class MetaHelpers
-	{
-		static public string MetaName(StatusByte id)
-		{
-			switch (id)
-			{
-					case StatusByte.EndOfTrack:          return StatusString.EndTrack;
-					case StatusByte.SequenceNumber:      return StatusString.SequenceNumber;
-					case StatusByte.Text:                return StatusString.TextEvent;
-					case StatusByte.Copyright:           return StatusString.Copyright;
-					case StatusByte.SequenceName:        return StatusString.SequenceName;
-					case StatusByte.InstrumentName:      return StatusString.InstrumentName;
-					case StatusByte.Lyric:               return StatusString.LyricMarker;
-					case StatusByte.Marker:              return StatusString.Marker;
-          case StatusByte.Cue:                 return StatusString.CuePoint;
-          case StatusByte.MetaStrFF08:         return StatusString.MetaStrFF08;
-          case StatusByte.MetaStrFF09:         return StatusString.MetaStrFF09;
-          case StatusByte.MetaStrFF0A:         return StatusString.MetaStrFF0A;
-          case StatusByte.MetaStrFF0B:         return StatusString.MetaStrFF0B;
-          case StatusByte.MetaStrFF0C:         return StatusString.MetaStrFF0C;
-					case StatusByte.ChannelPrefix:       return StatusString.Channel;
-					case StatusByte.PortMessage:         return StatusString.Port;
-					case StatusByte.SetTempo:            return StatusString.Tempo;
-					case StatusByte.SMPTEOffset:         return StatusString.SMPTE;
-					case StatusByte.TimeSignature:       return StatusString.TimeSignature;
-					case StatusByte.KeySignature:        return StatusString.KeySignature;
-					case StatusByte.SystemExclusive:     return StatusString.SYSEX;
-					case StatusByte.SequencerSpecific:   return StatusString.SYSSPF;
-					//case MetaMsg32.SystemExclusive: return on.smfio.Common.ChannelType.SYSEX;
-					default: return "UNKNOWN MESSAGE";
-			}
-		}
+  {
+    static public string GetMetadataTitle(int status, bool eightBit = false)
+    {
+      if (eightBit == false)
+      {
+        switch (status)
+        {
+          case Stat16.Text:              return StatusWord.Text.GetEnumDescriptionAttribute();
+          case Stat16.Copyright:         return StatusWord.Copyright.GetEnumDescriptionAttribute();
+          case Stat16.SequenceName:      return StatusWord.SequenceName.GetEnumDescriptionAttribute();
+          case Stat16.InstrumentName:    return StatusWord.InstrumentName.GetEnumDescriptionAttribute();
+          case Stat16.Lyric:             return StatusWord.Lyric.GetEnumDescriptionAttribute();
+          case Stat16.Marker:            return StatusWord.Marker.GetEnumDescriptionAttribute();
+          case Stat16.Cue:               return StatusWord.Cue.GetEnumDescriptionAttribute();
+          case Stat16.ChannelPrefix:     return StatusWord.ChannelPrefix.GetEnumDescriptionAttribute();
+          case Stat16.SetTempo:          return StatusWord.SetTempo.GetEnumDescriptionAttribute();
+          case Stat16.SMPTEOffset:       return StatusWord.SMPTEOffset.GetEnumDescriptionAttribute();
+          case Stat16.TimeSignature:     return StatusWord.TimeSignature.GetEnumDescriptionAttribute();
+          case Stat16.KeySignature:      return StatusWord.KeySignature.GetEnumDescriptionAttribute();
+          case Stat16.SequenceNumber:    return StatusWord.SequenceNumber.GetEnumDescriptionAttribute();
+          case Stat16.PortMessage:       return StatusWord.PortMessage.GetEnumDescriptionAttribute();
+          case Stat16.SequencerSpecific: return StatusWord.SequencerSpecific.GetEnumDescriptionAttribute();
+          case Stat16.SystemExclusive:   return StatusWord.SystemExclusive.GetEnumDescriptionAttribute();
+          case Stat16.EndOfTrack:        return StatusWord.EndOfTrack.GetEnumDescriptionAttribute();
+          case Stat16.MetaStrFF08:       return StatusWord.MetaStrFF08.GetEnumDescriptionAttribute();
+          case Stat16.MetaStrFF09:       return StatusWord.MetaStrFF09.GetEnumDescriptionAttribute();
+          case Stat16.MetaStrFF0A:       return StatusWord.MetaStrFF0A.GetEnumDescriptionAttribute();
+          case Stat16.MetaStrFF0B:       return StatusWord.MetaStrFF0B.GetEnumDescriptionAttribute();
+          case Stat16.MetaStrFF0C:       return StatusWord.MetaStrFF0C.GetEnumDescriptionAttribute();
+        }
+      }
+      else
+      {
+        switch (status & 0xFF)
+        {
+          case Stat16.Text              & 0xFF: return StatusWord.Text.GetEnumDescriptionAttribute();
+          case Stat16.Copyright         & 0xFF: return StatusWord.Copyright.GetEnumDescriptionAttribute();
+          case Stat16.SequenceName      & 0xFF: return StatusWord.SequenceName.GetEnumDescriptionAttribute();
+          case Stat16.InstrumentName    & 0xFF: return StatusWord.InstrumentName.GetEnumDescriptionAttribute();
+          case Stat16.Lyric             & 0xFF: return StatusWord.Lyric.GetEnumDescriptionAttribute();
+          case Stat16.Marker            & 0xFF: return StatusWord.Marker.GetEnumDescriptionAttribute();
+          case Stat16.Cue               & 0xFF: return StatusWord.Cue.GetEnumDescriptionAttribute();
+          case Stat16.ChannelPrefix     & 0xFF: return StatusWord.ChannelPrefix.GetEnumDescriptionAttribute();
+          case Stat16.SetTempo          & 0xFF: return StatusWord.SetTempo.GetEnumDescriptionAttribute();
+          case Stat16.SMPTEOffset       & 0xFF: return StatusWord.SMPTEOffset.GetEnumDescriptionAttribute();
+          case Stat16.TimeSignature     & 0xFF: return StatusWord.TimeSignature.GetEnumDescriptionAttribute();
+          case Stat16.KeySignature      & 0xFF: return StatusWord.KeySignature.GetEnumDescriptionAttribute();
+          case Stat16.SequenceNumber    & 0xFF: return StatusWord.SequenceNumber.GetEnumDescriptionAttribute();
+          case Stat16.PortMessage       & 0xFF: return StatusWord.PortMessage.GetEnumDescriptionAttribute();
+          case Stat16.SequencerSpecific & 0xFF: return StatusWord.SequencerSpecific.GetEnumDescriptionAttribute();
+          case Stat16.SystemExclusive   & 0xFF: return StatusWord.SystemExclusive.GetEnumDescriptionAttribute();
+          case Stat16.EndOfTrack        & 0xFF: return StatusWord.EndOfTrack.GetEnumDescriptionAttribute();
+          case Stat16.MetaStrFF08       & 0xFF: return StatusWord.MetaStrFF08.GetEnumDescriptionAttribute();
+          case Stat16.MetaStrFF09       & 0xFF: return StatusWord.MetaStrFF09.GetEnumDescriptionAttribute();
+          case Stat16.MetaStrFF0A       & 0xFF: return StatusWord.MetaStrFF0A.GetEnumDescriptionAttribute();
+          case Stat16.MetaStrFF0B       & 0xFF: return StatusWord.MetaStrFF0B.GetEnumDescriptionAttribute();
+          case Stat16.MetaStrFF0C       & 0xFF: return StatusWord.MetaStrFF0C.GetEnumDescriptionAttribute();
+        }
+      }
+      return "UNKNOWN MESSAGE";
+    }
 		
-		/// <summary>
-		/// Convert Int32 to a status byte for translation to StatusString.
-		/// </summary>
-		/// <param name="msg32"></param>
-		static public string MetaNameFF(int msg32)
-		{
-			return MetaName((StatusByte)((byte)(msg32 & 0xFF)));
-		}
-		
-		/// <summary>
-		/// Several incoming messages such as Metadata Text contain 0xFF as a
-		/// message prefix which is filtered out here.
-		/// 
-		/// Filters or erases LSB of 0xABCD such that yields 0xCD.
-		/// </summary>
-		/// <param name="id"></param>
-		static public string MetaName(StatusWord id)
-		{
-			return MetaName((StatusByte)((int)id & 0x00FF));
-		}
-		
-
 		#region Meta helpers
 		
 		/// Seq No (0xFF00)
 		static public string meta_FF00(byte one, byte two) { return string.Format( "Sequence Number: {0} or {0:X2}", Convert.ToUInt16(one << 8 | two)); }
 		
 		/// string format milliseconds per quarter
-		static public string meta_FF51(int num) { return string.Format(StringRes.msg_time_ms_pqn, 60000000.0, num, 60000000.0/num ); }
+		static public string meta_FF51(int microseconds) { return string.Format(StringRes.msg_time_ms_pqn, 60000000.0, microseconds, 60000000.0/microseconds ); }
 		
 		/// ?
 		static public string meta_FF54(IReader reader, int offset) {
