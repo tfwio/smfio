@@ -71,7 +71,7 @@ namespace on.smfio
     /// <summary>0xFF59</summary>
     public const ushort KeySignature            = 0xFF59;
     /// <summary>0xFF7F (Was SystemSpecific)</summary>
-    public const ushort SequencerSpecificMetaEvent = 0xFF7F;
+    public const ushort SequencerSpecific = 0xFF7F;
 
     // Voice (Channel)
 

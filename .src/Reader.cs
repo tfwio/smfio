@@ -189,7 +189,7 @@ namespace on.smfio
           MessageHandler(MidiMsgType.MetaInf, nTrackIndex, nTrackOffset, msg16, msg8, CurrentTrackPulse, CurrentRunningStatus8, false);
           DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
           break;
-        case Stat16.SequencerSpecificMetaEvent:  // FF7F
+        case Stat16.SequencerSpecific:  // FF7F
           MessageHandler(MidiMsgType.SequencerSpecific, nTrackIndex, nTrackOffset, msg16, msg8, CurrentTrackPulse, CurrentRunningStatus8, false);
           DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
           break;
@@ -298,7 +298,7 @@ namespace on.smfio
           KeySignature.SetSignature((KeySignatureType)b, this[nTrackIndex, nTrackOffset + 4] == 0);
           DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
           break;
-        case Stat16.SequencerSpecificMetaEvent: // 0xFF7F
+        case Stat16.SequencerSpecific: // 0xFF7F
           DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
           break;
         case Stat16.SystemExclusive:

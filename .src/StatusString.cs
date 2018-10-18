@@ -61,10 +61,9 @@ namespace on.smfio
     /// End Of Track
     public const string EndTrack       = "End Track";
     /// System Exclusive Message
-    public const string SYSEX          = "System Message";
+    public const string SYSEX          = "System Exclusive";
 
     public const string SYSSPF         = "System Specific";
-
 
   }
 

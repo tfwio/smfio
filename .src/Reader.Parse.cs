@@ -101,7 +101,7 @@ namespace on.smfio
         case Stat16.SMPTEOffset:
         case Stat16.TimeSignature:
         case Stat16.KeySignature:
-        case Stat16.SequencerSpecificMetaEvent:
+        case Stat16.SequencerSpecific:
           return GetMetaBString(nTrackIndex, nTrackOffset);
         case Stat16.EndOfTrack:  return new byte[0];
       }
