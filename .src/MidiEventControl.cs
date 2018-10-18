@@ -179,24 +179,26 @@ namespace SMFIOViewer
 			switch (msgType)
 			{
 				case MidiMsgType.MetaStr:
-					var item = lve.AddItem( tempo, pulse, ColorResources.c4, smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF( midiMsg32 ), Reader.GetMetadataString( nTrackOffset ) );
+					var item = lve.AddItem( tempo, pulse, ColorResources.c4, smbt, sseconds, string.Empty, MetaHelpers.GetMetadataTitle( midiMsg32 ), Reader.GetMetadataString( nTrackIndex, nTrackOffset ) );
 					break;
 				case MidiMsgType.MetaInf:
-					lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentRunningStatus8), smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF(midiMsg32), Reader.GetMessageString(nTrackOffset));
+					lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentRunningStatus8), smbt, sseconds, string.Empty, MetaHelpers.GetMetadataTitle(midiMsg32), Reader.GetMessageString(nTrackIndex, nTrackOffset));
 					break;
 				case MidiMsgType.SequencerSpecific:
-					lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentRunningStatus8), smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF(midiMsg32), Reader.GetMessageString(nTrackOffset));
+					lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentRunningStatus8), smbt, sseconds, string.Empty, MetaHelpers.GetMetadataTitle(midiMsg32), Reader.GetMessageString(nTrackIndex, nTrackOffset));
 					break;
 				case MidiMsgType.SystemExclusive:
 					var bytes = Reader[nTrackIndex, nTrackOffset, Reader[nTrackIndex].GetEndOfSystemExclusive(nTrackOffset) - nTrackOffset];
-					lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentRunningStatus8), smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF(midiMsg32), Reader.GetMessageString(nTrackOffset));
+					lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentRunningStatus8), smbt, sseconds, string.Empty, MetaHelpers.GetMetadataTitle(midiMsg32), Reader.GetMessageString(nTrackIndex, nTrackOffset));
 					break;
 				case MidiMsgType.EOT:
-					lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentRunningStatus8), smbt, sseconds, string.Empty, MetaHelpers.MetaNameFF(midiMsg32), Reader.GetMessageString(nTrackOffset));
+					lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentRunningStatus8), smbt, sseconds, string.Empty, MetaHelpers.GetMetadataTitle(midiMsg32), Reader.GetMessageString(nTrackIndex, nTrackOffset));
 					break;
 				default: // expecting channel voice messages
-					if (isRunningStatus) lve.AddItem( tempo, pulse, ColorResources.GetRseEventColor( ColorResources.Colors["225"], Reader.CurrentRunningStatus8 ), smbt, sseconds, midiMsg8==0xF0 ? "" :(statusRunning & 0x0F).ToString(), Reader.GetRseEventString( nTrackOffset ), Reader.chRseV( nTrackOffset ) );
-					else                 lve.AddItem( tempo, pulse, ColorResources.GetEventColor   ( ColorResources.Colors["225"], Reader.CurrentRunningStatus8 ), smbt, sseconds, midiMsg8==0xF0 ? "" :(statusRunning & 0x0F).ToString(), Reader.GetEventString   ( nTrackOffset ), Reader.chV   ( nTrackOffset ) );
+					var msgStat = ((statusRunning & 0xFF) == statusRunning) ? $"{statusRunning:X1}" : $"{statusRunning:X2}";
+					var msgBytes = $"{msgStat} {Reader.GetMessageBytes(nTrackIndex, isRunningStatus ? nTrackOffset - 1 : nTrackOffset, (ushort)statusRunning).StringifyHex()}";
+					var msgChannel = midiMsg8 == 0xF0 ? "" : (statusRunning & 0x0F).ToString();
+					lve.AddItem( tempo, pulse, ColorResources.GetEventColor   (Reader.CurrentRunningStatus8), smbt, sseconds, msgChannel, Reader.GetEventString( nTrackIndex, isRunningStatus ? nTrackOffset : nTrackOffset + 1 ), msgBytes );
 					break;
 			}
 		}
