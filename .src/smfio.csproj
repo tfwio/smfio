@@ -123,10 +123,7 @@
     <Compile Include="Reader.Parse.cs" />
     <Compile Include="SmfString.cs" />
     <Compile Include="Stat16.cs" />
-    <Compile Include="Stat32.cs" />
-    <Compile Include="Stat8.cs" />
     <Compile Include="StatRange.cs" />
-    <Compile Include="StatusByte.cs" />
     <Compile Include="StatusQuery.cs" />
     <Compile Include="StatusString.cs" />
     <Compile Include="StatusWord.cs" />
