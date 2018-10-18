@@ -1,4 +1,3 @@
-#region Info
 // oio * 2005-11-12 * 4:19 PM
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -17,14 +16,13 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
 // DEALINGS IN THE SOFTWARE.
-#endregion
-#region Using
 using System;
-#endregion
 namespace on.smfio
 {
   /// <summary>
-  /// Message (bits | 0xFF00)
+  /// A static class containing unsigned short 16 bit integer Status Bytes Enumeration constants.
+  /// 
+  /// /// See https://www.midi.org/specifications-old/item/table-2-expanded-messages-list-status-bytes
   /// </summary>
   static public class Stat16
   {
@@ -75,12 +73,19 @@ namespace on.smfio
 
     // Voice (Channel)
 
+    /// <summary>0x80</summary>
     public const ushort NoteOff                 = 0x80;
+    /// <summary>0x90</summary>
     public const ushort NoteOn                  = 0x90;
+    /// <summary>0xA0</summary>
     public const ushort PolyphonicKeyPressure   = 0xA0;
+    /// <summary>0xB0</summary>
     public const ushort ControlChange           = 0xB0;
+    /// <summary>0xC0</summary>
     public const ushort ProgramChange           = 0xC0;
+    /// <summary>0xD0</summary>
     public const ushort ChannelPressure         = 0xD0;
+    /// <summary>0xE0</summary>
     public const ushort PitchWheel              = 0xE0;
 
     // System Common

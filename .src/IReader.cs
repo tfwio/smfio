@@ -19,12 +19,11 @@ namespace on.smfio
     byte this[int kTrackID, int kTrackOffset] { get; }
     byte[] this[int kTrackID, int kTrackOffset, int kSize] { get; }
 
-		bool GenerateMessageList { get; set; }
-
     // =============================================
     // DATA (DictionaryList<int,MidiMessage>)
     // =============================================
 		
+    bool GenerateMessageList { get; set; }
 		DictionaryList<int,MIDIMessageVST> MidiVSTMessageList { get; }
 
     // =============================================
@@ -83,6 +82,14 @@ namespace on.smfio
 			long pulse,
 			int delta,
 			bool isRunningStatus);
+
+    /// <summary>
+    /// </summary>
+    /// <param name="nTrackIndex"></param>
+    /// <param name="nTrackOffset"></param>
+    /// <param name="status"></param>
+    /// <returns></returns>
+    byte[] GetMessageBytes(int nTrackIndex, int nTrackOffset, ushort status);
 
     bool UserDefinedMessageHandler { get; }
 		

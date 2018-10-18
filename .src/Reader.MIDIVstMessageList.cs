@@ -37,12 +37,12 @@ namespace on.smfio
       switch (msgType)
       {
         case MidiMsgType.MetaStr:
-          MidiVSTMessageList.AddV(ReaderIndex, new MetaMessageVST(MidiMsgType.MetaStr, pulse, midiMsg32, GetMetaBString(nTrackOffset)));
+          MidiVSTMessageList.AddV(nTrackIndex, new MetaMessageVST(MidiMsgType.MetaStr, pulse, midiMsg32, GetMetadataBytes(nTrackIndex, nTrackOffset)));
           break;
         case MidiMsgType.MetaInf:
-          byte[] bytes = GetMetaBString(nTrackOffset);
+          byte[] bytes = GetMetadataBytes(nTrackIndex, nTrackOffset);
           var midiMsg = new MetaMessageVST(pulse, midiMsg32, bytes);
-          MidiVSTMessageList.AddV(ReaderIndex, midiMsg);
+          MidiVSTMessageList.AddV(nTrackIndex, midiMsg);
           break;
         case MidiMsgType.SystemExclusive:
           Debug.WriteLine("Skip System Exclusive Message (for now)");
@@ -50,17 +50,17 @@ namespace on.smfio
         case MidiMsgType.ChannelVoice:
         case MidiMsgType.NoteOff:
         case MidiMsgType.NoteOn:
-          MidiVSTMessageList.AddV(ReaderIndex, new ChannelMessageVST(pulse, midiMsg32, GetEventValue(nTrackOffset)));
+          MidiVSTMessageList.AddV(nTrackIndex, new ChannelMessageVST(pulse, midiMsg32, GetEventValue(nTrackIndex, nTrackOffset + 1)));
           break;
         case MidiMsgType.SequencerSpecific:
-          MidiVSTMessageList.AddV(ReaderIndex, new SequencerSpecificVST(pulse, midiMsg32, GetEventValue(nTrackOffset)));
+          MidiVSTMessageList.AddV(nTrackIndex, new SequencerSpecificVST(pulse, midiMsg32, GetEventValue(nTrackIndex, nTrackOffset + 1)));
           break;
         case MidiMsgType.EOT:
-          MidiVSTMessageList.AddV(ReaderIndex, new MetaMessageVST(pulse, midiMsg32));
+          MidiVSTMessageList.AddV(nTrackIndex, new MetaMessageVST(pulse, midiMsg32));
           break;
         default:
-          if (isRunningStatus) MidiVSTMessageList.AddV(ReaderIndex, new ChannelMessageVST(pulse, delta, GetRseEventValue(nTrackOffset)));
-          else MidiVSTMessageList.AddV(ReaderIndex, new ChannelMessageVST(pulse, delta, GetEventValue(nTrackOffset)));
+          if (isRunningStatus) MidiVSTMessageList.AddV(nTrackIndex, new ChannelMessageVST(pulse, delta, GetEventValue(nTrackIndex, nTrackOffset)));
+          else MidiVSTMessageList.AddV(nTrackIndex, new ChannelMessageVST(pulse, delta, GetEventValue(nTrackIndex, nTrackOffset + 1)));
           break;
       }
     }

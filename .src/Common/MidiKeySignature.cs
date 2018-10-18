@@ -12,6 +12,7 @@ namespace on.smfio
 {
 	public class MidiKeySignature
 	{
+		public string MajorMinorString { get { return IsMajor ? "Major" : "Minor"; } }
 		public bool IsMajor;
 		public KeySignatureType KeyType = KeySignatureType.C;
 		
@@ -29,5 +30,11 @@ namespace on.smfio
 		}
 		public void Reset() { IsMajor = true; KeyType = KeySignatureType.C; }
 		public MidiKeySignature Copy() { return new MidiKeySignature(KeyType, IsMajor); }
+
+		public override string ToString()
+		{
+			return $"{KeyType.GetEnumDescriptionAttribute()} {MajorMinorString}";
+		}
+
 	}
 }

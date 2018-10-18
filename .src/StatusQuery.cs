@@ -35,34 +35,34 @@ namespace on.smfio.Common
     static public readonly StatRange SystemRealtimeRange          = new StatRange("System Realtime", new Range(0xF8, 0xFF));
 
     /// <summary>0x80 to 0x8F</summary>
-    static public readonly StatRange NoteOffRange                 = new StatRange("Note Off", Stat8.NoteOff);
+    static public readonly StatRange NoteOffRange                 = new StatRange("Note Off", Stat16.NoteOff);
 		
 		/// <summary>0x90 to 0x9F</summary>
-		static public readonly StatRange NoteOnRange                  = new StatRange("Note On", Stat8.NoteOn);
+		static public readonly StatRange NoteOnRange                  = new StatRange("Note On", Stat16.NoteOn);
 		
 		/// <summary>0xA0 to 0xAF</summary>
-		static public readonly StatRange KeyAftertouchRange           = new StatRange("Key Aftertouch", Stat8.PolyphonicKeyPressure);
+		static public readonly StatRange KeyAftertouchRange           = new StatRange("Key Aftertouch", Stat16.PolyphonicKeyPressure);
 		
 		/// <summary>0xB0 to 0xBF</summary>
-		static public readonly StatRange ControlChangeRange           = new StatRange("Control Change", Stat8.ControlChange);
+		static public readonly StatRange ControlChangeRange           = new StatRange("Control Change", Stat16.ControlChange);
 		
 		/// <summary>0xC0 to 0xCF</summary>
-		static public readonly StatRange ProgramChangeRange           = new StatRange("Program Change", Stat8.ProgramChange);
+		static public readonly StatRange ProgramChangeRange           = new StatRange("Program Change", Stat16.ProgramChange);
 		
 		/// <summary>0xD0 to 0xDF</summary>
-		static public readonly StatRange ChannelAftertouchRange       = new StatRange("Channel Aftertouch", Stat8.ChannelPressure);
+		static public readonly StatRange ChannelAftertouchRange       = new StatRange("Channel Aftertouch", Stat16.ChannelPressure);
 		
 		/// <summary>0xE0 to 0xEF</summary>
-		static public readonly StatRange PitchBendRange               = new StatRange("Pitch Bend", Stat8.PitchWheel);
+		static public readonly StatRange PitchBendRange               = new StatRange("Pitch Bend", Stat16.PitchWheel);
 		
 		/// <summary>0xF0 to 0xF0</summary>
-		static public readonly StatRange SystemExclusiveRange         = new StatRange("System Exclusive Message", Stat8.SystemExclusive);
+		static public readonly StatRange SystemExclusiveRange         = new StatRange("System Exclusive Message", Stat16.SystemExclusive);
 
     /// <summary>0xFF 0x7F</summary>
-    static public readonly StatRange SequencerSpeceficRange       = new StatRange("System Specific Message", Stat8.SequencerSpecific);
+    static public readonly StatRange SequencerSpeceficRange       = new StatRange("System Specific Message", Stat16.SequencerSpecific);
 		
 		/// <summary>0xF0 &lt;= value &lt;= 0xF7</summary>
-		static public readonly StatRange SystemCommonMessageRange     = new StatRange("System Exclusive Message", Stat8.SystemExclusive, Stat8.EndOfExclusive);
+		static public readonly StatRange SystemCommonMessageRange     = new StatRange("System Exclusive Message", Stat16.SystemExclusive, Stat16.EndOfExclusive);
 		
 
     /// <summary>0xFF 0x7F (Sequencer Specific Binary Data)</summary>

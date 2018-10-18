@@ -12,89 +12,47 @@ namespace on.smfio
 {
   public interface IReaderParser
   {
-
-    // =============================
-    // META
-    // =============================
-
     /// <summary>Gets a string value.</summary>
-    /// <param name="offset"></param>
+    /// <param name="nTrackIndex"></param>
+    /// <param name="nTrackOffset"></param>
     /// <returns>UTF8 Decoded</returns>
-    string GetMetadataString(int offset);
+    string GetMetadataString(int nTrackIndex, int nTrackOffset);
 
-    /// <summary>
-    /// Return a string value per meta-event or throw exception.
-    /// </summary>
-    /// <param name="offset"></param>
-    /// <returns></returns>		
-    string GetMessageString(int offset);
+    /// <summary>Return a string value per meta-event or throw exception.</summary>
+    string GetMessageString(int nTrackIndex, int nTrackOffset);
 
     /// <summary>Documentation needed</summary>
-    /// <param name="offset"></param>
+    /// <param name="nTrackIndex"></param>
+    /// <param name="nTrackOffset"></param>
     /// <returns></returns>
-    byte[] GetMetaBString(int offset);
-
-    //		byte[] GetMetaStringValue(int offset);
-
-    // =================================
-    // CH (string)
-    // =================================
+    byte[] GetMetadataBytes(int nTrackIndex, int nTrackOffset);
 
     /// <summary>
-    /// Parse runningstatus channel bit (for messages that support this); Non-RSE
+    /// Next (Running Status) Position — next buffer read position.
+    /// 
+    /// When calling this method, the reader is likely leaving off
+    /// from the following 
+    /// 
+    /// 1. [**Delta-Time**] [**Status**] — following a status byte  
+    ///    add one to offset
+    /// 2. [**Delta-Time**] — following delta-time (running status message)  
+    ///    offset increment not necessary.
     /// </summary>
-    /// <param name="v">message value bit</param>
-    string chV(int v);
+    int Increment(int offset);
+
+    /// <summary>Documentation needed</summary>
+    byte[] GetEventValue(int nTrackIndex, int nTrackOffset);
+
+    string GetEventString(int nTrackIndex, int nTrackOffset);
 
     /// <summary>
-    /// process running status bit with event valuestring?; RSE specific
+    /// This function is typically called directly after either of the following cases:
+    /// 
+    /// 1. **[delta-time]** **[status]**; following a status.  
+    ///    If we're following a status, then we increment the offset by 1.
+    /// 2. **[delta-time]** following a delta-time with running status.
+    ///    If we're dealing with a running status, then no incrementing the offset.
     /// </summary>
-    /// <param name="v">message value bit</param>
-    /// <returns>
-    /// string.Format("{0} {1}", string.Format("{0:X2}", RunningStatus32),
-    /// GetEventValueString(v))
-    /// </returns>
-    string chRseV(int v);
-
-    // =================================
-    // NEXT.POS
-    // =================================
-
-    /// <summary>Next Position (rse)</summary>
-    int IncrementRun(int offset);
-
-    /// <summary>Next Position (rse)</summary>
-    int GetNextPosition(int offset);
-
-    // =================================
-    // VALUE.EVENT
-    // =================================
-
-    /// <summary>Documentation needed</summary>
-    byte[] GetRseEventValue(int offset);
-
-    /// <summary>Documentation needed</summary>
-    byte[] GetEventValue(int offset);
-
-    // =================================
-    // VALUE.EVENT-STRING
-    // =================================
-
-    /// <summary>Documentation needed</summary>
-    string GetRseEventString(int offset);
-
-    /// <summary>Documentation needed</summary>
-    string GetEventString(int offset);
-
-    // =================================
-    // VALUE-STRING
-    // =================================
-
-    /// <summary> RSE </summary>
-    string GetRseEventValueString(int offset);
-
-    /// <summary>Documentation needed</summary>
-    string GetEventValueString(int offset);
-
+    string GetEventValueString(int nTrackIndex, int nTrackOffset);
   }
 }

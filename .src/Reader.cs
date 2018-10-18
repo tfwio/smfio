@@ -206,9 +206,9 @@ namespace on.smfio
               
               int ExpandedRSE = CurrentRunningStatus8;// << 8;
               int delta1 = -1;
-              if ((delta1 = IncrementRun(nTrackOffset)) == -1)
+              if ((delta1 = Increment(nTrackOffset)) == -1)
               {
-                int test = GetOffset(nTrackOffset);
+                int test = GetOffset(nTrackIndex, nTrackOffset);
                 Debug.Assert(false, string.Format("warning… {0:X2}, {1:X}|{1:N0}", ExpandedRSE, test));
               }
               else
@@ -223,7 +223,7 @@ namespace on.smfio
               //CurrentTrackRunningStatus = (FileHandle[nTrackIndex, nTrackOffset]);
               CurrentRunningStatus8 = msg8;
               CurrentRunningStatus16 = msg16;
-              DELTA_Returned = GetNextPosition(nTrackOffset);
+              DELTA_Returned = Increment(nTrackOffset + 1);
               MessageHandler(GetMidiMessageType(CurrentRunningStatus8), nTrackIndex, nTrackOffset, msg16, msg8, CurrentTrackPulse, CurrentRunningStatus8, false);
               DELTA_Returned++;
               return DELTA_Returned;
@@ -314,9 +314,9 @@ namespace on.smfio
               // int ExpandedRSE = CurrentTrackRunningStatus;// << 8;
               int ExpandedRSE = CurrentRunningStatus8;// << 8;
               int delta1 = -1;
-              if ((delta1 = IncrementRun(nTrackOffset)) == -1)
+              if ((delta1 = Increment(nTrackOffset)) == -1)
               {
-                int test = GetOffset(nTrackOffset);
+                int test = GetOffset(nTrackIndex, nTrackOffset);
                 Debug.Assert(false, string.Format("warning… {0:X2}, {1:X}|{1:N0}", ExpandedRSE, test));
               }
               else
@@ -328,7 +328,7 @@ namespace on.smfio
             {
               CurrentRunningStatus8 = msg8;
               CurrentRunningStatus16 = msg16;
-              DELTA_Returned = GetNextPosition(nTrackOffset);
+              DELTA_Returned = Increment(nTrackOffset + 1);
               return ++DELTA_Returned;
             }
             else
@@ -343,10 +343,10 @@ namespace on.smfio
     #region MESSAGE methods
 
     /// MESSAGE methods
-    void DispatchHandlers(MidiMsgType t, int track, int offset, int imsg, byte bmsg, long ppq, int rse, bool isrse)
+    void DispatchHandlers(MidiMsgType t, int nTrackIndex, int nTrackOffset, int stat32, byte stat8, long pulse, int statR, bool isRunningStatus)
     {
       foreach (MidiEventDelegate method in MessageHandlers)
-        method(t, track, offset, imsg, bmsg, ppq, rse, isrse);
+        method(t, nTrackIndex, nTrackOffset, stat32, stat8, pulse, statR, isRunningStatus);
     }
 
     /// MESSAGE methods
@@ -357,10 +357,10 @@ namespace on.smfio
       MidiMsgType msgType,
       int nTrackIndex,
       int nTrackOffset,
-      int midiMsg32,
-      byte midiMsg8,
+      int stat32,
+      byte stat8,
       long pulse,
-      int delta,
+      int statR,
       bool isRunningStatus)
     {
       if (GenerateMessageList)
@@ -368,16 +368,16 @@ namespace on.smfio
         MidiMessages.AddV(
           nTrackIndex,
           new MidiMessage(
-            (ushort)midiMsg32,
+            (ushort)stat32,
             pulse,
-            GetMessageBytes(nTrackIndex, isRunningStatus ? nTrackOffset-1 : nTrackOffset, (ushort)midiMsg32)
+            GetMessageBytes(nTrackIndex, isRunningStatus ? nTrackOffset-1 : nTrackOffset, (ushort)stat32)
             ));
 
       if (ProcessMidiMessage != null)
-        ProcessMidiMessage(this, new MidiMessageEvent(msgType, nTrackIndex, nTrackOffset, midiMsg32, midiMsg8, pulse, delta, isRunningStatus));
+        ProcessMidiMessage(this, new MidiMessageEvent(msgType, nTrackIndex, nTrackOffset, stat32, stat8, pulse, statR, isRunningStatus));
 
       if (MessageHandlers.Count > 0)
-        DispatchHandlers(msgType, nTrackIndex, nTrackOffset, midiMsg32, midiMsg8, pulse, delta, isRunningStatus);
+        DispatchHandlers(msgType, nTrackIndex, nTrackOffset, stat32, stat8, pulse, statR, isRunningStatus);
     }
 
     #endregion
@@ -444,16 +444,16 @@ namespace on.smfio
     #endregion
 
     #region ¿¡WHAT?!
-    ///	<summary>(¿¡WHAT?!) only called on error?</summary>
+    ///	<summary>FIXME: this does not belong!</summary>
     /// <inheritdoc/>
-    public int GetOffset(int offset)
+    int GetOffset(int nTrackIndex, int nTrackOffset)
     {
       int result = 14;
-      for (int i = 0; i <= ReaderIndex; i++)
+      for (int i = 0; i <= nTrackIndex; i++)
       {
         result += FileHandle[i].Data.Length + 8; // if not 8, this will be 4
       }
-      return result + offset;
+      return result + nTrackOffset;
     }
     #endregion
 
@@ -482,17 +482,17 @@ namespace on.smfio
     #region READ META TRACK
 
     /// <inheritdoc/>
-    public void ParseTempoMap(int tk)
+    public void ParseTempoMap(int nTrackIndex)
     {
       ResetTempoMap();
-      long delta;
+      long delta_time;
       int i = 0;
-      selectedTrackNumber = tk;
-      while (i < FileHandle.Tracks[ReaderIndex].Data.Length)
+      selectedTrackNumber = nTrackIndex; // Sets ReaderIndex
+      while (i < FileHandle.Tracks[nTrackIndex].Data.Length)
       {
-        i = FileHandle.ReadDelta(tk, i, out delta);
-        CurrentTrackPulse += delta;
-        i = GetTempoMap(selectedTrackNumber, i, Convert.ToInt32(delta));
+        i = FileHandle.ReadDelta(nTrackIndex, i, out delta_time);
+        CurrentTrackPulse += delta_time;
+        i = GetTempoMap(selectedTrackNumber, i, Convert.ToInt32(delta_time));
       }
     }
 
@@ -690,7 +690,7 @@ namespace on.smfio
           /*  6 */ TimeSignature.Denominator,
           /*  7 */ TimeSignature.Clocks,
           /*  8 */ TimeSignature.ThirtySeconds,
-          /*  9 */ KeySignature.KeyType.GetEnumDescriptionAttribute(),
+          /*  9 */ KeySignature,
           /* 10 */ FileHandle.Format,
           /* 11 */ StringRes.STRING_APP_NAME,
           /* 12 */ SMPTE
@@ -705,10 +705,10 @@ namespace on.smfio
 
     public event EventHandler<ProgressChangedEventArgs> TrackLoadProgressChanged;
 
-    protected virtual void OnTrackLoadProgressChanged(int i)
+    protected virtual void OnTrackLoadProgressChanged(int nTrackOffset)
     {
-      int progressAmount = (i / FileHandle[selectedTrackNumber].Data.Length) * 100;
-      ProgressChangedEventArgs e = new ProgressChangedEventArgs(i, null);
+      int progressAmount = (nTrackOffset / FileHandle[selectedTrackNumber].Data.Length) * 100;
+      ProgressChangedEventArgs e = new ProgressChangedEventArgs(nTrackOffset, null);
       if (TrackLoadProgressChanged != null) TrackLoadProgressChanged(this, e);
     }
 
