@@ -24,6 +24,17 @@ namespace on.smfio
       PulseMax = lastPulse;
       Second = TimeUtil.GetSeconds(division, muspqn, pulse - lastPulse, seconds);
     }
+    
+    public double GetSeconds(int division, long pulse, double priorSeconds=0.0)
+    {
+      return TimeUtil.GetSeconds(division, MusPQN, Pulse, priorSeconds);
+    }
+    
+    public double SetSeconds(int division, long pulse, double priorSeconds=0.0)
+    {
+      Second = GetSeconds(division, pulse, priorSeconds);
+      return Second;
+    }
 
     public bool Match(long pulse) {
       return (pulse >= Pulse) && (pulse < PulseMax);
