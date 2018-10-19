@@ -294,8 +294,9 @@ namespace on.smfio
           DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
           break;
         case Stat16.KeySignature: // 0xFF59
-          byte b = (this[nTrackIndex, nTrackOffset + 3]);
-          KeySignature.SetSignature((KeySignatureType)b, this[nTrackIndex, nTrackOffset + 4] == 0);
+          KeySignature.SetSignature(
+            this[nTrackIndex, nTrackOffset + 3],
+            this[nTrackIndex, nTrackOffset + 4]);
           DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
           break;
         case Stat16.SequencerSpecific: // 0xFF7F

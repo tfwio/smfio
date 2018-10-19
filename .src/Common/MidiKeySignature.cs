@@ -16,18 +16,21 @@ namespace on.smfio
 		public bool IsMajor;
 		public KeySignatureType KeyType = KeySignatureType.C;
 		
-		public void SetSignature(KeySignatureType ksigtype, bool ismaj)
-		{
-			IsMajor = ismaj;
-			KeyType = ksigtype;
-		}
-		public MidiKeySignature() : this(KeySignatureType.C,true)
-		{
-		}
-		public MidiKeySignature(KeySignatureType ksigtype, bool ismaj)
-		{
-			SetSignature(ksigtype,ismaj);
-		}
+    public void SetSignature(KeySignatureType ksigtype, bool ismaj)
+    {
+      IsMajor = ismaj;
+      KeyType = ksigtype;
+    }
+    public void SetSignature(byte key, byte maj)
+    {
+      IsMajor = maj == 0;
+      KeyType = (KeySignatureType)key;
+    }
+    
+		public MidiKeySignature() : this(KeySignatureType.C,true) {}
+    public MidiKeySignature(byte key, byte maj) { SetSignature(key, maj); }
+    public MidiKeySignature(KeySignatureType ksigtype, bool ismaj) { SetSignature(ksigtype,ismaj); }
+    
 		public void Reset() { IsMajor = true; KeyType = KeySignatureType.C; }
 		public MidiKeySignature Copy() { return new MidiKeySignature(KeyType, IsMajor); }
 
