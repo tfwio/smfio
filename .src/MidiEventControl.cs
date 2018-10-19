@@ -167,10 +167,21 @@ namespace SMFIOViewer
 		
 		void GotMidiEventD(MidiMsgType msgType, int nTrackIndex, int nTrackOffset, int midiMsg32, byte midiMsg8, long pulse, int statusRunning, bool isRunningStatus)
 		{
-			if (Reader.TempoMap.Top.Pulse > 0) Reader.TempoMap.Finalize(Reader, true);
-			TempoState tempo = null;
-			if (map.Count == 0 && Reader.TempoMap.Count > 0) map = Reader.TempoMap.Copy();
-			tempo = (!map.Top.Match(pulse) ? map.Seek(pulse) : map.Top) ?? TempoState.Default;
+      if (Reader.TempoMap.Top!=null && Reader.TempoMap.Top.Pulse > 0)
+        Reader.TempoMap.Finalize(Reader, true);
+      
+      if (map.Count == 0 && Reader.TempoMap.Count > 0) map = Reader.TempoMap.Copy();
+      // if (map.Count == 0) map.Finalize(Reader);
+      
+      TempoState tempo = map.Top ?? TempoState.Default;
+      if (map.Count != 0)
+      {
+        tempo = (!map.Top.Match(pulse) ? map.Seek(pulse) : map.Top) ?? TempoState.Default;
+      }
+      else
+        tempo = map.Top ?? TempoState.Default;
+      
+			
       
 			double seconds = TimeUtil.GetSeconds(Division, tempo.MusPQN, (long)pulse-tempo.Pulse, tempo.Second);
 			string sseconds = TimeUtil.GetSSeconds(seconds);
