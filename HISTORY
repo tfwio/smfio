@@ -15,25 +15,19 @@ Goal(s)
 
 major update(s)
 
-- Support incomplete tracks.  
-  commit: da119d8ca5886889459f1ab45e311c989ba652aa  
-  - case (in theory):  
-    - MIDI file reports 5 tracks and there are only 3
-      where the last track terminates before EOT.  
-    - When handling this case, we will set a boolean
-      property `FileIsIncomplete` to the `Reader`.
-    - Also, we override the number of tracks property
-      in the MThd header (in memory).
+- Set `FileIsIncomplete` on Reader if parser made it through a
+  case where file may be missing tracks compared to number-of-tracks
+  told in MThd header.
+- Ser MThd header number of tracks (in memory) by those detected.
 - Removed and Renamed lots of stuff.
   - corrected 'MTHd' class name to 'MThd'.
-  - TOO MANY OVERLOADS  
-    Clean up several abstractions in the form of overloads
-    omitting usage of specifying nTrackIndex where cases
-    fall-back onto ReaderIndex (property).  
-    Also, limited (overloaded) references to `MThd->MTrk->Data`
-    (byte-array) that were simply redundant resulting in
-    several jumps between methods before landing directly
-    on data access.
+- TOO MANY OVERLOADS  
+  Clean up several abstraction/overloads avoiding nTrackIndex
+  parameter and use ReaderIndex (property).  
+  Also, limited (overloaded) references to `MThd->MTrk->Data`
+  (byte-array) that were simply redundant resulting in
+  several jumps between methods before landing directly
+  on data access.
 - 'modest' vstsmfui related stuff has been migrated
   to its own source-file (`partial class Reader`)
   for obsoletion (once 'modest' adheres to changes here).
