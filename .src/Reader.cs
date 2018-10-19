@@ -679,13 +679,14 @@ namespace on.smfio
     {
       get
       {
+        TempoState tempo = TempoMap.Top ?? TempoState.Default;
         return string.Format(
           Resource_TrackLoaded,
           /*  0 */ ReaderIndex,
           /*  1 */ totlen,
           /*  2 */ FileHandle[ReaderIndex].Size,
           /*  3 */ Convert.ToInt32(FileHandle.Division),
-          /*  4 */ Convert.ToSingle(TempoMap.Top.Tempo),
+          /*  4 */ Convert.ToSingle(tempo.Tempo),
           /*  5 */ TimeSignature.Numerator,
           /*  6 */ TimeSignature.Denominator,
           /*  7 */ TimeSignature.Clocks,
