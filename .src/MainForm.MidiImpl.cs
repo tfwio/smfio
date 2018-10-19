@@ -30,7 +30,7 @@ namespace SMFIOViewer
     // don't know what this was for any more!
     // nor do I get why it is causing an exception
     // (hence the try/catch-block in SetProgress(int))
-    int cycles = 0, cycle = 12;
+    int progressCycles = 0, progressCycle = 12;
     
     int trackLen { get { return this.MidiParser.FileHandle[MidiParser.ReaderIndex].Data.Length; } }
     
@@ -38,7 +38,7 @@ namespace SMFIOViewer
     {
       this.toolStripProgressBar1.Value = (int)(((double)offset / trackLen) * 100f);
       try {
-        cycles = (cycles++ % cycle);
+        progressCycles = (progressCycles++ % progressCycle);
       } catch {
       }
     }
@@ -56,7 +56,9 @@ namespace SMFIOViewer
     protected virtual void OnGotMidiFile()
     {
       numPpq.Value = MidiParser.Division;
-      numTempo.Value = Convert.ToDecimal(midiParser.TempoMap.Top.Tempo);
+      var tempo = midiParser.TempoMap.Top ?? TempoState.Default;
+      numTempo.Value = Convert.ToDecimal(tempo.Tempo);
+      
       if (GotMidiFile != null)
         GotMidiFile(this, EventArgs.Empty);
     }
@@ -73,7 +75,8 @@ namespace SMFIOViewer
       LoadTracks = MidiParser.TrackSelectAction;
 
       MidiParser.ReaderIndex = 0;
-      numTempo.Value = Convert.ToDecimal(MidiParser.TempoMap.Top.Tempo);
+      var tempo = midiParser.TempoMap.Top ?? TempoState.Default;
+      numTempo.Value = Convert.ToDecimal(tempo.Tempo);
       numPpq.Value = Convert.ToDecimal(MidiParser.Division);
     }
     
@@ -81,8 +84,8 @@ namespace SMFIOViewer
     
     void Event_MidiChangeTrack(object sender, EventArgs e)
     {
-      cycles = 0;
-      cycle = trackLen > 230 ? 1 : (int)(trackLen * 0.07f);
+      progressCycles = 0;
+      progressCycle = trackLen > 230 ? 1 : (int)(trackLen * 0.07f);
       this.toolStripProgressBar1.Maximum = 100;
       this.toolStripProgressBar1.Enabled = true;
       
@@ -92,6 +95,7 @@ namespace SMFIOViewer
         return;
       
       var toolStripMenuItem = sender as ToolStripMenuItem;
+      
       if (toolStripMenuItem != null)
         MidiParser.ReaderIndex = (int)toolStripMenuItem.Tag;
       
@@ -117,7 +121,10 @@ namespace SMFIOViewer
       listBox1.DisplayMember = "Text";
     }
     
-    public void Action_MidiFileOpen() { if (MidiFileDialog.ShowDialog() == DialogResult.OK) LoadMidiFile(MidiFileDialog.FileName); }
+    public void Action_MidiFileOpen() {
+      if (MidiFileDialog.ShowDialog() == DialogResult.OK)
+        LoadMidiFile(MidiFileDialog.FileName);
+    }
 
     void LoadMidiFile(string midiFile)
     {
@@ -185,7 +192,7 @@ namespace SMFIOViewer
       midiParser.Read();
       
       OnGotMidiFile();
-
+      // Select the first track to automatically display it.
       MidiParser.ReaderIndex = 0; // MidiParser.FileHandle.Format % 2 == 1
 
     }
@@ -193,7 +200,6 @@ namespace SMFIOViewer
     void Event_MidiFileOpen(object sender, EventArgs e)
     {
       Action_MidiFileOpen();
-      //      this.midiPianoView1.ParserUI = this;
     }
     
   }
