@@ -11,6 +11,46 @@ Goal(s)
 - MIDI Format 1 to Format 0 (in memory)
 - Writer (file export/write, various message-wrappers, smfio.view)
 
+0.3.0
+
+major update(s)
+
+- Support incomplete tracks.  
+  commit: da119d8ca5886889459f1ab45e311c989ba652aa  
+  - case (in theory):  
+    - MIDI file reports 5 tracks and there are only 3
+      where the last track terminates before EOT.  
+    - When handling this case, we will set a boolean
+      property `FileIsIncomplete` to the `Reader`.
+    - Also, we override the number of tracks property
+      in the MThd header (in memory).
+- Removed and Renamed lots of stuff.
+  - corrected 'MTHd' class name to 'MThd'.
+  - TOO MANY OVERLOADS  
+    Clean up several abstractions in the form of overloads
+    omitting usage of specifying nTrackIndex where cases
+    fall-back onto ReaderIndex (property).  
+    Also, limited (overloaded) references to `MThd->MTrk->Data`
+    (byte-array) that were simply redundant resulting in
+    several jumps between methods before landing directly
+    on data access.
+- 'modest' vstsmfui related stuff has been migrated
+  to its own source-file (`partial class Reader`)
+  for obsoletion (once 'modest' adheres to changes here).
+- Metadata Types: TimeSig, TempoMap, KeySig & SMPTE now have
+  clone (`.Copy()`) and `.Reset()` semantics (most if not all).
+- added: System.ComponentModel.DescriptionAttribute("...")
+  to StatusWord enumeration values (MIDI event status types)
+  so that we can use (reflection) extension method to obtain
+  human readable ('friendly') string 'titles' for a given status.
+- added: `MidiMessage` and `MidiMessageCollection`.
+  Now our reader can be used indirectly by
+  MidiMessageCollection to obtain all MIDI messages contained
+  in each track –easily.  
+  This can soon be mitigated int a reader.
+  MidiMessageCollection contains Metadata and descriptors
+  found in Reader. E.G. division, tempo-map, key-sig, etc...
+
 0.2.2
 
 - Tempo Map: accept (calculating time) cases where
