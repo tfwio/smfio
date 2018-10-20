@@ -22,8 +22,8 @@ namespace on.smfio.Common
 {
 	static public class StatusQuery
   {
-    /// <summary>Metadata 0xFF00 to 0xFF07; </summary>
-    static public readonly StatRange MetadataRange                = new StatRange("Metadata", new Range(0xFF00, 0xFF07)/*, 0xFF20 (port message?*/, 0xFF2F, 0xFF51, 0xFF54, 0xFF58, 0xFF59, 0xFF7F );
+    /// <summary>Metadata , 0xFF00 to 0xFF07, 0xFF08-0xFF0D (some sequencers hide text this way); 0xFF2F, 0xFF21, 0xFF51, 0xFF54, 0xFF58, 0xFF59, 0xFF7F </summary>
+    static public readonly StatRange MetadataRange                = new StatRange("Metadata", new Range(0xFF00, 0xFF0D), 0xFF2F, 0xFF21, 0xFF51, 0xFF54, 0xFF58, 0xFF59, 0xFF7F );
 
     /// <summary>Channel Voice 0xA0 to 0xEF — Note: 0xCd (program) and 0xDd (channel-pressure) messages only carry one byte as the rest carry two.</summary>
     static public readonly StatRange ChannelVoiceRange            = new StatRange("Channel Voice", new Range(0x80, 0xEF));

@@ -26,26 +26,34 @@ namespace on.smfio.chunk
 		public byte[] SizeBytes;
 		public byte[] Data;
 		
-		public uint ReadU16(int poffset) { return ReadInteger(poffset, 2); }
-		public uint ReadU24(int poffset) { return ReadInteger(poffset, 3); }
-		public uint ReadU32(int poffset) { return ReadInteger(poffset, 4); }
-		uint ReadInteger(int poffset, int plength)
+		public uint ReadU16(int poffset) { return ReadTo32Bit(poffset, 2); }
+		public uint ReadU24(int poffset) { return ReadTo32Bit(poffset, 3); }
+		public uint ReadU32(int poffset) { return ReadTo32Bit(poffset, 4); }
+		
+		uint ReadTo32Bit(int dataOffset, int byteLength)
     {
       byte[] result = new byte[4];
-      Array.ConstrainedCopy(Data, poffset, result, 4-plength, plength);
+      Array.ConstrainedCopy(Data, dataOffset, result, 4-byteLength, byteLength);
       return BitConverter.ToUInt32(ConvertEndian ? EndianUtil.Flip(result) : result, 0);
 		}
 		
-		public int Size { get { return BitConverter.ToInt32(SizeBytes, 0); } }
+		public int Size { get { return BitConverter.ToInt32(SizeBytes, 0); } private set { SizeBytes = value.GetBytesEndian(); } }
 
 		/// <summary>read the track's bytes; Doesn't parse the track though.</summary>
 		/// <param name="bi"></param>
-		public MTrk( BinaryReader bi )
+		public MTrk(BinaryReader bi)
 		{
 			CkID = bi.ReadChars(4);
 			SizeBytes  = EndianUtil.Flip(bi.ReadBytes(4));
 			Data = bi.ReadBytes( BitConverter.ToInt32( SizeBytes, 0 ) );
 		}
+		internal MTrk(IList<MidiMessage> data)
+		{
+			CkID = new char[]{'M','T','r','k'};
+      SizeBytes = 0.GetBytesEndian();
+			Data = new byte[]{};
+      int size = (int)WriteData(data);
+    }
 
 		public string GetString(params int[] values)
 		{
@@ -63,17 +71,25 @@ namespace on.smfio.chunk
       int value = index + (int)result - backstep;
       return value;
     }
+		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="pTrackOffset"></param>
+		/// <param name="pDeltaVar"></param>
+		/// <returns></returns>
     public int DeltaRead(int pTrackOffset, out long pDeltaVar)
     {
-      byte tempBit;
+      byte temp_byte;
       int i = pTrackOffset;
       if ((pDeltaVar = Data[i++]) > 0x7F)
       {
         pDeltaVar &= 0x7F;
         do
         {
-          pDeltaVar = (pDeltaVar << 7) + ((tempBit = Data[i++]) & 0x7F);
-        } while (tempBit > 0x7F && i < Data.Length);
+          temp_byte = Data[i++];
+          pDeltaVar = (pDeltaVar << 7) + (temp_byte & 0x7F);
+        } while (temp_byte > 0x7F && i < Data.Length);
       }
       return i;
     }
@@ -84,20 +100,29 @@ namespace on.smfio.chunk
       return offset;
     }
 
-    public struct MessageBlock
-    {
-      long DeltaTime;
-      uint Status;
-			int Offset;
-      int Size;
+		internal long Write(BinaryWriter writer)
+		{
+			writer.Write(new char[]{'M','T','r','k'}); // 4 bytes
+			writer.Write(Data.Length.GetBytesEndian()); // 4
+			writer.Write(Data);
+			return 8 + Data.Length;
+		}
+		internal long WriteData(IList<MidiMessage> data)
+		{
+			using (var buffer = new MemoryStream())
+			using (var writer = new BinaryWriter(buffer))
+			{
+				MidiMessage lastMessage = null;
+				foreach (var msg in data)
+				{
+          msg.Write(writer, lastMessage);
+					lastMessage = msg;
+				}
+				Data = buffer.ToArray();
+			}
+			SizeBytes = Data.Length.GetBytesEndian();
+			return 0;
+		}
 
-		  // public MessageBlock(MTrk mTrack, int offset)
-		  // {
-		  // 	
-		  // }
-
-      public byte[] GetData(MThd pHandle, int pTrackID) { return pHandle[pTrackID, Offset, Size];}
-			public byte[] GetData(MTrk pTrack) { return pTrack[Offset, Size].ToArray(); }
-    }
 	}
 }

@@ -86,6 +86,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="c3\EndianConvertExtension.cs" />
     <Compile Include="c3\EnumDescriptionAttributeExtension.cs" />
     <Compile Include="c3\IO.EndianUtility.cs" />
     <Compile Include="c3\StringHelper.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="MidiMessage\SequencerSpecificVST.cs" />
     <Compile Include="MidiMessage\SystemExclusiveVST.cs" />
     <Compile Include="MidiMessage.cs" />
+    <Compile Include="MidiMessageCollection.cs" />
     <Compile Include="MidiMsgType.cs" />
     <Compile Include="MThd.cs" />
     <Compile Include="MTrk.cs" />
@@ -128,6 +130,7 @@
     <Compile Include="TempoMap.cs" />
     <Compile Include="strings.cs" />
     <Compile Include="TimeUtil.cs" />
+    <Compile Include="VariableBitExtension.cs" />
     <Compile Include="xg\XgNrpn.cs" />
   </ItemGroup>
   <ItemGroup>

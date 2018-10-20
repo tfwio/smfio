@@ -32,20 +32,20 @@ namespace on.smfio.chunk
     public char[] CkHead { get { return System.Text.Encoding.ASCII.GetChars(ByteHead); } }
     public string Head { get { return System.Text.Encoding.ASCII.GetString(ByteHead); } }
 
-    public int Size { get { return BitConverter.ToInt32(ByteSize,0); } } byte[] ByteSize; //=6
+    public int Size { get { return BitConverter.ToInt32(ByteSize,0); } } internal byte[] ByteSize; //=6
 
     // it could be possible that in stead of short, we use ushort...
     
-    public short Format { get { return BitConverter.ToInt16(ByteFormat,0); } } byte[] ByteFormat; // ( 0 | 1 | 2 )
+    public short Format { get { return BitConverter.ToInt16(ByteFormat,0); } } internal byte[] ByteFormat; // ( 0 | 1 | 2 )
 
     internal void OverrideNumberOfTracks(short newTrackCount)
     {
       var bytes = BitConverter.GetBytes(newTrackCount);
       ByteNTrack = bytes;
     }
-    public short NumberOfTracks { get { return BitConverter.ToInt16(ByteNTrack,0); } internal set { OverrideNumberOfTracks(value); } } byte[] ByteNTrack; // NumberOf Tracks
+    public short NumberOfTracks { get { return BitConverter.ToInt16(ByteNTrack,0); } internal set { OverrideNumberOfTracks(value); } } internal byte[] ByteNTrack; // NumberOf Tracks
 
-    public short Division { get { return BitConverter.ToInt16(ByteDivision,0); } } byte[] ByteDivision; // division
+    public short Division { get { return BitConverter.ToInt16(ByteDivision,0); } } internal byte[] ByteDivision; // division
 
     /// <summary>Internal ‘MTrk’ tracks</summary>
     public MTrk[] Tracks;
@@ -70,7 +70,13 @@ namespace on.smfio.chunk
     {
       ReadMThdAndTracks(fileName);
     }
-
+    public MThd(short nTracks, short div, short fmt, int size = 0)
+    {
+      ByteNTrack   = nTracks .GetBytesEndian();
+      ByteDivision = div     .GetBytesEndian();
+      ByteFormat   = fmt     .GetBytesEndian();
+      ByteSize     = size    .GetBytesEndian();
+    }
     #endregion
 
     /// <summary>Read MTrk structure</summary>
@@ -147,17 +153,30 @@ namespace on.smfio.chunk
       Array.Copy(Tracks[ntrack].Data, start, bytes, 0, length);
       return bytes;
     }
+
+    internal long Write(MidiMessageCollection model, System.IO.BinaryWriter writer)
+    {
+      Tracks = new MTrk[model.NTracks];
+      for (int n = 0; n < model.NTracks; n++) Tracks[n] = new MTrk(model[n]);
+      writer.Write(new char[] { 'M', 'T', 'h', 'd' });
+      writer.Write(6.GetBytesEndian());
+      writer.Write(Format.GetBytesEndian(true));
+      writer.Write(model.NTracks.GetBytesEndian());
+      writer.Write(Division.GetBytesEndian(true));
+      for (int n = 0; n < Tracks.Length; n++) Tracks[n].Write(writer);
+      return writer.BaseStream.Position;
+    }
   }
   
-  static class Extender
-  {
-    public static byte[] Byte32(this BinaryReader reader)
-    {
-      return EndianUtil.Flip(reader.ReadBytes(4));
-    }
-    public static byte[] Byte16(this BinaryReader reader)
-    {
-      return EndianUtil.Flip(reader.ReadBytes(4));
-    }
-  }
+  // static class Extender
+  // {
+  //   public static byte[] Byte32(this BinaryReader reader)
+  //   {
+  //     return EndianUtil.Flip(reader.ReadBytes(4));
+  //   }
+  //   public static byte[] Byte16(this BinaryReader reader)
+  //   {
+  //     return EndianUtil.Flip(reader.ReadBytes(4));
+  //   }
+  // }
 }

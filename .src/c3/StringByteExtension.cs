@@ -13,7 +13,7 @@ namespace System
 		/// <summary>converts a byte array to a string</summary>
 		/// <remarks>The method is particularly used to print HEX
 		/// Strings out in a human readable form.</remarks>
-		static public string StringifyHex(this byte[] inb)
+		static public string StringifyHex(this System.Collections.Generic.IList<byte> inb)
 		{
 			if (inb==null) return string.Empty;
 			string bish = "";

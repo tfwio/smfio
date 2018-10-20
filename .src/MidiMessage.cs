@@ -2,81 +2,6 @@ using System;
 
 namespace on.smfio
 {
-  public class MidiMessageCollection : DictionaryList<int, MidiMessage>
-  {
-    public short MidiFormat { get; set; }
-    
-    public TempoMap TempoMap { get; set; }
-    public SmpteOffset SMPTE { get; set; }
-    public MidiTimeSignature TimeSignature { get; set; }
-    public MidiKeySignature KeySignature { get; set; }
-    
-    public short Division { get; set; }
-    public MidiMessageCollection(): base()
-    {
-    }
-
-    public MidiMessageCollection(MidiMessageCollection collection)
-    : base((System.Collections.Generic.IDictionary<int, System.Collections.Generic.List<MidiMessage>>)collection)
-    {
-      MidiFormat = collection.MidiFormat;
-      Division = collection.Division;
-      // 
-      if (collection.TempoMap!=null) TempoMap = collection.TempoMap.Copy();
-      if (collection.KeySignature!=null) KeySignature = collection.KeySignature.Copy();
-      if (collection.TimeSignature!=null) TimeSignature = collection.TimeSignature.Copy();
-      if (collection.SMPTE!=null) SMPTE = collection.SMPTE.Copy();
-    }
-
-    void CopyReaderTempoMap(Reader reader)
-    {
-      MidiFormat = reader.FileHandle.Format;
-      Division = reader.Division;
-      // 
-      TempoMap = reader.TempoMap.Copy();
-      KeySignature = reader.KeySignature.Copy();
-      TimeSignature = reader.TimeSignature.Copy();
-      SMPTE = reader.SMPTE.Copy();
-    }
-
-    public void RecalculateDeltas()
-    {
-      foreach (var trackList in this)
-      {
-        long lastPulse = 0;
-        foreach (var msg in trackList.Value)
-        {
-          msg.Delta = msg.Pulse - lastPulse;
-          lastPulse = msg.Pulse;
-        }
-      }
-    }
-
-    static public MidiMessageCollection FromFile(string smfFilePath)
-    {
-      MidiMessageCollection collection = null;
-      using (Reader reader= new Reader(){ GenerateMessageList = true })
-      {
-        reader.FileHandle = new chunk.MThd(smfFilePath);
-
-        reader.MidiMessages.Division = reader.Division;
-        reader.MidiMessages.MidiFormat = reader.FileHandle.Format;
-
-        reader.ParseTempoMap(0);
-
-        reader.MessageHandler = reader.OnMidiMessage;
-
-        reader.ParseAll();
-        reader.TempoMap.Finalize(reader);
-
-        collection = new MidiMessageCollection(reader.MidiMessages);
-        collection.CopyReaderTempoMap(reader);
-        collection.RecalculateDeltas();
-        reader.ResetTempoMap();
-      }
-      return collection;
-    }
-  }
   /// <summary>
   /// note that a track index would be accessable by way of the track (List or
   /// Collection) containing the message.
@@ -84,8 +9,8 @@ namespace on.smfio
   public class MidiMessage
   {
     /// <summary>
-    /// True if we're looking at a channel message and False if not.  
-    /// Channel messages have a status &gt;= 0x80 and &lt;= 0xEF.  
+    /// True if we're looking at a channel message and False if not.
+    /// Channel messages have a status &gt;= 0x80 and &lt;= 0xEF.
     /// The last four bits in Status tell us the channel number if
     /// looking at channel message status.
     /// </summary>
@@ -105,7 +30,7 @@ namespace on.smfio
     }
 
     /// <summary>
-    /// Channel will be assigned for particular channel messages.  
+    /// Channel will be assigned for particular channel messages.
     /// If the message contains metadata, of course there would be no
     /// channel assigned here.
     /// </summary>
@@ -125,9 +50,9 @@ namespace on.smfio
 
     /// <summary>
     /// Depending on the file's Division setting (and perhaps tempo),
-    /// Pulse represents the timing of the message.  
+    /// Pulse represents the timing of the message.
     /// During SMF **read** operation(s), we convert the data to an absolute
-    /// value such as described here in `Pulse`.  
+    /// value such as described here in `Pulse`.
     /// During SMF **write** operations, we would (typically) set the <see cref="Delta"/>
     /// to the number of pulses from the last message, and then make a call
     /// to calculate absolute times (with an as of yet undefined) method.
@@ -202,8 +127,104 @@ namespace on.smfio
     public bool IsTimeSignature { get { return Status == 0xFF58; } }
     public bool IsKeySignature { get { return Status == 0xFF59; } }
     public bool IsSequencerpecific { get { return Status == 0xFF7F; } }
-    
-    #endregion
-  }
 
+    #endregion
+
+    internal byte[] DeltaVar { get { return ToVariableBit(Delta); } }
+
+    bool IsStatus8Bits { get { return (Status & 0xFF) == Status; } }
+
+    byte[] StatusBytes
+    {
+      get
+      {
+        byte[] result = null;
+        if (IsStatus8Bits)
+        {
+          result = new byte[]{(byte)Status};
+        }
+        else
+        {
+          result = BitConverter.GetBytes(BitConverter.IsLittleEndian ? Status.Swap() : Status);
+        }
+        var shortvalue = result.Length == 1 ? (short)result[0]: BitConverter.ToInt16(result, 0);
+        var str_result = $"{shortvalue:X2}";
+        return result;
+      }
+    }
+    internal long Write(System.IO.BinaryWriter writer, MidiMessage prior=null)
+    {
+      bool isRunningStatus =
+        prior!=null &&
+        prior.IsChannelMessage &&
+        prior.Status == Status;
+      
+      // write delta time
+      writer.Write(DeltaVar);
+
+      // metadata message
+      if (Common.StatusQuery.MetadataRange.Match(Status))
+      {
+        // if (Status == 0xFF2F)
+        //   System.Diagnostics.Debug.Print("hi there.");
+        writer.Write(StatusBytes);
+        writer.Write(ToVariableBit(Data.Length));
+        writer.Write(Data);
+      }
+      
+      else if (Common.StatusQuery.IsSystemExclusive(Status))
+      {
+        // writer.Write(StatusBytes);
+        writer.Write(Data);
+      }
+      
+      // common message
+      else if (isRunningStatus) writer.Write(Data);
+      
+      // common message
+      else
+      {
+        writer.Write(StatusBytes);
+        writer.Write(Data);
+      }
+
+      return writer.BaseStream.Position;
+    }
+    byte[] ToVariableBit(long pValue)
+    {
+      var bytes = new System.Collections.Generic.List<byte>();
+      ulong value = (ulong)pValue;
+      ulong buffer = value & 0x7F;
+      
+      byte[] byte_buffer = new byte[8];
+      byte[] byte_buffe1 = new byte[8];
+      var debug_str = string.Empty;
+      
+      while ((value >>= 7) > 0)
+      {
+        buffer <<= 8;
+        buffer |= 0x80;
+        buffer += (value & 0x7F);
+      }
+      byte_buffe1 = BitConverter.GetBytes(buffer);
+      while (true)
+      {
+        byte_buffer = BitConverter.GetBytes(buffer);
+        debug_str = byte_buffer.StringifyHex();
+        if (buffer > 2000)
+        {
+        }
+        bytes.Add(byte_buffer[0]);
+        if ((buffer & 0x80) == 0x80) buffer >>= 8;
+        else
+        break;
+      }
+      var list = new System.Collections.Generic.List<byte>(bytes);
+      while (list.Count < 4) list.Add(0);
+      var list2 = byte_buffe1.StringifyHex();
+      debug_str = $"{bytes.StringifyHex()}";
+      return bytes.ToArray();
+    }
+
+  }
 }

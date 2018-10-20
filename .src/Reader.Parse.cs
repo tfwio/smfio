@@ -89,9 +89,9 @@ namespace on.smfio
         case Stat16.SMPTEOffset:
         case Stat16.TimeSignature:
         case Stat16.KeySignature:
-        case Stat16.SequencerSpecific:
-          return GetMetadataBytes(nTrackIndex, nTrackOffset);
+        case Stat16.SequencerSpecific: return GetMetadataBytes(nTrackIndex, nTrackOffset);
         case Stat16.EndOfTrack:  return new byte[0];
+        //case Stat16.EndOfTrack:  return new byte[]{0};
       }
       switch (status & 0xF0)
       {
@@ -109,7 +109,7 @@ namespace on.smfio
         case Stat16.SystemExclusive:
           int nlength = FileHandle[nTrackIndex].GetEndOfSystemExclusive(nTrackOffset) - nTrackOffset;
           int noffset = nTrackOffset;
-          return FileHandle[nTrackIndex, nTrackOffset, nlength];
+          return FileHandle[nTrackIndex, nTrackOffset, ++nlength];
        }
       return new byte[0];
     }
@@ -198,13 +198,13 @@ namespace on.smfio
       else if (StatusQuery.IsSystemExclusive(CurrentRunningStatus8))
       {
         returned.Clear();
-        returned.AddRange(FileHandle[selectedTrackNumber, nTrackOffset, 1]);
+        returned.AddRange(FileHandle[nTrackIndex, nTrackOffset, 1]);
         returned.AddRange(FileHandle[nTrackIndex, nTrackOffset, FileHandle[nTrackIndex, nTrackOffset] + 1]);
       }
       else if (StatusQuery.IsSystemCommon(CurrentRunningStatus8))
       {
         returned.Clear();
-        returned.AddRange(FileHandle[selectedTrackNumber, nTrackOffset, 2]);
+        returned.AddRange(FileHandle[nTrackIndex, nTrackOffset, 2]);
         returned.AddRange(FileHandle[nTrackIndex, nTrackOffset, FileHandle[nTrackIndex, nTrackOffset] + 1]);
       }
       else if (StatusQuery.IsSystemRealtime(CurrentRunningStatus8))
