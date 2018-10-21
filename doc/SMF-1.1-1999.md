@@ -1,20 +1,26 @@
 ---
 title: Standard MIDI-File Format Spec. 1.1, updated
-date: ~1999
+date: ~November 1999
 author: The International MIDI Association
 margin-left: 0.5in
 margin-right: 0.5in
 margin-top: 0.5in
 margin-bottom: 0.5in
-mainfont: Kerkis
+mainfont: Arial
+mainfont: FreeSans
 papersize: a5
 colorlinks: #007FFF
-abstract: A detailed Specification of the Standard MIDI file format
+abstract:
+          Detailed Specification of the Standard MIDI file format
+          including material cultivated from information made available
+          to the public domain.
 website: http://www.csw2.co.uk/tech/midi2.htm
 ...
 
+<!-- mainfont: Kerkis -->
 [^usec]:  "Microseconds" 1,000,000 = 1 microsecond; e.g. µsec, usec, musec
 [^SMPTE]: "Society of Motion Picture and Television Engineers" --- https://www.smpte.org
+[^TMA]: "The MIDI Association" --- https://www.midi.org
 
 [midispec.html]: http://academic.pgcc.edu/~njudy/mt/MIDI/midispec.html
 [midi.org spec]: https://www.midi.org/specifications-old/item/the-midi-1-0-specification
@@ -29,9 +35,38 @@ pandoc -s --toc -t latex+abbreviations+smart+abbreviations+auto_identifiers+auto
 -->
 <!-- mainfont: Roboto Slab -->
 \pagebreak
-**Acknowledgement:**
+
+MMA Trademark Policies
+---------------------------------
+
+The term "MIDI", the treatment of "MIDI" as used in the MIDI Association[^TMA] and MMA logos, and various other logos are all trademarks of the MMA and must only be used as directed below.
+
+### MIDI Trademark and Logo
+
+"MIDI" refers to a series of copyrighted specifications ("MMA Specifications") maintained and published by MMA (and AMEI in Japan). Products, services, and technologies ("Products") based on the MMA Specifications are known, as "MIDI Products", "MIDI Files", etc. MMA has common law and other exclusive rights for the use of the term "MIDI" in conjunction with MMA Specifications and associated Products.
+
+1. The term "MIDI" (whether alone or in conjunction with other terms or modifiers) may be used by other parties (a) in reference to Products that are compliant with MMA Specifications, and/or (b) in the name of a company that provides such Products, except as excluded by paragraph 2 (below). Permitted uses do not need to be approved in advance by MMA. Conversely, any use in reference to non-compliant Products and/or by a company that does not produce Products compliant with MMA Specifications is NOT ALLOWED.
+
+2. The use of the term "MIDI" in combination with other terms or words to identify Products that while compliant with MMA Specifications also have additional functions that are not set forth in an MMA Specification is likely to lead people to expect that MMA has standardized said functions which is deceptive trade practice, false advertising, and unfair competition, and such uses are not allowed by MMA. Only MMA may use the term "MIDI" in conjunction with the naming of a technology or specification.
+
+3. The treatment (font and design) of the term "MIDI" which appears in the MMA and TMA Logo (see web page header, above) and in logos licensed by MMA may not be used by any party without a license from MMA. At this time the only licenses that are available are listed below.
+
+
+### Logo Licenses
+
+The following Logos are available to MMA Members for use with compliant products.
+
+General MIDI Logos
+
+- SMF Logos
+- DLS Logos
+- XMF Logos
+
+Acknowledgement
+---------------------------------
 
 ```text
+--------------------------------------------------------------
 This document was originally distributed in text format by
 The International MIDI Association.
 
@@ -39,23 +74,32 @@ I have updated it and added new Appendices.
 
 © Copyright 1999 David Back.
 
+
 EMail: david@csw2.co.uk
-Web: http://www.csw2.co.uk
+Web:   http://www.csw2.co.uk
 
 THIS DOCUMENT MAY BE FREELY COPIED IN WHOLE OR IN PART
 PROVIDED THE COPY CONTAINS THIS ACKNOWLEDGEMENT.
+--------------------------------------------------------------
 
-formatted as multimarkdown for pandoc in 2018 by tfw.
-see: http://www.csw2.co.uk/tech/midi2.htm
+SEP-OCT 2018
+
+- Further information has been appended to a 'formatted'
+printable revision of the above 
+
+- Figs, tables and other content has been cultivated and
+  reflected here from publicly available source materials.
 ```
+
+
 \pagebreak
 
 Introduction
 =============
 
-![](graphics/logo.pdf)
+<!-- ![](graphics/logo.pdf) -->
 
-> source/origin: [http://www.csw2.co.uk/tech/midi2.htm][midi2.htm]
+<!-- > source/origin: [http://www.csw2.co.uk/tech/midi2.htm][midi2.htm]
 > 
 > While these documents are fun and easy to read, it would be advisable to direct you to
 > [www.midi.org/specifications-old/item/the-midi-1-0-specification][midi.org spec] for official reference, addendas, etc.
@@ -67,8 +111,8 @@ This document is part of a personal collection of three documents:
 1. MIDI Specification, Updated ~1996 ([SMF-1.1-1999.pdf])
 2. MIDI Time Code ([mtc.pdf])
 3. MIDI Specification ([midispec.pdf]) [midispec.html]
-
 ----
+ -->
 
 This document details the structure of MIDI Files. The purpose of MIDI Files
 is to provide a way of interchanging time-stamped MIDI data between different
@@ -110,20 +154,18 @@ exactly as one byte.
 
 **Some examples of numbers represented as variable-length quantities:**
 
-```text
-00000000 -------> 00
-00000040 -------> 40
-0000007F -------> 7F
-00000080 -------> 81 00
-00002000 -------> C0 00
-00003FFF -------> FF 7F
-00004000 -------> 81 80 00
-00100000 -------> C0 80 00
-001FFFFF -------> FF FF 7F
-00200000 -------> 81 80 80 00
-08000000 -------> C0 80 80 00
-0FFFFFFF -------> FF FF FF 7F
-```
+`00000000` → `00`  
+`00000040` → `40`  
+`0000007F` → `7F`  
+`00000080` → `81` `00`  
+`00002000` → `C0` `00`  
+`00003FFF` → `FF` `7F`  
+`00004000` → `81` `80` `00`  
+`00100000` → `C0` `80` `00`  
+`001FFFFF` → `FF` `FF` `7F`  
+`00200000` → `81` `80` `80` `00`  
+`08000000` → `C0` `80` `80` `00`  
+`0FFFFFFF` → `FF` `FF` `FF` `7F`
 
 The largest number which is allowed is `0FFFFFFF` so that the variable-length
 representations must fit in 32 bits in a routine to write variable-length
@@ -857,10 +899,10 @@ status         `D7-D0`      status
 
 --------------------------------------------------------------------------------------------
 bin        hex   dec    Function                                        Value      Use
----------- ----- ------ ----------------------------------------------- ---------- -----------
-`00000000` `00`     `0` Bank Select                                     `0-127`    MSB
+---------- ----- ------ ----------------------------------------------- ---------- ---------
+`00000000` `00`     `0` Bank Select (MSB:0, LSB:32) **GM2**             `0-127`    MSB
 
-`00000001` `01`     `1` \* Modulation wheel                             `0-127`    MSB
+`00000001` `01`     `1` \* Modulation wheel (Depth) **GM2**             `0-127`    MSB
 
 `00000010` `02`     `2` Breath control                                  `0-127`    MSB
 
@@ -868,19 +910,19 @@ bin        hex   dec    Function                                        Value   
 
 `00000100` `04`     `4` Foot controller                                 `0-127`    MSB
 
-`00000101` `05`     `5` Portamento time                                 `0-127`    MSB
+`00000101` `05`     `5` Portamento time      **GM2**                    `0-127`    MSB
 
-`00000110` `06`     `6` Data Entry                                      `0-127`    MSB
+`00000110` `06`     `6` Data Entry      **GM2**                         `0-127`    MSB
 
-`00000111` `07`     `7` \* Channel Volume (formerly Main Volume)        `0-127`    MSB
+`00000111` `07`     `7` \* Channel Volume (GM1 Main Volume)  **GM2**    `0-127`    MSB
 
 `00001000` `08`     `8` Balance                                         `0-127`    MSB
 
 `00001001` `09`     `9` Undefined                                       `0-127`    MSB
 
-`00001010` `0A`    `10` \* Pan                                          `0-127`    MSB
+`00001010` `0A`    `10` \* Pan                       **GM2**            `0-127`    MSB
 
-`00001011` `0B`    `11` \* Expression Controller                        `0-127`    MSB
+`00001011` `0B`    `11` \* Expression Controller     **GM2**            `0-127`    MSB
 
 `00001100` `0C`    `12` Effect control 1                                `0-127`    MSB
 
@@ -934,7 +976,7 @@ bin        hex   dec    Function                                        Value   
 
 `00100101` `25`    `37` Portamento time                                 `0-127`    LSB
 
-`00100110` `26`    `38` Data entry                                      `0-127`    LSB
+`00100110` `26`    `38` Data entry **GM2**                              `0-127`    LSB
 
 `00100111` `27`    `39` Channel Volume (formerly Main Volume)           `0-127`    LSB
 
@@ -986,13 +1028,13 @@ bin        hex   dec    Function                                        Value   
 
 `00111111` `3F`    `63` Undefined                                       `0-127`    LSB
 
-`01000000` `40`    `64` \* Damper pedal on/off (Sustain)                \<`63`=off \>64=on
+`01000000` `40`    `64` \* Damper pedal on/off (Sustain) **GM2**        \<`63`=off \>64=on
 
-`01000001` `41`    `65` Portamento on/off                               \<`63`=off \>64=on
+`01000001` `41`    `65` Portamento on/off   **GM2**                     \<`63`=off \>64=on
 
-`01000010` `42`    `66` Sustenuto on/off                                \<`63`=off \>64=on
+`01000010` `42`    `66` Sustenuto on/off    **GM2**                     \<`63`=off \>64=on
 
-`01000011` `43`    `67` Soft pedal on/off                               \<`63`=off \>64=on
+`01000011` `43`    `67` Soft pedal on/off   **GM2**                     \<`63`=off \>64=on
 
 `01000100` `44`    `68` Legato Footswitch                               \<`63`=off \>64=on
 
@@ -1000,21 +1042,21 @@ bin        hex   dec    Function                                        Value   
 
 `01000110` `46`    `70` Sound Controller 1 (Sound Variation)            `0-127`    LSB
 
-`01000111` `47`    `71` Sound Controller 2 (Timbre)                     `0-127`    LSB
+`01000111` `47`    `71` Sound Controller 2 (Timbre **GM2** Resonance)    `0-127`    LSB
 
-`01001000` `48`    `72` Sound Controller 3 (Release Time)               `0-127`    LSB
+`01001000` `48`    `72` Sound Controller 3 (**GM2** Release Time)       `0-127`    LSB
 
-`01001001` `49`    `73` Sound Controller 4 (Attack Time)                `0-127`    LSB
+`01001001` `49`    `73` Sound Controller 4 (**GM2** Attack Time)        `0-127`    LSB
 
-`01001010` `4A`    `74` Sound Controller 5 (Brightness)                 `0-127`    LSB
+`01001010` `4A`    `74` Sound Controller 5 (**GM2** Brightness)         `0-127`    LSB
 
-`01001011` `4B`    `75` Sound Controller 6                              `0-127`    LSB
+`01001011` `4B`    `75` Sound Controller 6 (**GM2** Decay)              `0-127`    LSB
 
-`01001100` `4C`    `76` Sound Controller 7                              `0-127`    LSB
+`01001100` `4C`    `76` Sound Controller 7 (**GM2** Vibrato Rate)       `0-127`    LSB
 
-`01001101` `4D`    `77` Sound Controller 8                              `0-127`    LSB
+`01001101` `4D`    `77` Sound Controller 8 (**GM2** Vibrato Depth)      `0-127`    LSB
 
-`01001110` `4E`    `78` Sound Controller 9                              `0-127`    LSB
+`01001110` `4E`    `78` Sound Controller 9 (**GM2** Vibrato Delay)      `0-127`    LSB
 
 `01001111` `4F`    `79` Sound Controller 10                             `0-127`    LSB
 
@@ -1040,11 +1082,11 @@ bin        hex   dec    Function                                        Value   
 
 `01011010` `5A`    `90` Undefined                                       `0-127`    LSB
 
-`01011011` `5B`    `91` Effects 1 Depth                                 `0-127`    LSB
+`01011011` `5B`    `91` Effects 1 Depth (**GM2** Reverb Send Level)     `0-127`    LSB
 
 `01011100` `5C`    `92` Effects 2 Depth                                 `0-127`    LSB
 
-`01011101` `5D`    `93` Effects 3 Depth                                 `0-127`    LSB
+`01011101` `5D`    `93` Effects 3 Depth (**GM2** Chorus Send Level)     `0-127`    LSB
 
 `01011110` `5E`    `94` Effects 4 Depth                                 `0-127`    LSB
 
@@ -1058,7 +1100,7 @@ bin        hex   dec    Function                                        Value   
 
 `01100011` `63`    `99` Non-Registered Parameter Number MSB             `0-127`    MSB
 
-`01100100` `64`   `100` \* Registered Parameter Number LSB              `0-127`    LSB
+`01100100` `64`   `100` \* Registered Parameter Number LSB **GM2**      `0-127`    LSB
 
 `01100101` `65`   `101` \* Registered Parameter Number MSB              `0-127`    MSB
 
@@ -1118,6 +1160,7 @@ bin        hex   dec    Function                                        Value   
 \* Equipment must respond in order to comply with General MIDI level 1.\
 \*\* This equals the number of channels, or zero if the number of channels
 equals the number of voices in the
+
 
 \pagebreak
 
@@ -1272,31 +1315,36 @@ PC#      Family                     PC#        Family
 ### General MIDI Percussion Key Map
 
 ```text
-35 B1 Acoustic Bass Drum   59 B3 Ride Cymbal 2
-36 C2 Bass Drum 1          60 C4 Hi Bongo
-37 C#2 Side Stick          61 C#4 Low Bongo
-38 D2 Acoustic Snare       62 D4 Mute Hi Conga
-39 D#2 Hand Clap           63 D#4 Open Hi Conga
-40 E2 Electric Snare       64 E4 Low Conga
-41 F2 Low Floor Tom        65 F4 High Timbale
-42 F#2 Closed Hi Hat       66 F#4 Low Timbale
-43 G2 High Floor Tom       67 G4 High Agogo
-44 G#2 Pedal Hi-Hat        68 G#4 Low Agogo
-45 A2 Low Tom              69 A4 Cabasa
-46 A#2 Open Hi-Hat         70 A#4 Maracas
-47 B2 Low-Mid Tom          71 B4 Short Whistle
-48 C3 Hi Mid Tom           72 C5 Long Whistle
-49 C#3 Crash Cymbal 1      73 C#5 Short Guiro
-50 D3 High Tom             74 D5 Long Guiro
-51 D#3 Ride Cymbal 1       75 D#5 Claves
-52 E3 Chinese Cymbal       76 E5 Hi Wood Block
-53 F3 Ride Bell            77 F5 Low Wood Block
-54 F#3 Tambourine          78 F#5 Mute Cuica
-55 G3 Splash Cymbal        79 G5 Open Cuica
-56 G#3 Cowbell             80 G#5 Mute Triangle
-57 A3 Crash Cymbal 2       81 A5 Open Triangle
-58 A#3 Vibraslap           
+35 B1  Acoustic Bass Drum   59 B3  Ride Cymbal 2
+36 C2  Bass Drum 1          60 C4  Hi Bongo
+37 C#2 Side Stick           61 C#4 Low Bongo
+38 D2  Acoustic Snare       62 D4  Mute Hi Conga
+39 D#2 Hand Clap            63 D#4 Open Hi Conga
+40 E2  Electric Snare       64 E4  Low Conga
+41 F2  Low Floor Tom        65 F4  High Timbale
+42 F#2 Closed Hi Hat        66 F#4 Low Timbale
+43 G2  High Floor Tom       67 G4  High Agogo
+44 G#2 Pedal Hi-Hat         68 G#4 Low Agogo
+45 A2  Low Tom              69 A4  Cabasa
+46 A#2 Open Hi-Hat          70 A#4 Maracas
+47 B2  Low-Mid Tom          71 B4  Short Whistle
+48 C3  Hi Mid Tom           72 C5  Long Whistle
+49 C#3 Crash Cymbal 1       73 C#5 Short Guiro
+50 D3  High Tom             74 D5  Long Guiro
+51 D#3 Ride Cymbal 1        75 D#5 Claves
+52 E3  Chinese Cymbal       76 E5  Hi Wood Block
+53 F3  Ride Bell            77 F5  Low Wood Block
+54 F#3 Tambourine           78 F#5 Mute Cuica
+55 G3  Splash Cymbal        79 G5  Open Cuica
+56 G#3 Cowbell              80 G#5 Mute Triangle
+57 A3  Crash Cymbal 2       81 A5  Open Triangle
+58 A#3 Vibraslap
 ```
+
+> GS/GM2 Note (as in the chart above)  
+> These are the same patch numbers as defined in the original version of GS.
+> Drum bank is accessed by setting cc#0 (Bank Select MSB) to 120 and cc#32
+> (Bank Select LSB) to 0 and PC (Program Change) to select drum kit.
 
 \pagebreak
 
@@ -1523,3 +1571,421 @@ Delta-Time              Event      Comments
 
 `00 FF 2F 00`                      end of track
 ------------------------------------------------------------------------------
+
+\pagebreak
+
+Additional Standards
+----------------------
+
+Generally GS MIDI Standards foreshadowed what seems to have become  
+**General MIDI Layer 2** (GM2).
+
+**Yamaha XG** is worth checking out in addition to the XGLite standard.
+
+**MIDI Standard Comparison**  
+https://en.wikipedia.org/wiki/Comparison_of_MIDI_standards
+
+**DLS** (Y---I'm sure you can find much more adequate links)  
+https://www.loc.gov/preservation/digital/formats/fdd/fdd000118.shtml
+
+\pagebreak
+General MIDI Level 2 (1999)
+-----------------------------
+
+**General MIDI Level 2**  
+https://en.wikipedia.org/wiki/General_MIDI_Level_2
+
+
+### GM2 Supported NRPN Parameter Numbers (RPN)
+
+- Pitch Bend Sensitivity
+- Channel Fine Tune
+- Channel Coarse Tune
+- Modulation Depth Range (Vibrato Depth Range)
+- RPN NULL
+
+### Supported Universal System Exclusive (SysEx) messages
+
+- Master Volume
+- Master Fine Tuning
+- Master Coarse Tuning
+- Reverb Type
+- Reverb Time
+- Chorus Type
+- Chorus Mod Rate
+- Chorus Mod Depth
+- Chorus Feedback
+- Chorus Send to Reverb
+- Controller Destination Setting
+- Scale/Octave Tuning Adjust
+- Key-Based Instrument Controllers
+- GM2 System On
+
+
+\pagebreak
+
+### Additional Percussion Kit Key-Mappings
+
+```text
+027 F1  High Q                     082 A#5 Shaker
+028 F#1 Slap                       083 B5  Jingle Bell
+029 G2  Scratch Push               084 C5  Belltree
+032 G#1 Scratch Pull               085 C#5 Castanets
+033 A1  Sticks                     086 D5  Open Surdo
+034 A#1 Metronome Bell
+```
+
+### BANK 1
+
+Key: `[BANK-MSB]:[BANK-LSB] [Patch-Name]`
+
+```text
+001:001 Wide Acoustic Grand        001:054 Humming                                 
+001:002 Wide Bright Acoustic       001:055 Analog Voice    
+001:003 Wide Electric Grand        001:056 Bass Hit    
+001:004 Wide Honky-tonk            001:057 Dark Trumpet    
+001:005 Detuned Electric Piano 1   001:058 Trombone 2    
+001:006 Detuned Electric Piano 2   001:060 Muted Trumpet 2    
+001:007 Coupled Harpsichord        001:061 French Horn 2    
+001:008 Pulse Clavinet             001:062 Brass Section 2    
+001:012 Wet Vibraphone             001:063 Synth Brass 3    
+001:013 Wide Marimba               001:064 Synth Brass 4    
+001:015 Church Bell                001:081 Square Wave    
+001:017 Detuned Organ 1            001:085 Wire Lead    
+001:018 Detuned Organ 2            001:088 Delayed Lead    
+001:020 Church Organ 2             001:090 Sine Pad    
+001:021 Puff Organ                 001:092 Itopia    
+001:022 Italian Accordion          001:099 Synth Mallet    
+001:025 Ukulele                    001:103 Echo Bell    
+001:026 12-String Guitar           001:105 Sitar 2    
+001:027 Hawaiian Guitar            001:108 Taisho Koto    
+001:028 Chorus Guitar              001:116 Castanets    
+001:029 Funk Guitar                001:117 Concert Bass Drum    
+001:030 Guitar Pinch               001:118 Melodic Tom 2    
+001:031 Feedback Guitar            001:119 808 Tom    
+001:032 Guitar Harmonics           001:121 Guitar Cut Noise    
+001:034 Finger Slap                001:122 Flute Key Click    
+001:039 Synth Bass 101             001:123 Rain    
+001:040 Synth Bass 4               001:124 Dog    
+001:041 Slow Violin                001:125 Telephone 2    
+001:047 Yang Qin                   001:126 Car-Engine    
+001:049 Orchestra Strings          001:127 Laughing    
+001:051 Synth Strings 3            001:128 Machine Gun    
+001:053 Choir Aahs 2                    
+```
+
+### BANK 2
+
+```text
+002:001 Dark Acoustic Grand         002:056 6th Hit
+002:005 Electric Piano 1 Variation  002:058 Bright Trombone
+002:006 Electric Piano 2 Variation  002:063 Analog Brass 1
+002:007 Wide Harpsichord            002:064 Analog Brass 2
+002:015 Carillon                    002:081 Sine Wave
+002:017 60's Organ 1                002:082 Doctor Solo
+002:018 Organ 5                     002:103 Echo Pan
+002:020 Rock Organ                  002:119 Electric Percussion
+002:025 Open Nylon Guitar           002:121 Horse-Gallop
+002:026 Mandolin                    002:123 Thunder
+002:028 Mid Tone Guitar             002:124 Horse-Gallop
+002:029 Funk Guitar 2               002:125 Door Creaking
+002:031 Distortion Rtm Guitar       002:126 Car-Stop
+002:039 Synth Bass 3                002:127 Screaming
+002:040 Rubber Bass                 002:128 Lasergun
+002:049 60's Strings                                            
+```
+
+### BANK 3
+
+```text
+003:005 60's Electric Piano        003:056 Euro Hit
+003:006 Electric Piano Legend      003:063 Jump Brass
+003:007 Open Harpsichord           003:082 Natural Lead
+003:017 Organ 4                    003:123 Wind
+003:025 Nylon Guitar 2             003:124 Bird 2
+003:026 Steel + Body               003:125 Door Closing
+003:029 Jazz Man                   003:126 Car-Crash
+003:039 Clavi Bass                 003:127 Punch
+003:040 Attack Pulse               003:128 Explosion
+```
+
+### BANKS 4-8
+
+```text
+004:006 Electric Piano Phase       005:123 Bubble
+004:039 Hammer                     005:125 Wind Chimes
+004:082 Sequenced Saw              005:126 Siren
+004:123 Stream                     005:127 Footsteps
+004:125 Scratch
+004:126 Car-Crash
+004:127 Heart Beat
+
+006:126 Train                      007:126 Jetplane
+
+008:126 Starship
+```
+
+\pagebreak
+Universal System Exclusive Messages
+--------------------------------------
+
+https://www.midi.org/specifications/item/table-4-universal-system-exclusive-messages
+
+The following table lists all currently defined Universal System Exclusive Messages.
+Universal System Exclusive Messages are defined as Real Time or Non-Real Time, and are used for extensions to MIDI that are NOT intended to be manufacturer exclusive (despite the name).
+
+Many of these messages are defined in Specifications whose printed documentation is available from the MMA. Others are defined in Recommended Practice documentation that may be found on this web site.
+
+> WARNING! Details about implementing these messages can dramatically impact compatibility with other products. We strongly recommend consulting the appropriate MMA Specification or Recommended Practice for additional information.
+
+
+### Table: Non-Real Time (7EH)
+
+------------------------------------------------------------------------------
+id1      id2      description
+-------- -------- ------------------------------------------------------------
+`00`              **Unused**
+
+`01`              **Sample Dump Header**
+
+`02`              **Sample Data Packet**
+
+`03`              **Sample Dump Request**
+
+`04`     *nn*     **MIDI Time Code**
+
+         00       Special
+
+         01       Punch In Points
+
+         02       Punch Out Points
+
+         03       Delete Punch In Points
+
+         04       Delete Punch Out Points
+
+         05       Event Start Point
+
+         06       Event Stop Point
+
+         07       Event Start Points with additional info.
+
+         08       Event Stop Points with additional info.
+
+         09       Delete Event Start Point
+
+         0A       Delete Event Stop Point
+
+         0B       Cue Points
+
+         0C       Cue Points with additional info.
+
+         0D       Delete Cue Point
+
+         0E       Event Name in additional info.
+
+`05`     *nn*     **Sample Dump Extensions**
+
+         01       Loop Points Transmission
+
+         02       Loop Points Request
+
+         03       Sample Name Transmission
+
+         04       Sample Name Request
+
+         05       Extended Dump Header
+
+         06       Extended Loop Points Transmission
+
+         07       Extended Loop Points Request
+                                                                            
+`06`     *nn*     **General Information**
+
+         01       Identity Request
+
+         02       Identity Reply
+
+`07`     *nn*     **File Dump**
+
+         01       Header
+
+         02       Data Packet
+
+         03       Request
+
+`08`     *nn*     **MIDI Tuning Standard (Non-Real Time)**
+
+         00       Bulk Dump Request
+
+         01       Bulk Dump Reply
+
+         03       Tuning Dump Request
+
+         04       Key-Based Tuning Dump
+
+         05       Scale/Octave Tuning Dump, 1 byte format
+
+         06       Scale/Octave Tuning Dump, 2 byte format
+
+         07       Single Note Tuning Change with Bank Select
+
+         08       Scale/Octave Tuning, 1 byte format
+
+         09       Scale/Octave Tuning, 2 byte format
+
+`09`     *nn*     **General MIDI**
+
+         01       General MIDI 1 System On
+
+         02       General MIDI System Off
+
+         03       General MIDI 2 System On
+
+`0A`     *nn*     **Downloadable Sounds**
+
+         01       Turn DLS On
+
+         02       Turn DLS Off
+
+         03       Turn DLS Voice Allocation Off
+
+         04       Turn DLS Voice Allocation On
+
+`0B`     *nn*     **File Reference Message**
+
+         00       reserved (do not use)
+
+         01       Open File
+
+         02       Select or Reselect Contents
+
+         03       Open File and Select Contents
+
+         04       Close File
+
+         05-7F      reserved (do not use)
+
+`0C`     *nn*     **MIDI Visual Control**
+
+         00-7F    MVC Commands (See MVC Documentation)
+
+`0D`     *nn*     MIDI Capability Inquiry
+
+         00-7F    Inquiry/Response Messages (See Documentation)
+
+`7B`     *nn*     End of File
+
+`7C`     *nn*     Wait
+
+`7D`     *nn*     Cancel
+
+`7E`     *nn*     NAK
+
+`7F`     *nn*     ACK
+------------------------------------------------------------------------------
+
+### Table: Real Time (7FH) - Universal System Exclusive Messages
+
+------------------------------------------------------------------------------
+id1      id2      description
+-------- -------- ------------------------------------------------------------
+`00`     --       Unused
+
+`01`     `nn`     MIDI Time Code
+
+         `01`     Full Message
+
+         `02`     User Bits
+
+`02`     `nn`     MIDI Show Control
+
+         `00`     MSC Extensions
+
+         `01-7F`  MSC Commands (see MSC Documentation)
+
+`03`     `nn`     Notation Information
+
+         `01`     Bar Number
+
+         `02`     Time Signature (Immediate)
+
+         `42`     Time Signature (Delayed)
+
+`04`     `nn`     Device Control
+
+         `01`     Master Volume
+
+         `02`     Master Balance
+
+         `03`     Master Fine Tuning
+
+         `04`     Master Coarse Tuning
+
+         `05`     Global Parameter Control
+
+`05`     `nn`     Real Time MTC Cueing
+
+         `00`     Special
+
+         `01`     Punch In Points
+
+         `02`     Punch Out Points
+
+         `03`     (Reserved)
+
+         `04`     (Reserved)
+
+         `05`     Event Start points
+
+         `06`     Event Stop points
+
+         `07`     Event Start points with additional info.
+
+         `08`     Event Stop points with additional info.
+
+         `09`     (Reserved)
+
+         `0A`     (Reserved)
+
+         `0B`     Cue points
+
+         `0C`     Cue points with additional info.
+
+         `0D`     (Reserved)
+
+         `0E`     Event Name in additional info.
+
+`06`     `nn`     MIDI Machine Control Commands
+
+         00-7F    MMC Commands (See MMC Documentation)
+
+`07`     `nn`     MIDI Machine Control Responses
+
+         `00-7F`  MMC Responses (See MMC Documentation)
+
+`08`     `nn`     MIDI Tuning Standard (Real Time)
+
+         `02`     Single Note Tuning Change
+
+         `07`     Single Note Tuning Change with Bank Select
+
+         `08`     Scale/Octave Tuning, 1 byte format
+
+         `09`     Scale/Octave Tuning, 2 byte format
+
+`09`     `nn`     Controller Destination Setting (See GM2 Documentation)
+
+         `01`     Channel Pressure (Aftertouch)
+
+         `02`     Polyphonic Key Pressure (Aftertouch)
+
+         `03`     Controller (Control Change)
+
+`0A`     `01`     Key-based Instrument Control
+
+`0B`     `01`     Scalable Polyphony MIDI MIP Message
+
+`0C`     `00`     Mobile Phone Control Message
+------------------------------------------------------------------------------
+
