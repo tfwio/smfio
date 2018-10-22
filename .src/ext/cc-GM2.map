@@ -1,0 +1,128 @@
+Bank Select
+Modulation Wheel/Lever
+Breath Controller
+
+Foot Controller
+Portamento Time
+Data Entry MSB
+Channel Volume
+Balance
+
+Pan
+Expression Controller
+LFO Rate (Effect Control 1)
+LFO OSC Num (Eff 2)
+OSC Num
+Fine Tune
+General Purpose Controller 1 (OSC Phase)
+General Purpose Controller 2 (Pulse Width)
+General Purpose Controller 3
+General Purpose Controller 4
+
+
+
+
+
+
+
+
+
+
+
+
+LSB For Control  0 (Bank Select)
+LSB For Control  1 (Modulation Wheel Or Lever)
+LSB For Control  2 (Breath Controller)
+LSB For Control  3
+LSB For Control  4 (Foot Controller)
+LSB For Control  5 (Portamento Time)
+LSB For Control  6 (Data Entry)
+LSB For Control  7 (Chanel Volume)
+LSB For Control  8 (Balance)
+LSB For Control  9
+LSB For Control 10 (Pan)
+LSB For Control 11 (Expression Controller)
+LSB For Control 12 (Effect Control 1)
+LSB For Control 13 (Effect Control 2)
+LSB For Control 14 
+LSB For Control 15 
+LSB For Control 16 (General Purpose Controller 1)
+LSB For Control 17 (General Purpose Controller 2)
+LSB For Control 18 (General Purpose Controller 3)
+LSB For Control 19 (General Purpose Controller 4)
+LSB For Control 20 
+LSB For Control 21 
+LSB For Control 22 
+LSB For Control 23 
+LSB For Control 24 
+LSB For Control 25 
+LSB For Control 26 
+LSB For Control 27 
+LSB For Control 28 
+LSB For Control 29 
+LSB For Control 30 
+LSB For Control 31 
+Damper Pedal On/Off (Sustain)
+Portamento On/Off
+Sostenuto On/Off
+Soft Pedal On/Off
+Legato Footswitch On/Off
+Hold 2
+Sound Controller 1 (Sound Variation)
+Sound Controller 2 (Timbre)
+Sound Controller 3 (Release Time)
+Sound Controller 4 (Attack Time)
+Sound Controller 5 (Brightness)
+Sound Controller 6 (Decay Time - See Mma Rp-021)
+Sound Controller 7 (Vibrato Rate)
+Sound Controller 8 (Vibrato Depth)
+Sound Controller 9 (Vibrato Delay)
+Standard Control 10
+General Purpose Controller 5
+General Purpose Controller 6
+General Purpose Controller 7
+General Purpose Controller 8
+Portamento Control
+
+
+
+
+
+
+Effects 1 Depth: Reverb Send Level
+Effects 2 Depth: Tremolo Depth
+Effects 3 Depth: Chorus Send Level
+Effects 4 Depth: Formerly Celeste Detune Depth
+Effects 5 Depth: Formerly Phaser Depth
+Data Increment (Data Entry +1)
+Data Decrement (Data Entry -1)
+Non-Registered Parameter Number - LSB
+Non-Registered Parameter Number - MSB
+Registered Parameter Number - MSB
+Registered Parameter Number - LSB
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Channel Mode Message] All Sounds Off
+[Channel Mode Message] Reset All Controllers
+[Channel Mode Message] Local Control On/Off
+[Channel Mode Message] All Notes Off
+[Channel Mode Message] Omni Mode Off (+ All Notes Off)
+[Channel Mode Message] Omni Mode On (+ All Notes Off)
+[Channel Mode Message] Mono Mode On (+ All Notes Off)
+[Channel Mode Message] Poly Mode On (+ All Notes Off)
