@@ -1,4 +1,5 @@
-build/
-.src/Properties/AssemblyInfo.cs
+/.src/Properties/AssemblyInfo.cs
 /.sln/.vs
-.src/bin/
+/.src/bin/
+/build/
+/doc/*.url

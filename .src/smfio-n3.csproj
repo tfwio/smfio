@@ -130,7 +130,6 @@
     <Compile Include="TempoMap.cs" />
     <Compile Include="strings.cs" />
     <Compile Include="TimeUtil.cs" />
-    <Compile Include="VariableBitExtension.cs" />
     <Compile Include="xg\XgNrpn.cs" />
   </ItemGroup>
   <ItemGroup>
