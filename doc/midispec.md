@@ -1,40 +1,28 @@
 ---
 title: The MIDI Specification
-date: ????
 author: http://academic.pgcc.edu/~njudy/mt/MIDI/midispec.html
 source: http://academic.pgcc.edu/~njudy/mt/MIDI/midispec.html
 margin-left: 0.5in
 margin-right: 0.5in
 margin-top: 0.75in
 margin-bottom: 0.75in
-mainfont: Kerkis
+mainfont: FreeSans
+colorlinks: true
+linkcolor:  MidnightBlue
+filecolor:  MidnightBlue
+citecolor:  MidnightBlue
+urlcolor:   MidnightBlue
+toccolor:   MidnightBlue
 papersize: a5
-colorlinks: #007FFF
 abstract: MIDI consists of both a simple hardware interface, and a more elaborate transmission protocol.
 ...
 
 [General MIDI Standard]: http://academic.pgcc.edu/~njudy/mt/MIDI/gm.html
 [MIDI Time Code]: mtc.pdf
-<!-- [MIDI Time Code]: http://academic.pgcc.edu/~njudy/mt/MIDI/mtc.html -->
-<!-- mainfont: Roboto Slab -->
 
+http://academic.pgcc.edu/~njudy/mt/MIDI/midispec.html
 \pagebreak
-FORE
-==================
 
-![](graphics/logo.pdf)
-
-This document is 'found' at the noted source and represented (and perhaps reformatted) here as it had been transcribed primarily for ease of access, portability and readability.  Since the individual editing/transcribing this to markdown->pdf is a patent artist and/or illustrator, we have replaced gif image figures with vector images and may have presented tables or other formatting options where it was perhaps found appropriate.
-
-This document is part of a personal collection of three documents:
-
-1. MIDI Specification, Updated ~1996 ([SMF-1.1-1999](SMF-1.1-1999.pdf))
-2. MIDI Time Code ([mtc.pdf](mtc.pdf))
-3. MIDI Specification (midispec.pdf) [this document]
-
-While these documents are fun and easy to read, it would be advisable to direct you to https://www.midi.org/specifications-old/item/the-midi-1-0-specification for official concurrent reference including addendas and so forth.
-
-\pagebreak
 Hardware
 ==================
 
