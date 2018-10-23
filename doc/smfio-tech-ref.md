@@ -1,7 +1,8 @@
 ---
 title: |
   SMFIO — Technical Reference\
-  [*currently*: Standard MIDI File-Format Reference 1.0]
+  Standard MIDI File-Format Reference\
+  \& GM2 Addendum
 date: \today{}
 subtitle: "Standard MIDI File-Format Reference"
 author: T.F.W. (github.com/tfwio)
