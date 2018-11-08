@@ -94,12 +94,15 @@
     <Compile Include="Common\MidiKeySignature.cs" />
     <Compile Include="Common\MidiTimeSignature.cs" />
     <Compile Include="Common\SmpteOffset.cs" />
+    <Compile Include="ControllerByte.cs" />
+    <Compile Include="ControllerType.cs" />
     <Compile Include="EnumFile.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="IReader.cs" />
     <Compile Include="IReaderParser.cs" />
     <Compile Include="ITimeConfiguration.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="MidiMessageCollection.Add.cs" />
     <Compile Include="MidiMessage\ChannelMessageVST.cs" />
     <Compile Include="MidiMessage\MetaMessageVST.cs" />
     <Compile Include="MidiMessage\MidiMessageVST.cs" />
