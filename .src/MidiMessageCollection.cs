@@ -2,7 +2,7 @@ using System;
 
 namespace on.smfio
 {
-  public class MidiMessageCollection : DictionaryList<int, MidiMessage>
+  public partial class MidiMessageCollection : DictionaryList<int, MidiMessage>
   {
     
     public TempoMap TempoMap { get; set; }
