@@ -25,6 +25,54 @@ namespace on.smfio
 {
 	public static class MetaHelpers
   {
+    /// <summary>
+    /// Converts 'RAW' integer pitch-wheel value where MSB and LSB
+    /// values range from 0-127 and are stored in a two-byte integer (short).  
+    /// [I.E.] 0x2001 in MSB/LSB = {MSB: [hex] 0x01 or [int] 1, LSB: [hex] 0x20 or [int] 32}.
+    /// 
+    /// The integer value is interpreted in Little Endian format.
+    /// </summary>
+    /// <param name="value">Two 7-bit byte values combined as a little-endian signed short integer.</param>
+    /// <returns></returns>
+    static public short ConvertPitchWheelFromRaw(short value)
+    {
+      int lsb = 0, msb = 0;
+      lsb = (value & 0xF80) >> 7;
+      msb = value & 0x7F;
+      return Convert.ToInt16(msb + lsb);
+    }
+    // TODO: Check work
+    /// <summary>
+    /// Convert integer value to msb/lsb bytes.
+    /// 
+    /// Value may be in the range of 0 > 8192 > 16,383  
+    /// where value = -8193 to 0 to 8192 or 
+    /// </summary>
+    /// <param name="value">integer input value.</param>
+    /// <param name="msb">[out] MSB (lo byte)</param>
+    /// <param name="lsb">[out] LSB (hi byte)</param>
+    /// <returns>Returns a byte array with two bytes: byte[0]=MSB, byte[1]=LSB.</returns>
+    /// <remarks>
+    /// NOTE: this does not convert the RAW byte value of two combined
+    /// bytes as found in the MIDI Message it self.
+    /// 
+    /// `LSB = (byte)(Convert.ToInt32(value &amp; 0xF80) >> 7)`  
+    /// `MSB = Convert.ToByte(value &amp; 0x7F)`
+    /// </remarks>
+    static public byte[] GetPitchWheelBytes(int value, out byte msb, out byte lsb)
+    {
+      byte[] result = new byte[2] { 0, 0 };
+      lsb = (byte)(Convert.ToInt32(value & 0xF80) >> 7);
+      msb = Convert.ToByte(value & 0x7F);
+      result[0] = msb;
+      result[1] = lsb;
+      return result;
+    }
+    // TODO: Check work
+    static public short GetPitchWheelInt16(byte msb, byte lsb) { return Convert.ToInt16((lsb << 7) | msb); }
+    // TODO: Check work
+    static public int GetPitchWheelInt32(byte msb, byte lsb) { return GetPitchWheelInt16(msb, lsb); }
+
     static public string GetMetadataTitle(int status, bool eightBit = false)
     {
       if (eightBit == false)
