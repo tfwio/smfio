@@ -80,6 +80,7 @@ namespace on.smfio
     }
     
     #endregion
+
     #region METADATA MESSAGE
 
     /// <summary>
@@ -105,12 +106,12 @@ namespace on.smfio
     /// <summary>
     /// Port message.
     /// </summary>
-    /// <param name="channel"></param>
-    /// <param name="tick"></param>
-    /// <param name="port"></param>
+    /// <param name="channel">MIDI Channel No.</param>
+    /// <param name="tick">absolute pulse count</param>
+    /// <param name="port">Port ID (0 - 15)</param>
     public void AddPort(int channel, long tick, byte port)
     {
-      
+      AddV(channel, new MidiMessage(Stat16.PortMessage, tick, port));
     }
     /// <summary>
     /// End of Track message.
@@ -157,7 +158,7 @@ namespace on.smfio
     /// </summary>
     /// <param name="channel">MIDI Channel No.</param>
     /// <param name="tick">absolute pulse count</param>
-    /// <param name="type">SmpteType</param>
+    /// <param name="type">SmpteType tells us the frame-rate and is encoded into the hour(s) byte when written to MTrk data.</param>
     /// <param name="h">Hour</param>
     /// <param name="m">Minute</param>
     /// <param name="s">Second</param>
@@ -224,7 +225,24 @@ namespace on.smfio
     {
       AddV(channel, new MidiMessage(Stat16.KeySignature, tick, (byte)sf, (byte)(mi ? 1 : 0)));
     }
-    
+    /// <summary>
+    /// Special requirements for particular sequencers may use this event type:
+    /// the first byte or bytes of data is a manufacturer ID (these are one byte,
+    /// or if the first byte is 00, three bytes).
+    /// As with MIDI System Exclusive, manufacturers who define something using
+    /// this meta-event should publish it so that others may be used by a
+    /// sequencer which elects to use this as its only file format; sequencers
+    /// with their established feature-specific formats should probably stick
+    /// to the standard features when using this format.
+    /// </summary>
+    /// <param name="channel"></param>
+    /// <param name="tick"></param>
+    /// <param name="data"></param>
+    public void AddSystemSpecific(int channel, long tick, params byte[] data)
+    {
+      AddV(channel, new MidiMessage(Stat16.SequencerSpecific, tick, data));
+    }
+
     #endregion
     #region VOICE MESSAGES
 
@@ -249,6 +267,16 @@ namespace on.smfio
     public void AddNoteOn(int channel, long tick, byte key, byte velocity)
     {
       AddV(channel, new MidiMessage(Stat16.NoteOn, tick, key, velocity));
+    }
+    public void AddNote(int channel, long tick, int tickLength, byte key, byte velocityOn, byte velocityOff=0)
+    {
+      AddV(channel, new MidiMessage(Stat16.PolyphonicKeyPressure, tick, key, velocityOn));
+      
+      if (velocityOff > 0)
+        AddV(channel, new MidiMessage(Stat16.NoteOff, tick+tickLength, key, velocityOff));
+      else
+        AddV(channel, new MidiMessage(Stat16.NoteOn, tick + tickLength, key, velocityOff));
+
     }
     /// <summary>
     /// Polyphonic Key Pressure
