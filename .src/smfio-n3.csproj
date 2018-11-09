@@ -98,6 +98,8 @@
     <Compile Include="ControllerType.cs" />
     <Compile Include="EnumFile.cs" />
     <Compile Include="Events.cs" />
+    <Compile Include="InstrumentMap.cs" />
+    <Compile Include="InstrumentType.cs" />
     <Compile Include="IReader.cs" />
     <Compile Include="IReaderParser.cs" />
     <Compile Include="ITimeConfiguration.cs" />
@@ -115,6 +117,7 @@
     <Compile Include="MThd.cs" />
     <Compile Include="MTrk.cs" />
     <Compile Include="NoteParser\INoteParser.cs" />
+    <Compile Include="Patch.cs" />
     <Compile Include="NoteParser\Loop.cs" />
     <Compile Include="NoteParser\MBT.cs" />
     <Compile Include="NoteParser\MidiData.cs" />
