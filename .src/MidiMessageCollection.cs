@@ -103,5 +103,15 @@ namespace on.smfio
       }
       return collection;
     }
+
+    internal void FinalSort()
+    {
+      for (int n = 0; n < NTracks; n++)
+      {
+        this[n].Sort(MidiMessage.ComparePulse);
+        //var list = new System.Collections.Generic.List<MidiMessage>(this[n].Sort(MidiMessage.ComparePulse));
+      }
+
+    }
   }
 }

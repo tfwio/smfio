@@ -268,15 +268,32 @@ namespace on.smfio
     {
       AddV(channel, new MidiMessage(Stat16.NoteOn, tick, key, velocity));
     }
+    /// <summary>
+    /// NOTE: be aware that you have to make sure to call
+    /// <see cref="MidiMessageCollection.FinalSort"/>
+    /// when using this as it sends two messages which will span multiple
+    /// indexes apart before calling <see cref="MidiMessageCollection.ToFile"/>.
+    /// 
+    /// Different from other AddNoteOn/Off methods, this one accepts `tickLength`
+    /// which allows us to send a note (note on and off: two messages) in full
+    /// which entails sending a note-on message followed by a note-off message.
+    /// 
+    /// If velocityOff is set to zero allows for us to send a note-on with
+    /// velocity set to 0 as the note-off message which in turn enables the
+    /// writer to write a shorter MTrk in the smf-midi file (via running-status
+    /// messages).
+    /// </summary>
+    /// <param name="channel"></param>
+    /// <param name="tick"></param>
+    /// <param name="tickLength"></param>
+    /// <param name="key"></param>
+    /// <param name="velocityOn"></param>
+    /// <param name="velocityOff"></param>
     public void AddNote(int channel, long tick, int tickLength, byte key, byte velocityOn, byte velocityOff=0)
     {
       AddV(channel, new MidiMessage(Stat16.PolyphonicKeyPressure, tick, key, velocityOn));
-      
-      if (velocityOff > 0)
-        AddV(channel, new MidiMessage(Stat16.NoteOff, tick+tickLength, key, velocityOff));
-      else
-        AddV(channel, new MidiMessage(Stat16.NoteOn, tick + tickLength, key, velocityOff));
-
+      if (velocityOff > 0) AddV(channel, new MidiMessage(Stat16.NoteOff, tick+tickLength, key, velocityOff));
+      else AddV(channel, new MidiMessage(Stat16.NoteOn, tick + tickLength, key, velocityOff));
     }
     /// <summary>
     /// Polyphonic Key Pressure
@@ -335,7 +352,25 @@ namespace on.smfio
     {
       AddV(channel, new MidiMessage(Stat16.PitchWheel, tick, lsb, msb));
     }
-    
+
+    #endregion
+
+    #region System
+    /// <summary>
+    /// When adding system exclusive data here, (*NOT SYSTEM-SPECIFIC*)
+    /// be sure that the data starts with 0xF0 and ends with 0xF7.
+    /// 
+    /// I.E. `AddSystemExclusive(0, 0, 0xF0, …, 0xF7);`
+    /// 
+    /// See: <see cref="AddSystemSpecific(int,long,byte[])"/>
+    /// </summary>
+    /// <param name="channel"></param>
+    /// <param name="tick"></param>
+    /// <param name="data"></param>
+    public void AddSystemExclusive(int channel, long tick, params byte[] data)
+    {
+      AddV(channel, new MidiMessage(Stat16.SystemExclusive, tick, data));
+    }
     #endregion
 
   }

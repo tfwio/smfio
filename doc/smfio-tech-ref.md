@@ -1276,6 +1276,10 @@ Table: GM Instrument Families
   the names in parentheses after each of the synth leads, pads, and sound
   effects are, in particular, intended only as guides.
 
+
+> Also Note: Numbers as defined here are -= 1 in their binary form (one
+  less than the value shown in the table).
+
 ```text
  1.  Acoustic Grand Piano                65. Soprano Sax
  2.  Bright Acoustic Piano               66. Alto Sax

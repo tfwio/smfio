@@ -225,6 +225,32 @@ namespace on.smfio
       debug_str = $"{bytes.StringifyHex()}";
       return bytes.ToArray();
     }
-
+    /// <summary>
+    /// Here we have a little helper that ONLY SORTS on PULSE!  
+    /// That said, we have to be careful to add notes and controller changes in
+    /// 'proper' sequence...
+    /// 
+    /// There is only so much we can do here.
+    /// </summary>
+    /// <param name="msgA"></param>
+    /// <param name="msgB"></param>
+    /// <returns>integer</returns>
+    internal static int ComparePulse(MidiMessage msgA, MidiMessage msgB)
+    {
+      if (msgA.Pulse == msgB.Pulse) {
+        if (msgA.Status == Stat16.NoteOn && msgB.Status == Stat16.NoteOn) return 0;
+        if (msgA.Status == Stat16.NoteOn && msgB.Status == Stat16.NoteOff) return 0;
+        if (msgA.Status == Stat16.NoteOff && msgB.Status == Stat16.NoteOff) return 0;
+        if (msgA.IsNoteOn && msgB.IsMetadataText) return -1;
+        if (msgA.IsNoteOff && msgB.IsMetadataText) return -1;
+        if (msgA.IsNoteOn && msgB.IsControlChange) return -1;
+        if (msgA.IsNoteOff && msgB.IsControlChange) return -1;
+        if (msgA.IsNoteOff && msgB.IsControlChange) return -1;
+      }
+      long result = msgA.Pulse - msgB.Pulse;
+      if (result >= int.MaxValue) return int.MaxValue;
+      if (result <= int.MinValue) return int.MinValue;
+      return Convert.ToInt32(result);
+    }
   }
 }
