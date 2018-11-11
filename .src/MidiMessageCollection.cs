@@ -19,6 +19,10 @@ namespace on.smfio
     {
     }
 
+    /// <summary>
+    /// Allows you to clone the messages and properties from another MidiMessageCollection.
+    /// </summary>
+    /// <param name="collection"></param>
     public MidiMessageCollection(MidiMessageCollection collection)
     : base((System.Collections.Generic.IDictionary<int, System.Collections.Generic.List<MidiMessage>>)collection)
     {
