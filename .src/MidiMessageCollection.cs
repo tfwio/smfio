@@ -10,6 +10,8 @@ namespace on.smfio
     public MidiTimeSignature TimeSignature { get; set; }
     public MidiKeySignature KeySignature { get; set; }
     
+    public MidiMessage KeySignatureMessage, SMPTEMessage, TempoMapMessage, TimeSignatureMessage;
+    
     public short Division { get; set; }
     public short MidiFormat { get; set; }
     
@@ -40,8 +42,24 @@ namespace on.smfio
       SMPTE = reader.SMPTE.Copy();
     }
 
-    public void RecalculateDeltas()
+    /// <summary>
+    /// First, if sorting is requested (SortFirst=true)
+    /// each track is sorted (by pulse).
+    /// 
+    /// Deltas are (re-) calculated.
+    /// 
+    /// Generally, this method will be called either called
+    /// after a call to <see cref="FromFile"/>.
+    /// </summary>
+    /// <param name="SortFirst"></param>
+    public void RecalculateDeltas(bool SortFirst=true)
     {
+      if (SortFirst)
+      {
+        for (int ntrack=0; ntrack < NTracks; ntrack++)
+          this[ntrack].Sort(MidiMessage.ComparePulse);
+      }
+      
       foreach (var trackList in this)
       {
         long lastPulse = 0;
