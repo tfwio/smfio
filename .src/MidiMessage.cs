@@ -40,7 +40,7 @@ namespace on.smfio
     /// Delta would be assined during write operations while the
     /// `Tick` value is automatically calculated during `Read`.
     /// </summary>
-    public long Delta { get; set; }
+    internal long Delta { get; set; }
 
     /// <summary>
     /// Status describes the type of message and optionally the channel
@@ -211,9 +211,7 @@ namespace on.smfio
       {
         byte_buffer = BitConverter.GetBytes(buffer);
         debug_str = byte_buffer.StringifyHex();
-        if (buffer > 2000)
-        {
-        }
+        // whaaaaa? // if (buffer > 2000) { }
         bytes.Add(byte_buffer[0]);
         if ((buffer & 0x80) == 0x80) buffer >>= 8;
         else
@@ -226,11 +224,15 @@ namespace on.smfio
       return bytes.ToArray();
     }
     /// <summary>
-    /// Here we have a little helper that ONLY SORTS on PULSE!  
-    /// That said, we have to be careful to add notes and controller changes in
-    /// 'proper' sequence...
+    /// The only thing that this method does is sort by pulse.
     /// 
-    /// There is only so much we can do here.
+    /// Its worth arguing (here) that sort/compare is something that
+    /// really should be used ONLY IF NECESSARY!  
+    /// There is one case I can think of where we there is provided,
+    /// a AddNote method which allows you to specify Pulse Length.
+    /// Adding a Note Message this way injects a note ahead of other
+    /// midi messages that may otherwise follow it when you do a standard
+    /// add-noteon add-noteoff etc…
     /// </summary>
     /// <param name="msgA"></param>
     /// <param name="msgB"></param>
@@ -238,14 +240,7 @@ namespace on.smfio
     internal static int ComparePulse(MidiMessage msgA, MidiMessage msgB)
     {
       if (msgA.Pulse == msgB.Pulse) {
-        if (msgA.Status == Stat16.NoteOn && msgB.Status == Stat16.NoteOn) return 0;
-        if (msgA.Status == Stat16.NoteOn && msgB.Status == Stat16.NoteOff) return 0;
-        if (msgA.Status == Stat16.NoteOff && msgB.Status == Stat16.NoteOff) return 0;
-        if (msgA.IsNoteOn && msgB.IsMetadataText) return -1;
-        if (msgA.IsNoteOff && msgB.IsMetadataText) return -1;
-        if (msgA.IsNoteOn && msgB.IsControlChange) return -1;
-        if (msgA.IsNoteOff && msgB.IsControlChange) return -1;
-        if (msgA.IsNoteOff && msgB.IsControlChange) return -1;
+        return 0;
       }
       long result = msgA.Pulse - msgB.Pulse;
       if (result >= int.MaxValue) return int.MaxValue;
