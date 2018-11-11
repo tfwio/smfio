@@ -152,6 +152,15 @@ namespace on.smfio
         return result;
       }
     }
+    /// <summary>
+    /// marked internal for visiblity from MTrk
+    /// </summary>
+    /// <param name="writer">System.IO.BinaryWriter</param>
+    /// <param name="prior">
+    /// We supply the prior (default=null) so that a Runnng Status Message
+    /// can be detected and utilized in writing MTrk data.
+    /// </param>
+    /// <returns>Buffer Position (in writer's base-stream)</returns>
     internal long Write(System.IO.BinaryWriter writer, MidiMessage prior=null)
     {
       bool isRunningStatus =
