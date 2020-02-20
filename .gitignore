@@ -3,3 +3,4 @@
 /.src/bin/
 /build/
 /doc/*.url
+/.src/smfio-n3.csproj.user

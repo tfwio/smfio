@@ -104,6 +104,7 @@
     <Compile Include="IReaderParser.cs" />
     <Compile Include="ITimeConfiguration.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="MidiHelper.cs" />
     <Compile Include="MidiMessageCollection.Add.cs" />
     <Compile Include="MidiMessage\ChannelMessageVST.cs" />
     <Compile Include="MidiMessage\MetaMessageVST.cs" />
