@@ -1,6 +1,9 @@
 /.src/Properties/AssemblyInfo.cs
 /.sln/.vs
 /.src/bin/
+/.src/build/
+/.src/obj/
 /build/
 /doc/*.url
 /.src/smfio-n3.csproj.user
+*.snk

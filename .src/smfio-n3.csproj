@@ -4,13 +4,11 @@
     <ProjectGuid>{5A70B240-14B9-4A2F-8C5B-497A67012A72}</ProjectGuid>
     <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">Win32</Platform>
     <OutputType>Library</OutputType>
     <RootNamespace>on.smfio</RootNamespace>
     <AssemblyName>smfio</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
@@ -19,18 +17,27 @@
     <AssemblyOriginatorKeyFile>smfio.snk</AssemblyOriginatorKeyFile>
     <DelaySign>False</DelaySign>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
-    <IntermediateOutputPath>$(SolutionDir)\..\build\obj\$(Platform)-$(Configuration)</IntermediateOutputPath>
-    <OutputPath>$(SolutionDir)\..\build\$(Platform)-$(Configuration)</OutputPath>
     <NoWarn>1591</NoWarn>
     <NoWin32Manifest>False</NoWin32Manifest>
-    <BaseIntermediateOutputPath>$(SolutionDir)\..\build\obj\</BaseIntermediateOutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)-$(Platform)\</IntermediateOutputPath>
+    <OutputPath>build\$(Configuration)-$(Platform)\</OutputPath>
     <BaseAddress>4194304</BaseAddress>
+    <FileAlignment>4096</FileAlignment>
+    <NoWarn>CS1591, CS3021, CS0436</NoWarn>
     <RegisterForComInterop>False</RegisterForComInterop>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-    <FileAlignment>4096</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'Win32'">
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'Win64'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>True</DebugSymbols>
@@ -46,44 +53,38 @@
     <Optimize>True</Optimize>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
-    <ErrorReport>prompt</ErrorReport>
-    <DebugType>Full</DebugType>
-  </PropertyGroup>
-  <PropertyGroup />
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Win32' ">
-    <DebugSymbols>true</DebugSymbols>
-    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <FileAlignment>4096</FileAlignment>
-    <NoWarn>1591</NoWarn>
-    <DebugType>Full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>$(SolutionDIr)/../build/$(Platform)-$(Configuration)/gen.snd.midi.xml</DocumentationFile>
-  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Win32' ">
     <Optimize>true</Optimize>
     <FileAlignment>4096</FileAlignment>
     <NoWarn>1591</NoWarn>
     <DebugType>None</DebugType>
     <PlatformTarget>x86</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>$(SolutionDIr)/../build/$(Platform)-$(Configuration)/gen.snd.midi.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win64'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>DEBUG;TRACE;NOCOR3</DefineConstants>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <FileAlignment>4096</FileAlignment>
+    <NoWarn>CS1591, CS3021, CS0436</NoWarn>
+    <DebugType>Full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win64'">
+    <DefineConstants>TRACE;NOCOR3</DefineConstants>
+    <Optimize>true</Optimize>
+    <FileAlignment>4096</FileAlignment>
+    <NoWarn>1591</NoWarn>
+    <DebugType>None</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Core" RequiredTargetFramework="3.5" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Xml.Linq" RequiredTargetFramework="3.5" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="c3\EndianConvertExtension.cs" />
@@ -157,7 +158,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="smfio.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -169,6 +173,7 @@
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DocumentationFile>$(SolutionDIr)/../build/$(Platform)-$(Configuration)/gen.snd.midi.xml</DocumentationFile>
+    <DocumentationFile>$(SolutionDIr)/../build/$(Configuration)-$(Platform)/gen.snd.midi.xml</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 </Project>

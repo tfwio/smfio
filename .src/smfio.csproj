@@ -9,25 +9,28 @@
     <RootNamespace>on.smfio</RootNamespace>
     <AssemblyName>smfio</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
     <NoWin32Manifest>False</NoWin32Manifest>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <IntermediateOutputPath>$(SolutionDir)/../build/obj/$(Platform)-$(Configuration)/</IntermediateOutputPath>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>smfio.snk</AssemblyOriginatorKeyFile>
     <DelaySign>False</DelaySign>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
     <DocumentationFile>$(SolutionDir)/../build/$(Platform)-$(Configuration)/gen.snd.midi.xml</DocumentationFile>
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(SolutionDir)/../build/obj/$(Platform)-$(Configuration)/</IntermediateOutputPath>
     <OutputPath>$(SolutionDir)/../build/$(Platform)-$(Configuration)/</OutputPath>
     <NoWarn>1591</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <BaseAddress>4194304</BaseAddress>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'Win32'"><PlatformTarget>x86</PlatformTarget></PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'Win64'"><PlatformTarget>x64</PlatformTarget></PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'AnyCPU'"><PlatformTarget>AnyCPU</PlatformTarget></PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <RegisterForComInterop>False</RegisterForComInterop>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <FileAlignment>4096</FileAlignment>
@@ -38,7 +41,6 @@
     <Optimize>False</Optimize>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
     <StartAction>Project</StartAction>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -47,19 +49,14 @@
     <Optimize>True</Optimize>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <DefineConstants>TRACE</DefineConstants>
-    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Core" RequiredTargetFramework="3.5" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Xml.Linq" RequiredTargetFramework="3.5" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="c3\DICT.cs" />
