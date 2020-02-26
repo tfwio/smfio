@@ -21,6 +21,16 @@ namespace on.smfio
       var T = (int)(pulse % division);
       return string.Format(filter, M, B, T);
     }
+    public static string GetMBQ(long pulse, int division, bool plusOne = true, string filter = "{0:##,###,###,000}:{1:0#}:{2:0#}:{3:0#}")
+    {
+      int plusmode = plusOne ? 1 : 0;
+      double value = pulse;
+      var M = (int)(pulse / (division * 4.0)) + plusmode;
+      var B = (int)(pulse / division) % 4 + plusmode;
+      var T = (int)(pulse % division);
+      var Q = ((float)T / division) * 4;
+      return $"{M:##,###,###,000}:{B:0#}:{Q:00.000}";
+    }
     /// <summary>
     /// Pulses from MBT.
     /// </summary>
