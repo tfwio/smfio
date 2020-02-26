@@ -38,6 +38,7 @@ namespace System
       }
       return ax;
     }
+    public static string[] Byze { get => OctaveMacro(); }
     public static readonly bool[] IsIvory =  { true, false, true, false, true, true, false, true, false, true, false, true };
     public static readonly string[] keys =   { "C ", "C#",  "D ", "D#",  "E ", "F ", "F#",  "G ", "G#",  "A ", "A#",  "B " };
   }
