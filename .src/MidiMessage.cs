@@ -2,39 +2,8 @@ using System;
 
 namespace on.smfio
 {
-  /// <summary>
-  /// note that a track index would be accessable by way of the track (List or
-  /// Collection) containing the message.
-  /// </summary>
-  public class MidiMessage
+  public class MidiCore
   {
-    /// <summary>
-    /// True if we're looking at a channel message and False if not.
-    /// Channel messages have a status &gt;= 0x80 and &lt;= 0xEF.
-    /// The last four bits in Status tell us the channel number if
-    /// looking at channel message status.
-    /// </summary>
-    public bool IsChannelMessage
-    {
-      get
-      {
-        if (0xFF00 == (Status & 0xFF00)) return false;
-        int stat = Status & 0xF0;
-        if ((stat >= 0x80) && (stat <= 0xE0)) return true;
-        return false;
-      }
-    }
-
-    public bool IsMetadataText {
-      get { return Status >= 0xFF01 && Status <= 0xFF0D; }
-    }
-
-    /// <summary>
-    /// Channel will be assigned for particular channel messages.
-    /// If the message contains metadata, of course there would be no
-    /// channel assigned here.
-    /// </summary>
-    public int? Channel { get; set; }
 
     /// <summary>
     /// Delta would be assined during write operations while the
@@ -66,7 +35,43 @@ namespace on.smfio
     /// <value></value>
     public byte[] Data { get; set; }
 
+    /// <summary>
+    /// Channel will be assigned for particular channel messages.
+    /// If the message contains metadata, of course there would be no
+    /// channel assigned here.
+    /// </summary>
+    public int? Channel { get; set; }
+
     public string HexDataString { get { return Data.StringifyHex(); } }
+  }
+  /// <summary>
+  /// note that a track index would be accessable by way of the track (List or
+  /// Collection) containing the message.
+  /// </summary>
+  public class MidiMessage : MidiCore
+  {
+    static public readonly MidiMessage Empty = new MidiMessage();
+    /// <summary>
+    /// True if we're looking at a channel message and False if not.
+    /// Channel messages have a status &gt;= 0x80 and &lt;= 0xEF.
+    /// The last four bits in Status tell us the channel number if
+    /// looking at channel message status.
+    /// </summary>
+    public bool IsChannelMessage
+    {
+      get
+      {
+        if (0xFF00 == (Status & 0xFF00)) return false;
+        int stat = Status & 0xF0;
+        if ((stat >= 0x80) && (stat <= 0xE0)) return true;
+        return false;
+      }
+    }
+
+    public bool IsMetadataText {
+      get { return Status >= 0xFF01 && Status <= 0xFF0D; }
+    }
+
     public string MetadataText { get { return IsMetadataText ? Strings.Encoding.GetString(Data) : "[Error: Not Metadata Text!]"; } }
 
     public MidiMessage() {}
@@ -92,8 +97,8 @@ namespace on.smfio
     
     const int filter_no_channel = 0xFFF0;
     // Channel Message
-    public bool IsNoteOn { get { return (Status & filter_no_channel) == 0x80; } }
-    public bool IsNoteOff { get { return (Status & filter_no_channel) == 0x90; } }
+    public bool IsNoteOff { get { return (Status & filter_no_channel) == 0x80; } }
+    public bool IsNoteOn { get { return (Status & filter_no_channel) == 0x90; } }
     public bool IsPolyphonicKeyPressure { get { return (Status & filter_no_channel) == 0xA0; } }
     public bool IsControlChange { get { return (Status & filter_no_channel) == 0xB0; } }
     public bool IsProgramChange { get { return (Status & filter_no_channel) == 0xC0; } }
