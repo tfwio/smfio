@@ -23,16 +23,20 @@ namespace System
 {
   static public class MidiHelper
   {
-    const int TOP = 128;
+    public static readonly string[] TwelveToneNames = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A#", "A", "B#" };
+
     static public string[] OctaveMacro()
     {
-      string[] ax = new string [ TOP ];
-      for (int i = 0; i < TOP; i++) ax[i] = $"{keys[i % 12]}{Convert.ToInt32(i / 12) - 1,3}";
+      string[] ax = new string [ 127 ];
+      foreach (var i in KeyIndex) ax[i] = $"{TwelveToneNames[i % 12]}{Convert.ToInt32(i / 12) - 1,-3}";
       return ax;
     }
-    public static string[] Byze { get => OctaveMacro(); }
-    public static readonly bool[] IsIvory =  { true, false, true, false, true, true, false, true, false, true, false, true };
-    public static readonly string[] keys =   { "C ", "C#",  "D ", "D#",  "E ", "F ", "F#",  "G ", "G#",  "A ", "A#",  "B " };
+    public static Collections.Generic.IEnumerable<int> KeyIndex { get => GetIntRange(); }
+    static Collections.Generic.IEnumerable<int> GetIntRange(int min=0, int max=127) { for (int i=min; i<=max; i++) yield return i; }
+    static public bool IsEbony(int keyIndex) { foreach (var i in KeyIndex) if (i == keyIndex) return true; return false; }
+    public static readonly int[] ebony_index = { 1, 3, 6, 8, 10 };
+    public static readonly bool[] EbonyAndIvory =  { true, false, true, false, true, true, false, true, false, true, false, true };
+
   }
 }
 
