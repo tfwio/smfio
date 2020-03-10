@@ -1,0 +1,800 @@
+1,      8,        Vibrato Rate,                        0, 127
+1,      9,        Vibrato Amount,                      0, 127
+1,      10,       Vibrato Delay,                       0, 127
+1,      32,       Filter Frequency,                    0, 127
+1,      33,       Filter Resonance,                    0, 127
+1,      99,       EG Attack Time,                      0, 127
+1,      100,      EG Decay Time,                       0, 127
+1,      102,      EG Release Time,                     0, 127
+20,     13,       Surdo Mute Filter Freq,              0, 127
+21,     13,       Surdo Mute Resonance,                0, 127
+22,     13,       Surdo Mute Attack Time,              0, 127
+23,     13,       Surdo Mute Decay Time,               0, 127
+24,     13,       Surdo Mute Coarse Tune,              0, 127
+25,     13,       Surdo Mute Fine Tune,                0, 127
+26,     13,       Surdo Mute Level,                    0, 127
+28,     13,       Surdo Mute Pan,                      0, 127
+29,     13,       Surdo Mute Reverb Send,              0, 127
+30,     13,       Surdo Mute Chorus Send,              0, 127
+31,     13,       Surdo Mute DSP Send,                 0, 127
+20,     14,       Surdo Open Filter Freq,              0, 127
+21,     14,       Surdo Open Resonance,                0, 127
+22,     14,       Surdo Open Attack Time,              0, 127
+23,     14,       Surdo Open Decay Time,               0, 127
+24,     14,       Surdo Open Coarse Tune,              0, 127
+25,     14,       Surdo Open Fine Tune,                0, 127
+26,     14,       Surdo Open Level,                    0, 127
+28,     14,       Surdo Open Pan,                      0, 127
+29,     14,       Surdo Open Reverb Send,              0, 127
+30,     14,       Surdo Open Chorus Send,              0, 127
+31,     14,       Surdo Open DSP Send,                 0, 127
+20,     15,       Hi Q Filter Freq,                    0, 127
+21,     15,       Hi Q Resonance,                      0, 127
+22,     15,       Hi Q Attack Time,                    0, 127
+23,     15,       Hi Q Decay Time,                     0, 127
+24,     15,       Hi Q Coarse Tune,                    0, 127
+25,     15,       Hi Q Fine Tune,                      0, 127
+26,     15,       Hi Q Level,                          0, 127
+28,     15,       Hi Q Pan,                            0, 127
+29,     15,       Hi Q Reverb Send,                    0, 127
+30,     15,       Hi Q Chorus Send,                    0, 127
+31,     15,       Hi Q DSP Send,                       0, 127
+20,     16,       Whip Slap Filter Freq,               0, 127
+21,     16,       Whip Slap Resonance,                 0, 127
+22,     16,       Whip Slap Attack Time,               0, 127
+23,     16,       Whip Slap Decay Time,                0, 127
+24,     16,       Whip Slap Coarse Tune,               0, 127
+25,     16,       Whip Slap Fine Tune,                 0, 127
+26,     16,       Whip Slap Level,                     0, 127
+28,     16,       Whip Slap Pan,                       0, 127
+29,     16,       Whip Slap Reverb Send,               0, 127
+30,     16,       Whip Slap Chorus Send,               0, 127
+31,     16,       Whip Slap DSP Send,                  0, 127
+20,     17,       Scratch High Filter Freq,            0, 127
+21,     17,       Scratch High Resonance,              0, 127
+22,     17,       Scratch High Attack Time,            0, 127
+23,     17,       Scratch High Decay Time,             0, 127
+24,     17,       Scratch High Coarse Tune,            0, 127
+25,     17,       Scratch High Fine Tune,              0, 127
+26,     17,       Scratch High Level,                  0, 127
+28,     17,       Scratch High Pan,                    0, 127
+29,     17,       Scratch High Reverb Send,            0, 127
+30,     17,       Scratch High Chorus Send,            0, 127
+31,     17,       Scratch High DSP Send,               0, 127
+20,     18,       Scratch Low Filter Freq,             0, 127
+21,     18,       Scratch Low Resonance,               0, 127
+22,     18,       Scratch Low Attack Time,             0, 127
+23,     18,       Scratch Low Decay Time,              0, 127
+24,     18,       Scratch Low Coarse Tune,             0, 127
+25,     18,       Scratch Low Fine Tune,               0, 127
+26,     18,       Scratch Low Level,                   0, 127
+28,     18,       Scratch Low Pan,                     0, 127
+29,     18,       Scratch Low Reverb Send,             0, 127
+30,     18,       Scratch Low Chorus Send,             0, 127
+31,     18,       Scratch Low DSP Send,                0, 127
+20,     19,       Finger Snap Filter Freq,             0, 127
+21,     19,       Finger Snap Resonance,               0, 127
+22,     19,       Finger Snap Attack Time,             0, 127
+23,     19,       Finger Snap Decay Time,              0, 127
+24,     19,       Finger Snap Coarse Tune,             0, 127
+25,     19,       Finger Snap Fine Tune,               0, 127
+26,     19,       Finger Snap Level,                   0, 127
+28,     19,       Finger Snap Pan,                     0, 127
+29,     19,       Finger Snap Reverb Send,             0, 127
+30,     19,       Finger Snap Chorus Send,             0, 127
+31,     19,       Finger Snap DSP Send,                0, 127
+20,     20,       Click Noise Filter Freq,             0, 127
+21,     20,       Click Noise Resonance,               0, 127
+22,     20,       Click Noise Attack Time,             0, 127
+23,     20,       Click Noise Decay Time,              0, 127
+24,     20,       Click Noise Coarse Tune,             0, 127
+25,     20,       Click Noise Fine Tune,               0, 127
+26,     20,       Click Noise Level,                   0, 127
+28,     20,       Click Noise Pan,                     0, 127
+29,     20,       Click Noise Reverb Send,             0, 127
+30,     20,       Click Noise Chorus Send,             0, 127
+31,     20,       Click Noise DSP Send,                0, 127
+20,     21,       Metronome Click Filter Freq,         0, 127
+21,     21,       Metronome Click Resonance,           0, 127
+22,     21,       Metronome Click Attack Time,         0, 127
+23,     21,       Metronome Click Decay Time,          0, 127
+24,     21,       Metronome Click Coarse Tune,         0, 127
+25,     21,       Metronome Click Fine Tune,           0, 127
+26,     21,       Metronome Click Level,               0, 127
+28,     21,       Metronome Click Pan,                 0, 127
+29,     21,       Metronome Click Reverb Send,         0, 127
+30,     21,       Metronome Click Chorus Send,         0, 127
+31,     21,       Metronome Click DSP Send,            0, 127
+20,     22,       Metronome Bell Filter Freq,          0, 127
+21,     22,       Metronome Bell Resonance,            0, 127
+22,     22,       Metronome Bell Attack Time,          0, 127
+23,     22,       Metronome Bell Decay Time,           0, 127
+24,     22,       Metronome Bell Coarse Tune,          0, 127
+25,     22,       Metronome Bell Fine Tune,            0, 127
+26,     22,       Metronome Bell Level,                0, 127
+28,     22,       Metronome Bell Pan,                  0, 127
+29,     22,       Metronome Bell Reverb Send,          0, 127
+30,     22,       Metronome Bell Chorus Send,          0, 127
+31,     22,       Metronome Bell DSP Send,             0, 127
+20,     23,       Square Click Low Filter Freq,        0, 127
+21,     23,       Square Click Low Resonance,          0, 127
+22,     23,       Square Click Low Attack Time,        0, 127
+23,     23,       Square Click Low Decay Time,         0, 127
+24,     23,       Square Click Low Coarse Tune,        0, 127
+25,     23,       Square Click Low Fine Tune,          0, 127
+26,     23,       Square Click Low Level,              0, 127
+28,     23,       Square Click Low Pan,                0, 127
+29,     23,       Square Click Low Reverb Send,        0, 127
+30,     23,       Square Click Low Chorus Send,        0, 127
+31,     23,       Square Click Low DSP Send,           0, 127
+20,     24,       Square Click High Filter Freq,       0, 127
+21,     24,       Square Click High Resonance,         0, 127
+22,     24,       Square Click High Attack Time,       0, 127
+23,     24,       Square Click High Decay Time,        0, 127
+24,     24,       Square Click High Coarse Tune,       0, 127
+25,     24,       Square Click High Fine Tune,         0, 127
+26,     24,       Square Click High Level,             0, 127
+28,     24,       Square Click High Pan,               0, 127
+29,     24,       Square Click High Reverb Send,       0, 127
+30,     24,       Square Click High Chorus Send,       0, 127
+31,     24,       Square Click High DSP Send,          0, 127
+20,     25,       Brush Tap Filter Freq,               0, 127
+21,     25,       Brush Tap Resonance,                 0, 127
+22,     25,       Brush Tap Attack Time,               0, 127
+23,     25,       Brush Tap Decay Time,                0, 127
+24,     25,       Brush Tap Coarse Tune,               0, 127
+25,     25,       Brush Tap Fine Tune,                 0, 127
+26,     25,       Brush Tap Level,                     0, 127
+28,     25,       Brush Tap Pan,                       0, 127
+29,     25,       Brush Tap Reverb Send,               0, 127
+30,     25,       Brush Tap Chorus Send,               0, 127
+31,     25,       Brush Tap DSP Send,                  0, 127
+20,     26,       Brush Swirl Filter Freq,             0, 127
+21,     26,       Brush Swirl Resonance,               0, 127
+22,     26,       Brush Swirl Attack Time,             0, 127
+23,     26,       Brush Swirl Decay Time,              0, 127
+24,     26,       Brush Swirl Coarse Tune,             0, 127
+25,     26,       Brush Swirl Fine Tune,               0, 127
+26,     26,       Brush Swirl Level,                   0, 127
+28,     26,       Brush Swirl Pan,                     0, 127
+29,     26,       Brush Swirl Reverb Send,             0, 127
+30,     26,       Brush Swirl Chorus Send,             0, 127
+31,     26,       Brush Swirl DSP Send,                0, 127
+20,     27,       Brush Slap Filter Freq,              0, 127
+21,     27,       Brush Slap Resonance,                0, 127
+22,     27,       Brush Slap Attack Time,              0, 127
+23,     27,       Brush Slap Decay Time,               0, 127
+24,     27,       Brush Slap Coarse Tune,              0, 127
+25,     27,       Brush Slap Fine Tune,                0, 127
+26,     27,       Brush Slap Level,                    0, 127
+28,     27,       Brush Slap Pan,                      0, 127
+29,     27,       Brush Slap Reverb Send,              0, 127
+30,     27,       Brush Slap Chorus Send,              0, 127
+31,     27,       Brush Slap DSP Send,                 0, 127
+20,     28,       Brush Swirl with Attack Filter,      0, 127
+21,     28,       Brush Swirl with Attack Resona,      0, 127
+22,     28,       Brush Swirl with Attack Attack,      0, 127
+23,     28,       Brush Swirl with Attack Decay,       0, 127
+24,     28,       Brush Swirl with Attack Coarse,      0, 127
+25,     28,       Brush Swirl with Attack Fine T,      0, 127
+26,     28,       Brush Swirl with Attack Level,       0, 127
+28,     28,       Brush Swirl with Attack Pan,         0, 127
+29,     28,       Brush Swirl with Attack Reverb,      0, 127
+30,     28,       Brush Swirl with Attack Chorus,      0, 127
+31,     28,       Brush Swirl with Attack DSP Se,      0, 127
+20,     29,       Snare Roll Filter Freq,              0, 127
+21,     29,       Snare Roll Resonance,                0, 127
+22,     29,       Snare Roll Attack Time,              0, 127
+23,     29,       Snare Roll Decay Time,               0, 127
+24,     29,       Snare Roll Coarse Tune,              0, 127
+25,     29,       Snare Roll Fine Tune,                0, 127
+26,     29,       Snare Roll Level,                    0, 127
+28,     29,       Snare Roll Pan,                      0, 127
+29,     29,       Snare Roll Reverb Send,              0, 127
+30,     29,       Snare Roll Chorus Send,              0, 127
+31,     29,       Snare Roll DSP Send,                 0, 127
+20,     30,       Castanet Filter Freq,                0, 127
+21,     30,       Castanet Resonance,                  0, 127
+22,     30,       Castanet Attack Time,                0, 127
+23,     30,       Castanet Decay Time,                 0, 127
+24,     30,       Castanet Coarse Tune,                0, 127
+25,     30,       Castanet Fine Tune,                  0, 127
+26,     30,       Castanet Level,                      0, 127
+28,     30,       Castanet Pan,                        0, 127
+29,     30,       Castanet Reverb Send,                0, 127
+30,     30,       Castanet Chorus Send,                0, 127
+31,     30,       Castanet DSP Send,                   0, 127
+20,     31,       Snare High Soft Filter Freq,         0, 127
+21,     31,       Snare High Soft Resonance,           0, 127
+22,     31,       Snare High Soft Attack Time,         0, 127
+23,     31,       Snare High Soft Decay Time,          0, 127
+24,     31,       Snare High Soft Coarse Tune,         0, 127
+25,     31,       Snare High Soft Fine Tune,           0, 127
+26,     31,       Snare High Soft Level,               0, 127
+28,     31,       Snare High Soft Pan,                 0, 127
+29,     31,       Snare High Soft Reverb Send,         0, 127
+30,     31,       Snare High Soft Chorus Send,         0, 127
+31,     31,       Snare High Soft DSP Send,            0, 127
+20,     32,       Sticks Filter Freq,                  0, 127
+21,     32,       Sticks Resonance,                    0, 127
+22,     32,       Sticks Attack Time,                  0, 127
+23,     32,       Sticks Decay Time,                   0, 127
+24,     32,       Sticks Coarse Tune,                  0, 127
+25,     32,       Sticks Fine Tune,                    0, 127
+26,     32,       Sticks Level,                        0, 127
+28,     32,       Sticks Pan,                          0, 127
+29,     32,       Sticks Reverb Send,                  0, 127
+30,     32,       Sticks Chorus Send,                  0, 127
+31,     32,       Sticks DSP Send,                     0, 127
+20,     33,       Bass Drum High Soft Filter Fre,      0, 127
+21,     33,       Bass Drum High Soft Resonance,       0, 127
+22,     33,       Bass Drum High Soft Attack Tim,      0, 127
+23,     33,       Bass Drum High Soft Decay Time,      0, 127
+24,     33,       Bass Drum High Soft Coarse Tun,      0, 127
+25,     33,       Bass Drum High Soft Fine Tune,       0, 127
+26,     33,       Bass Drum High Soft Level,           0, 127
+28,     33,       Bass Drum High Soft Pan,             0, 127
+29,     33,       Bass Drum High Soft Reverb Sen,      0, 127
+30,     33,       Bass Drum High Soft Chorus Sen,      0, 127
+31,     33,       Bass Drum High Soft DSP Send,        0, 127
+20,     34,       Open Rim Shot Filter Freq,           0, 127
+21,     34,       Open Rim Shot Resonance,             0, 127
+22,     34,       Open Rim Shot Attack Time,           0, 127
+23,     34,       Open Rim Shot Decay Time,            0, 127
+24,     34,       Open Rim Shot Coarse Tune,           0, 127
+25,     34,       Open Rim Shot Fine Tune,             0, 127
+26,     34,       Open Rim Shot Level,                 0, 127
+28,     34,       Open Rim Shot Pan,                   0, 127
+29,     34,       Open Rim Shot Reverb Send,           0, 127
+30,     34,       Open Rim Shot Chorus Send,           0, 127
+31,     34,       Open Rim Shot DSP Send,              0, 127
+20,     35,       Bass Drum Low Filter Freq,           0, 127
+21,     35,       Bass Drum Low Resonance,             0, 127
+22,     35,       Bass Drum Low Attack Time,           0, 127
+23,     35,       Bass Drum Low Decay Time,            0, 127
+24,     35,       Bass Drum Low Coarse Tune,           0, 127
+25,     35,       Bass Drum Low Fine Tune,             0, 127
+26,     35,       Bass Drum Low Level,                 0, 127
+28,     35,       Bass Drum Low Pan,                   0, 127
+29,     35,       Bass Drum Low Reverb Send,           0, 127
+30,     35,       Bass Drum Low Chorus Send,           0, 127
+31,     35,       Bass Drum Low DSP Send,              0, 127
+20,     36,       Bass Drum High Hard Filter Fre,      0, 127
+21,     36,       Bass Drum High Hard Resonance,       0, 127
+22,     36,       Bass Drum High Hard Attack Tim,      0, 127
+23,     36,       Bass Drum High Hard Decay Time,      0, 127
+24,     36,       Bass Drum High Hard Coarse Tun,      0, 127
+25,     36,       Bass Drum High Hard Fine Tune,       0, 127
+26,     36,       Bass Drum High Hard Level,           0, 127
+28,     36,       Bass Drum High Hard Pan,             0, 127
+29,     36,       Bass Drum High Hard Reverb Sen,      0, 127
+30,     36,       Bass Drum High Hard Chorus Sen,      0, 127
+31,     36,       Bass Drum High Hard DSP Send,        0, 127
+20,     37,       Closed Rim Shot Filter Freq,         0, 127
+21,     37,       Closed Rim Shot Resonance,           0, 127
+22,     37,       Closed Rim Shot Attack Time,         0, 127
+23,     37,       Closed Rim Shot Decay Time,          0, 127
+24,     37,       Closed Rim Shot Coarse Tune,         0, 127
+25,     37,       Closed Rim Shot Fine Tune,           0, 127
+26,     37,       Closed Rim Shot Level,               0, 127
+28,     37,       Closed Rim Shot Pan,                 0, 127
+29,     37,       Closed Rim Shot Reverb Send,         0, 127
+30,     37,       Closed Rim Shot Chorus Send,         0, 127
+31,     37,       Closed Rim Shot DSP Send,            0, 127
+20,     38,       Snare Low Filter Freq,               0, 127
+21,     38,       Snare Low Resonance,                 0, 127
+22,     38,       Snare Low Attack Time,               0, 127
+23,     38,       Snare Low Decay Time,                0, 127
+24,     38,       Snare Low Coarse Tune,               0, 127
+25,     38,       Snare Low Fine Tune,                 0, 127
+26,     38,       Snare Low Level,                     0, 127
+28,     38,       Snare Low Pan,                       0, 127
+29,     38,       Snare Low Reverb Send,               0, 127
+30,     38,       Snare Low Chorus Send,               0, 127
+31,     38,       Snare Low DSP Send,                  0, 127
+20,     39,       Hand Clap Filter Freq,               0, 127
+21,     39,       Hand Clap Resonance,                 0, 127
+22,     39,       Hand Clap Attack Time,               0, 127
+23,     39,       Hand Clap Decay Time,                0, 127
+24,     39,       Hand Clap Coarse Tune,               0, 127
+25,     39,       Hand Clap Fine Tune,                 0, 127
+26,     39,       Hand Clap Level,                     0, 127
+28,     39,       Hand Clap Pan,                       0, 127
+29,     39,       Hand Clap Reverb Send,               0, 127
+30,     39,       Hand Clap Chorus Send,               0, 127
+31,     39,       Hand Clap DSP Send,                  0, 127
+20,     40,       Snare High Hard Filter Freq,         0, 127
+21,     40,       Snare High Hard Resonance,           0, 127
+22,     40,       Snare High Hard Attack Time,         0, 127
+23,     40,       Snare High Hard Decay Time,          0, 127
+24,     40,       Snare High Hard Coarse Tune,         0, 127
+25,     40,       Snare High Hard Fine Tune,           0, 127
+26,     40,       Snare High Hard Level,               0, 127
+28,     40,       Snare High Hard Pan,                 0, 127
+29,     40,       Snare High Hard Reverb Send,         0, 127
+30,     40,       Snare High Hard Chorus Send,         0, 127
+31,     40,       Snare High Hard DSP Send,            0, 127
+20,     41,       Floor Tom Low Filter Freq,           0, 127
+21,     41,       Floor Tom Low Resonance,             0, 127
+22,     41,       Floor Tom Low Attack Time,           0, 127
+23,     41,       Floor Tom Low Decay Time,            0, 127
+24,     41,       Floor Tom Low Coarse Tune,           0, 127
+25,     41,       Floor Tom Low Fine Tune,             0, 127
+26,     41,       Floor Tom Low Level,                 0, 127
+28,     41,       Floor Tom Low Pan,                   0, 127
+29,     41,       Floor Tom Low Reverb Send,           0, 127
+30,     41,       Floor Tom Low Chorus Send,           0, 127
+31,     41,       Floor Tom Low DSP Send,              0, 127
+20,     42,       Hi-Hat Closed Filter Freq,           0, 127
+21,     42,       Hi-Hat Closed Resonance,             0, 127
+22,     42,       Hi-Hat Closed Attack Time,           0, 127
+23,     42,       Hi-Hat Closed Decay Time,            0, 127
+24,     42,       Hi-Hat Closed Coarse Tune,           0, 127
+25,     42,       Hi-Hat Closed Fine Tune,             0, 127
+26,     42,       Hi-Hat Closed Level,                 0, 127
+28,     42,       Hi-Hat Closed Pan,                   0, 127
+29,     42,       Hi-Hat Closed Reverb Send,           0, 127
+30,     42,       Hi-Hat Closed Chorus Send,           0, 127
+31,     42,       Hi-Hat Closed DSP Send,              0, 127
+20,     43,       Floor Tom High Filter Freq,          0, 127
+21,     43,       Floor Tom High Resonance,            0, 127
+22,     43,       Floor Tom High Attack Time,          0, 127
+23,     43,       Floor Tom High Decay Time,           0, 127
+24,     43,       Floor Tom High Coarse Tune,          0, 127
+25,     43,       Floor Tom High Fine Tune,            0, 127
+26,     43,       Floor Tom High Level,                0, 127
+28,     43,       Floor Tom High Pan,                  0, 127
+29,     43,       Floor Tom High Reverb Send,          0, 127
+30,     43,       Floor Tom High Chorus Send,          0, 127
+31,     43,       Floor Tom High DSP Send,             0, 127
+20,     44,       Hi-Hat Pedal Filter Freq,            0, 127
+21,     44,       Hi-Hat Pedal Resonance,              0, 127
+22,     44,       Hi-Hat Pedal Attack Time,            0, 127
+23,     44,       Hi-Hat Pedal Decay Time,             0, 127
+24,     44,       Hi-Hat Pedal Coarse Tune,            0, 127
+25,     44,       Hi-Hat Pedal Fine Tune,              0, 127
+26,     44,       Hi-Hat Pedal Level,                  0, 127
+28,     44,       Hi-Hat Pedal Pan,                    0, 127
+29,     44,       Hi-Hat Pedal Reverb Send,            0, 127
+30,     44,       Hi-Hat Pedal Chorus Send,            0, 127
+31,     44,       Hi-Hat Pedal DSP Send,               0, 127
+20,     45,       Low Tom Filter Freq,                 0, 127
+21,     45,       Low Tom Resonance,                   0, 127
+22,     45,       Low Tom Attack Time,                 0, 127
+23,     45,       Low Tom Decay Time,                  0, 127
+24,     45,       Low Tom Coarse Tune,                 0, 127
+25,     45,       Low Tom Fine Tune,                   0, 127
+26,     45,       Low Tom Level,                       0, 127
+28,     45,       Low Tom Pan,                         0, 127
+29,     45,       Low Tom Reverb Send,                 0, 127
+30,     45,       Low Tom Chorus Send,                 0, 127
+31,     45,       Low Tom DSP Send,                    0, 127
+20,     46,       Hi-Hat Open Filter Freq,             0, 127
+21,     46,       Hi-Hat Open Resonance,               0, 127
+22,     46,       Hi-Hat Open Attack Time,             0, 127
+23,     46,       Hi-Hat Open Decay Time,              0, 127
+24,     46,       Hi-Hat Open Coarse Tune,             0, 127
+25,     46,       Hi-Hat Open Fine Tune,               0, 127
+26,     46,       Hi-Hat Open Level,                   0, 127
+28,     46,       Hi-Hat Open Pan,                     0, 127
+29,     46,       Hi-Hat Open Reverb Send,             0, 127
+30,     46,       Hi-Hat Open Chorus Send,             0, 127
+31,     46,       Hi-Hat Open DSP Send,                0, 127
+20,     47,       Mid Tom Low Filter Freq,             0, 127
+21,     47,       Mid Tom Low Resonance,               0, 127
+22,     47,       Mid Tom Low Attack Time,             0, 127
+23,     47,       Mid Tom Low Decay Time,              0, 127
+24,     47,       Mid Tom Low Coarse Tune,             0, 127
+25,     47,       Mid Tom Low Fine Tune,               0, 127
+26,     47,       Mid Tom Low Level,                   0, 127
+28,     47,       Mid Tom Low Pan,                     0, 127
+29,     47,       Mid Tom Low Reverb Send,             0, 127
+30,     47,       Mid Tom Low Chorus Send,             0, 127
+31,     47,       Mid Tom Low DSP Send,                0, 127
+20,     48,       Mid Tom High Filter Freq,            0, 127
+21,     48,       Mid Tom High Resonance,              0, 127
+22,     48,       Mid Tom High Attack Time,            0, 127
+23,     48,       Mid Tom High Decay Time,             0, 127
+24,     48,       Mid Tom High Coarse Tune,            0, 127
+25,     48,       Mid Tom High Fine Tune,              0, 127
+26,     48,       Mid Tom High Level,                  0, 127
+28,     48,       Mid Tom High Pan,                    0, 127
+29,     48,       Mid Tom High Reverb Send,            0, 127
+30,     48,       Mid Tom High Chorus Send,            0, 127
+31,     48,       Mid Tom High DSP Send,               0, 127
+20,     49,       Crash Cymbal 1 Filter Freq,          0, 127
+21,     49,       Crash Cymbal 1 Resonance,            0, 127
+22,     49,       Crash Cymbal 1 Attack Time,          0, 127
+23,     49,       Crash Cymbal 1 Decay Time,           0, 127
+24,     49,       Crash Cymbal 1 Coarse Tune,          0, 127
+25,     49,       Crash Cymbal 1 Fine Tune,            0, 127
+26,     49,       Crash Cymbal 1 Level,                0, 127
+28,     49,       Crash Cymbal 1 Pan,                  0, 127
+29,     49,       Crash Cymbal 1 Reverb Send,          0, 127
+30,     49,       Crash Cymbal 1 Chorus Send,          0, 127
+31,     49,       Crash Cymbal 1 DSP Send,             0, 127
+20,     50,       High Tom Filter Freq,                0, 127
+21,     50,       High Tom Resonance,                  0, 127
+22,     50,       High Tom Attack Time,                0, 127
+23,     50,       High Tom Decay Time,                 0, 127
+24,     50,       High Tom Coarse Tune,                0, 127
+25,     50,       High Tom Fine Tune,                  0, 127
+26,     50,       High Tom Level,                      0, 127
+28,     50,       High Tom Pan,                        0, 127
+29,     50,       High Tom Reverb Send,                0, 127
+30,     50,       High Tom Chorus Send,                0, 127
+31,     50,       High Tom DSP Send,                   0, 127
+20,     51,       Ride Cymbal 1 Filter Freq,           0, 127
+21,     51,       Ride Cymbal 1 Resonance,             0, 127
+22,     51,       Ride Cymbal 1 Attack Time,           0, 127
+23,     51,       Ride Cymbal 1 Decay Time,            0, 127
+24,     51,       Ride Cymbal 1 Coarse Tune,           0, 127
+25,     51,       Ride Cymbal 1 Fine Tune,             0, 127
+26,     51,       Ride Cymbal 1 Level,                 0, 127
+28,     51,       Ride Cymbal 1 Pan,                   0, 127
+29,     51,       Ride Cymbal 1 Reverb Send,           0, 127
+30,     51,       Ride Cymbal 1 Chorus Send,           0, 127
+31,     51,       Ride Cymbal 1 DSP Send,              0, 127
+20,     52,       Chinese Cymbal Filter Freq,          0, 127
+21,     52,       Chinese Cymbal Resonance,            0, 127
+22,     52,       Chinese Cymbal Attack Time,          0, 127
+23,     52,       Chinese Cymbal Decay Time,           0, 127
+24,     52,       Chinese Cymbal Coarse Tune,          0, 127
+25,     52,       Chinese Cymbal Fine Tune,            0, 127
+26,     52,       Chinese Cymbal Level,                0, 127
+28,     52,       Chinese Cymbal Pan,                  0, 127
+29,     52,       Chinese Cymbal Reverb Send,          0, 127
+30,     52,       Chinese Cymbal Chorus Send,          0, 127
+31,     52,       Chinese Cymbal DSP Send,             0, 127
+20,     53,       Ride Cymbal Cup Filter Freq,         0, 127
+21,     53,       Ride Cymbal Cup Resonance,           0, 127
+22,     53,       Ride Cymbal Cup Attack Time,         0, 127
+23,     53,       Ride Cymbal Cup Decay Time,          0, 127
+24,     53,       Ride Cymbal Cup Coarse Tune,         0, 127
+25,     53,       Ride Cymbal Cup Fine Tune,           0, 127
+26,     53,       Ride Cymbal Cup Level,               0, 127
+28,     53,       Ride Cymbal Cup Pan,                 0, 127
+29,     53,       Ride Cymbal Cup Reverb Send,         0, 127
+30,     53,       Ride Cymbal Cup Chorus Send,         0, 127
+31,     53,       Ride Cymbal Cup DSP Send,            0, 127
+20,     54,       Tambourine Filter Freq,              0, 127
+21,     54,       Tambourine Resonance,                0, 127
+22,     54,       Tambourine Attack Time,              0, 127
+23,     54,       Tambourine Decay Time,               0, 127
+24,     54,       Tambourine Coarse Tune,              0, 127
+25,     54,       Tambourine Fine Tune,                0, 127
+26,     54,       Tambourine Level,                    0, 127
+28,     54,       Tambourine Pan,                      0, 127
+29,     54,       Tambourine Reverb Send,              0, 127
+30,     54,       Tambourine Chorus Send,              0, 127
+31,     54,       Tambourine DSP Send,                 0, 127
+20,     55,       Splash Cymbal Filter Freq,           0, 127
+21,     55,       Splash Cymbal Resonance,             0, 127
+22,     55,       Splash Cymbal Attack Time,           0, 127
+23,     55,       Splash Cymbal Decay Time,            0, 127
+24,     55,       Splash Cymbal Coarse Tune,           0, 127
+25,     55,       Splash Cymbal Fine Tune,             0, 127
+26,     55,       Splash Cymbal Level,                 0, 127
+28,     55,       Splash Cymbal Pan,                   0, 127
+29,     55,       Splash Cymbal Reverb Send,           0, 127
+30,     55,       Splash Cymbal Chorus Send,           0, 127
+31,     55,       Splash Cymbal DSP Send,              0, 127
+20,     56,       Cowbell Filter Freq,                 0, 127
+21,     56,       Cowbell Resonance,                   0, 127
+22,     56,       Cowbell Attack Time,                 0, 127
+23,     56,       Cowbell Decay Time,                  0, 127
+24,     56,       Cowbell Coarse Tune,                 0, 127
+25,     56,       Cowbell Fine Tune,                   0, 127
+26,     56,       Cowbell Level,                       0, 127
+28,     56,       Cowbell Pan,                         0, 127
+29,     56,       Cowbell Reverb Send,                 0, 127
+30,     56,       Cowbell Chorus Send,                 0, 127
+31,     56,       Cowbell DSP Send,                    0, 127
+20,     57,       Crash Cymbal 2 Filter Freq,          0, 127
+21,     57,       Crash Cymbal 2 Resonance,            0, 127
+22,     57,       Crash Cymbal 2 Attack Time,          0, 127
+23,     57,       Crash Cymbal 2 Decay Time,           0, 127
+24,     57,       Crash Cymbal 2 Coarse Tune,          0, 127
+25,     57,       Crash Cymbal 2 Fine Tune,            0, 127
+26,     57,       Crash Cymbal 2 Level,                0, 127
+28,     57,       Crash Cymbal 2 Pan,                  0, 127
+29,     57,       Crash Cymbal 2 Reverb Send,          0, 127
+30,     57,       Crash Cymbal 2 Chorus Send,          0, 127
+31,     57,       Crash Cymbal 2 DSP Send,             0, 127
+20,     58,       Vibraslap Filter Freq,               0, 127
+21,     58,       Vibraslap Resonance,                 0, 127
+22,     58,       Vibraslap Attack Time,               0, 127
+23,     58,       Vibraslap Decay Time,                0, 127
+24,     58,       Vibraslap Coarse Tune,               0, 127
+25,     58,       Vibraslap Fine Tune,                 0, 127
+26,     58,       Vibraslap Level,                     0, 127
+28,     58,       Vibraslap Pan,                       0, 127
+29,     58,       Vibraslap Reverb Send,               0, 127
+30,     58,       Vibraslap Chorus Send,               0, 127
+31,     58,       Vibraslap DSP Send,                  0, 127
+20,     59,       Ride Cymbal 2 Filter Freq,           0, 127
+21,     59,       Ride Cymbal 2 Resonance,             0, 127
+22,     59,       Ride Cymbal 2 Attack Time,           0, 127
+23,     59,       Ride Cymbal 2 Decay Time,            0, 127
+24,     59,       Ride Cymbal 2 Coarse Tune,           0, 127
+25,     59,       Ride Cymbal 2 Fine Tune,             0, 127
+26,     59,       Ride Cymbal 2 Level,                 0, 127
+28,     59,       Ride Cymbal 2 Pan,                   0, 127
+29,     59,       Ride Cymbal 2 Reverb Send,           0, 127
+30,     59,       Ride Cymbal 2 Chorus Send,           0, 127
+31,     59,       Ride Cymbal 2 DSP Send,              0, 127
+20,     60,       Bongo High Filter Freq,              0, 127
+21,     60,       Bongo High Resonance,                0, 127
+22,     60,       Bongo High Attack Time,              0, 127
+23,     60,       Bongo High Decay Time,               0, 127
+24,     60,       Bongo High Coarse Tune,              0, 127
+25,     60,       Bongo High Fine Tune,                0, 127
+26,     60,       Bongo High Level,                    0, 127
+28,     60,       Bongo High Pan,                      0, 127
+29,     60,       Bongo High Reverb Send,              0, 127
+30,     60,       Bongo High Chorus Send,              0, 127
+31,     60,       Bongo High DSP Send,                 0, 127
+20,     61,       Bongo Low Filter Freq,               0, 127
+21,     61,       Bongo Low Resonance,                 0, 127
+22,     61,       Bongo Low Attack Time,               0, 127
+23,     61,       Bongo Low Decay Time,                0, 127
+24,     61,       Bongo Low Coarse Tune,               0, 127
+25,     61,       Bongo Low Fine Tune,                 0, 127
+26,     61,       Bongo Low Level,                     0, 127
+28,     61,       Bongo Low Pan,                       0, 127
+29,     61,       Bongo Low Reverb Send,               0, 127
+30,     61,       Bongo Low Chorus Send,               0, 127
+31,     61,       Bongo Low DSP Send,                  0, 127
+20,     62,       Conga High Mute Filter Freq,         0, 127
+21,     62,       Conga High Mute Resonance,           0, 127
+22,     62,       Conga High Mute Attack Time,         0, 127
+23,     62,       Conga High Mute Decay Time,          0, 127
+24,     62,       Conga High Mute Coarse Tune,         0, 127
+25,     62,       Conga High Mute Fine Tune,           0, 127
+26,     62,       Conga High Mute Level,               0, 127
+28,     62,       Conga High Mute Pan,                 0, 127
+29,     62,       Conga High Mute Reverb Send,         0, 127
+30,     62,       Conga High Mute Chorus Send,         0, 127
+31,     62,       Conga High Mute DSP Send,            0, 127
+20,     63,       Conga High Open Filter Freq,         0, 127
+21,     63,       Conga High Open Resonance,           0, 127
+22,     63,       Conga High Open Attack Time,         0, 127
+23,     63,       Conga High Open Decay Time,          0, 127
+24,     63,       Conga High Open Coarse Tune,         0, 127
+25,     63,       Conga High Open Fine Tune,           0, 127
+26,     63,       Conga High Open Level,               0, 127
+28,     63,       Conga High Open Pan,                 0, 127
+29,     63,       Conga High Open Reverb Send,         0, 127
+30,     63,       Conga High Open Chorus Send,         0, 127
+31,     63,       Conga High Open DSP Send,            0, 127
+20,     64,       Conga Low Filter Freq,               0, 127
+21,     64,       Conga Low Resonance,                 0, 127
+22,     64,       Conga Low Attack Time,               0, 127
+23,     64,       Conga Low Decay Time,                0, 127
+24,     64,       Conga Low Coarse Tune,               0, 127
+25,     64,       Conga Low Fine Tune,                 0, 127
+26,     64,       Conga Low Level,                     0, 127
+28,     64,       Conga Low Pan,                       0, 127
+29,     64,       Conga Low Reverb Send,               0, 127
+30,     64,       Conga Low Chorus Send,               0, 127
+31,     64,       Conga Low DSP Send,                  0, 127
+20,     65,       Timbale High Filter Freq,            0, 127
+21,     65,       Timbale High Resonance,              0, 127
+22,     65,       Timbale High Attack Time,            0, 127
+23,     65,       Timbale High Decay Time,             0, 127
+24,     65,       Timbale High Coarse Tune,            0, 127
+25,     65,       Timbale High Fine Tune,              0, 127
+26,     65,       Timbale High Level,                  0, 127
+28,     65,       Timbale High Pan,                    0, 127
+29,     65,       Timbale High Reverb Send,            0, 127
+30,     65,       Timbale High Chorus Send,            0, 127
+31,     65,       Timbale High DSP Send,               0, 127
+20,     66,       Timbale Low Filter Freq,             0, 127
+21,     66,       Timbale Low Resonance,               0, 127
+22,     66,       Timbale Low Attack Time,             0, 127
+23,     66,       Timbale Low Decay Time,              0, 127
+24,     66,       Timbale Low Coarse Tune,             0, 127
+25,     66,       Timbale Low Fine Tune,               0, 127
+26,     66,       Timbale Low Level,                   0, 127
+28,     66,       Timbale Low Pan,                     0, 127
+29,     66,       Timbale Low Reverb Send,             0, 127
+30,     66,       Timbale Low Chorus Send,             0, 127
+31,     66,       Timbale Low DSP Send,                0, 127
+20,     67,       Agogo High Filter Freq,              0, 127
+21,     67,       Agogo High Resonance,                0, 127
+22,     67,       Agogo High Attack Time,              0, 127
+23,     67,       Agogo High Decay Time,               0, 127
+24,     67,       Agogo High Coarse Tune,              0, 127
+25,     67,       Agogo High Fine Tune,                0, 127
+26,     67,       Agogo High Level,                    0, 127
+28,     67,       Agogo High Pan,                      0, 127
+29,     67,       Agogo High Reverb Send,              0, 127
+30,     67,       Agogo High Chorus Send,              0, 127
+31,     67,       Agogo High DSP Send,                 0, 127
+20,     68,       Agogo Low Filter Freq,               0, 127
+21,     68,       Agogo Low Resonance,                 0, 127
+22,     68,       Agogo Low Attack Time,               0, 127
+23,     68,       Agogo Low Decay Time,                0, 127
+24,     68,       Agogo Low Coarse Tune,               0, 127
+25,     68,       Agogo Low Fine Tune,                 0, 127
+26,     68,       Agogo Low Level,                     0, 127
+28,     68,       Agogo Low Pan,                       0, 127
+29,     68,       Agogo Low Reverb Send,               0, 127
+30,     68,       Agogo Low Chorus Send,               0, 127
+31,     68,       Agogo Low DSP Send,                  0, 127
+20,     69,       Cabasa Filter Freq,                  0, 127
+21,     69,       Cabasa Resonance,                    0, 127
+22,     69,       Cabasa Attack Time,                  0, 127
+23,     69,       Cabasa Decay Time,                   0, 127
+24,     69,       Cabasa Coarse Tune,                  0, 127
+25,     69,       Cabasa Fine Tune,                    0, 127
+26,     69,       Cabasa Level,                        0, 127
+28,     69,       Cabasa Pan,                          0, 127
+29,     69,       Cabasa Reverb Send,                  0, 127
+30,     69,       Cabasa Chorus Send,                  0, 127
+31,     69,       Cabasa DSP Send,                     0, 127
+20,     70,       Maracas Filter Freq,                 0, 127
+21,     70,       Maracas Resonance,                   0, 127
+22,     70,       Maracas Attack Time,                 0, 127
+23,     70,       Maracas Decay Time,                  0, 127
+24,     70,       Maracas Coarse Tune,                 0, 127
+25,     70,       Maracas Fine Tune,                   0, 127
+26,     70,       Maracas Level,                       0, 127
+28,     70,       Maracas Pan,                         0, 127
+29,     70,       Maracas Reverb Send,                 0, 127
+30,     70,       Maracas Chorus Send,                 0, 127
+31,     70,       Maracas DSP Send,                    0, 127
+20,     71,       Samba Whistle High Filter Freq,      0, 127
+21,     71,       Samba Whistle High Resonance,        0, 127
+22,     71,       Samba Whistle High Attack Time,      0, 127
+23,     71,       Samba Whistle High Decay Time,       0, 127
+24,     71,       Samba Whistle High Coarse Tune,      0, 127
+25,     71,       Samba Whistle High Fine Tune,        0, 127
+26,     71,       Samba Whistle High Level,            0, 127
+28,     71,       Samba Whistle High Pan,              0, 127
+29,     71,       Samba Whistle High Reverb Send,      0, 127
+30,     71,       Samba Whistle High Chorus Send,      0, 127
+31,     71,       Samba Whistle High DSP Send,         0, 127
+20,     72,       Samba Whistle Low Filter Freq,       0, 127
+21,     72,       Samba Whistle Low Resonance,         0, 127
+22,     72,       Samba Whistle Low Attack Time,       0, 127
+23,     72,       Samba Whistle Low Decay Time,        0, 127
+24,     72,       Samba Whistle Low Coarse Tune,       0, 127
+25,     72,       Samba Whistle Low Fine Tune,         0, 127
+26,     72,       Samba Whistle Low Level,             0, 127
+28,     72,       Samba Whistle Low Pan,               0, 127
+29,     72,       Samba Whistle Low Reverb Send,       0, 127
+30,     72,       Samba Whistle Low Chorus Send,       0, 127
+31,     72,       Samba Whistle Low DSP Send,          0, 127
+20,     73,       Guiro Short Filter Freq,             0, 127
+21,     73,       Guiro Short Resonance,               0, 127
+22,     73,       Guiro Short Attack Time,             0, 127
+23,     73,       Guiro Short Decay Time,              0, 127
+24,     73,       Guiro Short Coarse Tune,             0, 127
+25,     73,       Guiro Short Fine Tune,               0, 127
+26,     73,       Guiro Short Level,                   0, 127
+28,     73,       Guiro Short Pan,                     0, 127
+29,     73,       Guiro Short Reverb Send,             0, 127
+30,     73,       Guiro Short Chorus Send,             0, 127
+31,     73,       Guiro Short DSP Send,                0, 127
+20,     74,       Guiro Long Filter Freq,              0, 127
+21,     74,       Guiro Long Resonance,                0, 127
+22,     74,       Guiro Long Attack Time,              0, 127
+23,     74,       Guiro Long Decay Time,               0, 127
+24,     74,       Guiro Long Coarse Tune,              0, 127
+25,     74,       Guiro Long Fine Tune,                0, 127
+26,     74,       Guiro Long Level,                    0, 127
+28,     74,       Guiro Long Pan,                      0, 127
+29,     74,       Guiro Long Reverb Send,              0, 127
+30,     74,       Guiro Long Chorus Send,              0, 127
+31,     74,       Guiro Long DSP Send,                 0, 127
+20,     75,       Claves Filter Freq,                  0, 127
+21,     75,       Claves Resonance,                    0, 127
+22,     75,       Claves Attack Time,                  0, 127
+23,     75,       Claves Decay Time,                   0, 127
+24,     75,       Claves Coarse Tune,                  0, 127
+25,     75,       Claves Fine Tune,                    0, 127
+26,     75,       Claves Level,                        0, 127
+28,     75,       Claves Pan,                          0, 127
+29,     75,       Claves Reverb Send,                  0, 127
+30,     75,       Claves Chorus Send,                  0, 127
+31,     75,       Claves DSP Send,                     0, 127
+20,     76,       Wood Block High Filter Freq,         0, 127
+21,     76,       Wood Block High Resonance,           0, 127
+22,     76,       Wood Block High Attack Time,         0, 127
+23,     76,       Wood Block High Decay Time,          0, 127
+24,     76,       Wood Block High Coarse Tune,         0, 127
+25,     76,       Wood Block High Fine Tune,           0, 127
+26,     76,       Wood Block High Level,               0, 127
+28,     76,       Wood Block High Pan,                 0, 127
+29,     76,       Wood Block High Reverb Send,         0, 127
+30,     76,       Wood Block High Chorus Send,         0, 127
+31,     76,       Wood Block High DSP Send,            0, 127
+20,     77,       Wood Block Low Filter Freq,          0, 127
+21,     77,       Wood Block Low Resonance,            0, 127
+22,     77,       Wood Block Low Attack Time,          0, 127
+23,     77,       Wood Block Low Decay Time,           0, 127
+24,     77,       Wood Block Low Coarse Tune,          0, 127
+25,     77,       Wood Block Low Fine Tune,            0, 127
+26,     77,       Wood Block Low Level,                0, 127
+28,     77,       Wood Block Low Pan,                  0, 127
+29,     77,       Wood Block Low Reverb Send,          0, 127
+30,     77,       Wood Block Low Chorus Send,          0, 127
+31,     77,       Wood Block Low DSP Send,             0, 127
+20,     78,       Cuica Mute Filter Freq,              0, 127
+21,     78,       Cuica Mute Resonance,                0, 127
+22,     78,       Cuica Mute Attack Time,              0, 127
+23,     78,       Cuica Mute Decay Time,               0, 127
+24,     78,       Cuica Mute Coarse Tune,              0, 127
+25,     78,       Cuica Mute Fine Tune,                0, 127
+26,     78,       Cuica Mute Level,                    0, 127
+28,     78,       Cuica Mute Pan,                      0, 127
+29,     78,       Cuica Mute Reverb Send,              0, 127
+30,     78,       Cuica Mute Chorus Send,              0, 127
+31,     78,       Cuica Mute DSP Send,                 0, 127
+20,     79,       Cuica Open Filter Freq,              0, 127
+21,     79,       Cuica Open Resonance,                0, 127
+22,     79,       Cuica Open Attack Time,              0, 127
+23,     79,       Cuica Open Decay Time,               0, 127
+24,     79,       Cuica Open Coarse Tune,              0, 127
+25,     79,       Cuica Open Fine Tune,                0, 127
+26,     79,       Cuica Open Level,                    0, 127
+28,     79,       Cuica Open Pan,                      0, 127
+29,     79,       Cuica Open Reverb Send,              0, 127
+30,     79,       Cuica Open Chorus Send,              0, 127
+31,     79,       Cuica Open DSP Send,                 0, 127
+20,     80,       Triangle Mute Filter Freq,           0, 127
+21,     80,       Triangle Mute Resonance,             0, 127
+22,     80,       Triangle Mute Attack Time,           0, 127
+23,     80,       Triangle Mute Decay Time,            0, 127
+24,     80,       Triangle Mute Coarse Tune,           0, 127
+25,     80,       Triangle Mute Fine Tune,             0, 127
+26,     80,       Triangle Mute Level,                 0, 127
+28,     80,       Triangle Mute Pan,                   0, 127
+29,     80,       Triangle Mute Reverb Send,           0, 127
+30,     80,       Triangle Mute Chorus Send,           0, 127
+31,     80,       Triangle Mute DSP Send,              0, 127
+20,     81,       Triangle Open Filter Freq,           0, 127
+21,     81,       Triangle Open Resonance,             0, 127
+22,     81,       Triangle Open Attack Time,           0, 127
+23,     81,       Triangle Open Decay Time,            0, 127
+24,     81,       Triangle Open Coarse Tune,           0, 127
+25,     81,       Triangle Open Fine Tune,             0, 127
+26,     81,       Triangle Open Level,                 0, 127
+28,     81,       Triangle Open Pan,                   0, 127
+29,     81,       Triangle Open Reverb Send,           0, 127
+30,     81,       Triangle Open Chorus Send,           0, 127
+31,     81,       Triangle Open DSP Send,              0, 127
+20,     82,       Shaker Filter Freq,                  0, 127
+21,     82,       Shaker Resonance,                    0, 127
+22,     82,       Shaker Attack Time,                  0, 127
+23,     82,       Shaker Decay Time,                   0, 127
+24,     82,       Shaker Coarse Tune,                  0, 127
+25,     82,       Shaker Fine Tune,                    0, 127
+26,     82,       Shaker Level,                        0, 127
+28,     82,       Shaker Pan,                          0, 127
+29,     82,       Shaker Reverb Send,                  0, 127
+30,     82,       Shaker Chorus Send,                  0, 127
+31,     82,       Shaker DSP Send,                     0, 127
+20,     83,       Jingle Bell Filter Freq,             0, 127
+21,     83,       Jingle Bell Resonance,               0, 127
+22,     83,       Jingle Bell Attack Time,             0, 127
+23,     83,       Jingle Bell Decay Time,              0, 127
+24,     83,       Jingle Bell Coarse Tune,             0, 127
+25,     83,       Jingle Bell Fine Tune,               0, 127
+26,     83,       Jingle Bell Level,                   0, 127
+28,     83,       Jingle Bell Pan,                     0, 127
+29,     83,       Jingle Bell Reverb Send,             0, 127
+30,     83,       Jingle Bell Chorus Send,             0, 127
+31,     83,       Jingle Bell DSP Send,                0, 127
+20,     84,       Bell Tree Filter Freq,               0, 127
+21,     84,       Bell Tree Resonance,                 0, 127
+22,     84,       Bell Tree Attack Time,               0, 127
+23,     84,       Bell Tree Decay Time,                0, 127
+24,     84,       Bell Tree Coarse Tune,               0, 127
+25,     84,       Bell Tree Fine Tune,                 0, 127
+26,     84,       Bell Tree Level,                     0, 127
+28,     84,       Bell Tree Pan,                       0, 127
+29,     84,       Bell Tree Reverb Send,               0, 127
+30,     84,       Bell Tree Chorus Send,               0, 127
+31,     84,       Bell Tree DSP Send,                  0, 127
