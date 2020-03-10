@@ -1,11 +1,12 @@
-/* User: oIo * Date: 8/18/2010 * Time: 4:27 AM */
-
 namespace System
 {
   static public class EnumDescriptionAttributeExtension
   {
     /// <summary>
     /// https://stackoverflow.com/questions/1415140/can-my-enums-have-friendly-names#1415187
+    /// 
+    /// 
+    /// See: <see cref="System.ComponentModel.DescriptionAttribute" />
     /// </summary>
     public static string GetEnumDescriptionAttribute(this Enum value)
     {

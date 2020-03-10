@@ -1,7 +1,4 @@
-﻿/* tfwxo * 10/15/2018 * 7:51 AM */
-using System;
-using System.IO;
-namespace System
+﻿namespace System
 {
   static class EndianConvertExtension
   {
