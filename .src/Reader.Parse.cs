@@ -119,16 +119,31 @@ namespace on.smfio
       var msg32 = FileHandle.Get16Bit(pTrackIndex, pTrackOffset);
       switch ((StatusWord)msg32)
       {
-        case StatusWord.SequenceNumber: /* 0xFF00 */ return MetaHelpers.meta_FF00(FileHandle[pTrackIndex, pTrackOffset + 3], FileHandle[pTrackIndex, pTrackOffset + 4]);
-        case StatusWord.ChannelPrefix:  /* 0xFF20 */
-        case StatusWord.PortMessage:    /* 0xFF21 */ return FileHandle[pTrackIndex, pTrackOffset + 3].ToString();
-        case StatusWord.SetTempo:       /* 0xFF51 */ return MetaHelpers.meta_FF51(Convert.ToInt32(FileHandle[pTrackIndex].ReadU24(pTrackOffset + 3)));
-        case StatusWord.SMPTEOffset:    /* 0xFF54 */ return MetaHelpers.meta_FF54(this, pTrackOffset);
-        case StatusWord.TimeSignature:  /* 0xFF58 */ return MetaHelpers.meta_FF58(FileHandle[pTrackIndex], pTrackOffset);
-        case StatusWord.KeySignature:   /* 0xFF59 */ return MetaHelpers.PrintKeysignature(FileHandle[pTrackIndex], pTrackOffset);
-        case StatusWord.EndOfTrack:     /* 0xFF2F */ return MetaHelpers.meta_FF2F();
-        case StatusWord.SequencerSpecific:  /* 0xFF7F */ return GetMetadataBytes(pTrackIndex, pTrackOffset).StringifyHex();
-        case StatusWord.SystemExclusive:    /* 0xF0 */
+        case StatusWord.SequenceNumber:         /* 0xFF00 */ return MetaHelpers.meta_FF00(FileHandle[pTrackIndex, pTrackOffset + 3], FileHandle[pTrackIndex, pTrackOffset + 4]);
+        case StatusWord.ChannelPrefix:          /* 0xFF20 */
+        case StatusWord.PortMessage:            /* 0xFF21 */ return FileHandle[pTrackIndex, pTrackOffset + 3].ToString();
+        case StatusWord.SetTempo:               /* 0xFF51 */ return MetaHelpers.meta_FF51(Convert.ToInt32(FileHandle[pTrackIndex].ReadU24(pTrackOffset + 3)));
+        case StatusWord.SMPTEOffset:            /* 0xFF54 */ return MetaHelpers.meta_FF54(this, pTrackOffset);
+        case StatusWord.TimeSignature:          /* 0xFF58 */ return MetaHelpers.meta_FF58(FileHandle[pTrackIndex], pTrackOffset);
+        case StatusWord.KeySignature:           /* 0xFF59 */ return MetaHelpers.PrintKeysignature(FileHandle[pTrackIndex], pTrackOffset);
+        case StatusWord.EndOfTrack:             /* 0xFF2F */ return MetaHelpers.meta_FF2F();
+        case StatusWord.SequencerSpecific_FF70: /* 0xFF70 */ return GetMetadataBytes(pTrackIndex, pTrackOffset).StringifyHex();
+        case StatusWord.SequencerSpecific_FF71: /* 0xFF71 */ return GetMetadataBytes(pTrackIndex, pTrackOffset).StringifyHex();
+        case StatusWord.SequencerSpecific_FF72: /* 0xFF72 */ return GetMetadataBytes(pTrackIndex, pTrackOffset).StringifyHex();
+        case StatusWord.SequencerSpecific_FF73: /* 0xFF73 */ return GetMetadataBytes(pTrackIndex, pTrackOffset).StringifyHex();
+        case StatusWord.SequencerSpecific_FF74: /* 0xFF74 */ return GetMetadataBytes(pTrackIndex, pTrackOffset).StringifyHex();
+        case StatusWord.SequencerSpecific_FF75: /* 0xFF75 */ return GetMetadataBytes(pTrackIndex, pTrackOffset).StringifyHex();
+        case StatusWord.SequencerSpecific_FF76: /* 0xFF76 */ return GetMetadataBytes(pTrackIndex, pTrackOffset).StringifyHex();
+        case StatusWord.SequencerSpecific_FF77: /* 0xFF77 */ return GetMetadataBytes(pTrackIndex, pTrackOffset).StringifyHex();
+        case StatusWord.SequencerSpecific_FF78: /* 0xFF78 */ return GetMetadataBytes(pTrackIndex, pTrackOffset).StringifyHex();
+        case StatusWord.SequencerSpecific_FF79: /* 0xFF79 */ return GetMetadataBytes(pTrackIndex, pTrackOffset).StringifyHex();
+        case StatusWord.SequencerSpecific_FF7A: /* 0xFF7A */ return GetMetadataBytes(pTrackIndex, pTrackOffset).StringifyHex();
+        case StatusWord.SequencerSpecific_FF7B: /* 0xFF7B */ return GetMetadataBytes(pTrackIndex, pTrackOffset).StringifyHex();
+        case StatusWord.SequencerSpecific_FF7C: /* 0xFF7C */ return GetMetadataBytes(pTrackIndex, pTrackOffset).StringifyHex();
+        case StatusWord.SequencerSpecific_FF7D: /* 0xFF7D */ return GetMetadataBytes(pTrackIndex, pTrackOffset).StringifyHex();
+        case StatusWord.SequencerSpecific_FF7E: /* 0xFF7E */ return GetMetadataBytes(pTrackIndex, pTrackOffset).StringifyHex();
+        case StatusWord.SequencerSpecific:      /* 0xFF7F */ return GetMetadataBytes(pTrackIndex, pTrackOffset).StringifyHex();
+        case StatusWord.SystemExclusive:        /* 0xF0 */
           int nlength = FileHandle[pTrackIndex].GetEndOfSystemExclusive(pTrackOffset) - pTrackOffset;
           int noffset = pTrackOffset;
           string nresult = FileHandle[pTrackIndex, pTrackOffset, nlength].StringifyHex();

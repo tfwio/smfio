@@ -55,6 +55,9 @@ namespace on.smfio
         case MidiMsgType.SequencerSpecific:
           MidiVSTMessageList.AddV(nTrackIndex, new SequencerSpecificVST(pulse, midiMsg32, GetEventValue(nTrackIndex, nTrackOffset + 1)));
           break;
+        case MidiMsgType.SequencerSpecificUnknown:
+          MidiVSTMessageList.AddV(nTrackIndex, new SequencerSpecificUnkn((ushort)midiMsg32, pulse, midiMsg32, GetEventValue(nTrackIndex, nTrackOffset + 1)));
+          break;
         case MidiMsgType.EOT:
           MidiVSTMessageList.AddV(nTrackIndex, new MetaMessageVST(pulse, midiMsg32));
           break;

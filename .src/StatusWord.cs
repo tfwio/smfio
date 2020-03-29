@@ -86,7 +86,37 @@ namespace on.smfio
     /// <summary>0xFF59</summary>
     [System.ComponentModel.Description("Key Signature")]
     KeySignature            = 0xFF59,
-    /// <summary>0xFF7F (Was SystemSpecific)</summary>
+    /// <summary>0xFF70 Sequencer Specific? (was: System Specific)</summary>
+    [System.ComponentModel.Description("Sequencer Specific? 0xFF70")] SequencerSpecific_FF70  = 0xFF70,
+    /// <summary>0xFF71 Sequencer Specific? (was: System Specific)</summary>
+    [System.ComponentModel.Description("Sequencer Specific? 0xFF71")] SequencerSpecific_FF71  = 0xFF71,
+    /// <summary>0xFF72 Sequencer Specific? (was: System Specific)</summary>
+    [System.ComponentModel.Description("Sequencer Specific? 0xFF72")] SequencerSpecific_FF72  = 0xFF72,
+    /// <summary>0xFF73 Sequencer Specific? (was: System Specific)</summary>
+    [System.ComponentModel.Description("Sequencer Specific? 0xFF73")] SequencerSpecific_FF73  = 0xFF73,
+    /// <summary>0xFF74 Sequencer Specific? (was: System Specific)</summary>
+    [System.ComponentModel.Description("Sequencer Specific? 0xFF74")] SequencerSpecific_FF74  = 0xFF74,
+    /// <summary>0xFF75 Sequencer Specific? (was: System Specific)</summary>
+    [System.ComponentModel.Description("Sequencer Specific? 0xFF75")] SequencerSpecific_FF75  = 0xFF75,
+    /// <summary>0xFF76 Sequencer Specific? (was: System Specific)</summary>
+    [System.ComponentModel.Description("Sequencer Specific? 0xFF76")] SequencerSpecific_FF76  = 0xFF76,
+    /// <summary>0xFF77 Sequencer Specific? (was: System Specific)</summary>
+    [System.ComponentModel.Description("Sequencer Specific? 0xFF77")] SequencerSpecific_FF77  = 0xFF77,
+    /// <summary>0xFF78 Sequencer Specific? (was: System Specific)</summary>
+    [System.ComponentModel.Description("Sequencer Specific? 0xFF78")] SequencerSpecific_FF78  = 0xFF78,
+    /// <summary>0xFF79 Sequencer Specific? (was: System Specific)</summary>
+    [System.ComponentModel.Description("Sequencer Specific? 0xFF79")] SequencerSpecific_FF79  = 0xFF79,
+    /// <summary>0xFF7A Sequencer Specific? (was: System Specific)</summary>
+    [System.ComponentModel.Description("Sequencer Specific? 0xFF7A")] SequencerSpecific_FF7A  = 0xFF7A,
+    /// <summary>0xFF7B Sequencer Specific? (was: System Specific)</summary>
+    [System.ComponentModel.Description("Sequencer Specific? 0xFF7B")] SequencerSpecific_FF7B  = 0xFF7B,
+    /// <summary>0xFF7C Sequencer Specific? (was: System Specific)</summary>
+    [System.ComponentModel.Description("Sequencer Specific? 0xFF7C")] SequencerSpecific_FF7C  = 0xFF7C,
+    /// <summary>0xFF7D Sequencer Specific? (was: System Specific)</summary>
+    [System.ComponentModel.Description("Sequencer Specific? 0xFF7D")] SequencerSpecific_FF7D  = 0xFF7D,
+    /// <summary>0xFF7E Sequencer Specific? (was: System Specific)</summary>
+    [System.ComponentModel.Description("Sequencer Specific? 0xFF7E")] SequencerSpecific_FF7E  = 0xFF7E,
+    /// <summary>0xFF7F Sequencer Specific (was: System Specific)</summary>
     [System.ComponentModel.Description("Sequencer Specific")]
     SequencerSpecific       = 0xFF7F,
 

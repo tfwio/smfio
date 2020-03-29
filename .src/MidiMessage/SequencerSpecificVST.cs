@@ -35,4 +35,30 @@ namespace on.smfio
       Length = data.Length-1;
     }
   }
+  public class SequencerSpecificUnkn : MIDIMessageVST
+  {
+
+    #region Properties
+
+    public string MetaString { get { return Strings.Encoding.GetString(base.Data); } }
+
+    public int Length { get; set; }
+
+    public override byte[] Data { get { return GetSystemMessage(); } set { data = value; } }
+    byte[] data;
+
+    public byte[] GetSystemMessage()
+    {
+      byte[] bitset = new byte[base.Data.Length - 1];
+      bitset[0] = base.Data[0];
+      for (int i = 2; i < base.Data.Length; i++) bitset[i - 1] = base.Data[i];
+      return bitset;
+    }
+
+    #endregion
+    public SequencerSpecificUnkn(ushort msg16, long delta, int message, params byte[] data) : base(MidiMsgType.SequencerSpecificUnknown, delta, message, data)
+    {
+      Length = data.Length - 1;
+    }
+  }
 }

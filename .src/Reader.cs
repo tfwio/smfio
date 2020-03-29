@@ -143,6 +143,16 @@ namespace on.smfio
     }
 
     #region MESSAGE PARSER: GetTrackMessage, GetTempoMap
+    string GetDebugInfo(int nTrackIndex, int nTrackOffset, int delta)
+    {
+      ushort msg16 = FileHandle.Get16Bit(nTrackIndex, nTrackOffset);
+      byte msg8 = (byte)(msg16 & 0xFF);
+      // we want to skip a two-byte header?
+      byte msg8Plus1 = FileHandle.Get8Bit(nTrackIndex, nTrackOffset + 2);
+      CurrentStatus = msg16;
+      return $"{{ Track Index: {nTrackIndex}, Track Offset: {nTrackOffset}, delta: {delta} }}\n" +
+        $"{{ 16 Bit Message: {msg16:X4}, 8 Bit Message: {msg8:X2}, next 8 Bit Message: {msg8Plus1:X2};";
+    }
 
     /// <summary>
     /// provides **default parser semantic** in that from here we delegate
@@ -174,6 +184,7 @@ namespace on.smfio
           MessageHandler(MidiMsgType.EOT, nTrackIndex, nTrackOffset, msg16, msg8, CurrentTrackPulse, CurrentRunningStatus8, false);
           DELTA_Returned = FileHandle.Tracks[nTrackIndex].Data.Length;
           break;
+        case Stat16.SequenceNumber: // 0xFF00
         case Stat16.ChannelPrefix:   // FF20
         case Stat16.PortMessage:     // FF21?
         case Stat16.SetTempo:        // FF51
@@ -187,6 +198,27 @@ namespace on.smfio
         case Stat16.TimeSignature:   // FF58
         case Stat16.KeySignature:    // FF59
           MessageHandler(MidiMsgType.MetaInf, nTrackIndex, nTrackOffset, msg16, msg8, CurrentTrackPulse, CurrentRunningStatus8, false);
+          DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
+          break;
+        case Stat16.SequencerSpecific_70: // 0xFF70
+        case Stat16.SequencerSpecific_71: // 0xFF71
+        case Stat16.SequencerSpecific_72: // 0xFF72
+        case Stat16.SequencerSpecific_73: // 0xFF73
+        case Stat16.SequencerSpecific_74: // 0xFF74
+        case Stat16.SequencerSpecific_75: // 0xFF75
+        case Stat16.SequencerSpecific_76: // 0xFF76
+        case Stat16.SequencerSpecific_77: // 0xFF77
+        case Stat16.SequencerSpecific_78: // 0xFF78
+        case Stat16.SequencerSpecific_79: // 0xFF79
+        case Stat16.SequencerSpecific_7A: // 0xFF7A
+        case Stat16.SequencerSpecific_7B: // 0xFF7B
+        case Stat16.SequencerSpecific_7C: // 0xFF7C
+        case Stat16.SequencerSpecific_7D: // 0xFF7D
+        case Stat16.SequencerSpecific_7E: // 0xFF7E
+          // we have FF70LLNN where LL is a byte length (assumed: variable bit) and NN is the data we're being provided.
+          // MPC Pro software generates it.
+          // Theoretically, this could probably happen for other FF70-FF7E?
+          MessageHandler(MidiMsgType.SequencerSpecificUnknown, nTrackIndex, nTrackOffset, msg16, msg8, CurrentTrackPulse, CurrentRunningStatus8, false);
           DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
           break;
         case Stat16.SequencerSpecific:  // FF7F
@@ -229,7 +261,10 @@ namespace on.smfio
               return DELTA_Returned;
             }
             else
-              throw new FormatException("Bad format!\nThere is probably a problem with the Input File unless we made an error reading it!)");
+              throw new FormatException(
+                $"Bad format(?)!\n" +
+                $"There is probably a problem with the Input File (unless we made an error reading it)!\n" +
+                $"Here is some debug info: {GetDebugInfo(nTrackIndex, nTrackOffset, delta)}");
           }
 
           break;
@@ -266,6 +301,7 @@ namespace on.smfio
       switch (msg16)
       {
         // text
+        case Stat16.SequenceNumber: // 0xFF00
         case Stat16.ChannelPrefix:  // 0xFF20
         case Stat16.PortMessage:    /* 0xFF21 */ DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset); break;
         case Stat16.EndOfTrack:     /* 0xFF2F */ DELTA_Returned = FileHandle.Tracks[nTrackIndex].Data.Length-1; break;
@@ -299,6 +335,21 @@ namespace on.smfio
             this[nTrackIndex, nTrackOffset + 4]);
           DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
           break;
+        case Stat16.SequencerSpecific_70: // 0xFF70
+        case Stat16.SequencerSpecific_71: // 0xFF71
+        case Stat16.SequencerSpecific_72: // 0xFF72
+        case Stat16.SequencerSpecific_73: // 0xFF73
+        case Stat16.SequencerSpecific_74: // 0xFF74
+        case Stat16.SequencerSpecific_75: // 0xFF75
+        case Stat16.SequencerSpecific_76: // 0xFF76
+        case Stat16.SequencerSpecific_77: // 0xFF77
+        case Stat16.SequencerSpecific_78: // 0xFF78
+        case Stat16.SequencerSpecific_79: // 0xFF79
+        case Stat16.SequencerSpecific_7A: // 0xFF7A
+        case Stat16.SequencerSpecific_7B: // 0xFF7B
+        case Stat16.SequencerSpecific_7C: // 0xFF7C
+        case Stat16.SequencerSpecific_7D: // 0xFF7D
+        case Stat16.SequencerSpecific_7E: // 0xFF7E
         case Stat16.SequencerSpecific: // 0xFF7F
           DELTA_Returned = FileHandle.Tracks[nTrackIndex].DeltaSeek(nTrackOffset);
           break;

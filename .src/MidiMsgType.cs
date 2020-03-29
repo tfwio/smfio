@@ -20,6 +20,7 @@ namespace on.smfio
 		/// <summary>0xFF7F</summary>
 		///
 		SequencerSpecific,
+		SequencerSpecificUnknown,
     SystemExclusive,
     /// <summary>
     /// A channel message is a message event which points at a specific channel in the lower 4 byte MSB.
@@ -36,5 +37,6 @@ namespace on.smfio
 		ControllerChange,
 		NoteOn,
 		NoteOff,
+    Unknown,
 	}
 }

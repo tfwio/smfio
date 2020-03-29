@@ -68,6 +68,23 @@ namespace on.smfio
     public const ushort TimeSignature           = 0xFF58;
     /// <summary>0xFF59</summary>
     public const ushort KeySignature            = 0xFF59;
+    /// <summary>0xFF70</summary>
+    public const ushort SequencerSpecific_70    = 0xFF70;
+    public const ushort SequencerSpecific_71    = 0xFF71;
+    public const ushort SequencerSpecific_72    = 0xFF72;
+    public const ushort SequencerSpecific_73    = 0xFF73;
+    public const ushort SequencerSpecific_74    = 0xFF74;
+    public const ushort SequencerSpecific_75    = 0xFF75;
+    public const ushort SequencerSpecific_76    = 0xFF76;
+    public const ushort SequencerSpecific_77    = 0xFF77;
+    public const ushort SequencerSpecific_78    = 0xFF78;
+    public const ushort SequencerSpecific_79    = 0xFF79;
+    public const ushort SequencerSpecific_7A    = 0xFF7A;
+    public const ushort SequencerSpecific_7B    = 0xFF7B;
+    public const ushort SequencerSpecific_7C    = 0xFF7C;
+    public const ushort SequencerSpecific_7D    = 0xFF7D;
+    public const ushort SequencerSpecific_7E    = 0xFF7E;
+    public const ushort SequencerSpecific_7F    = SequencerSpecific;
     /// <summary>0xFF7F</summary>
     public const ushort SequencerSpecific       = 0xFF7F;
 
