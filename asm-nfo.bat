@@ -3,8 +3,9 @@
 PUSHD %~dp0 > nul
   CALL :DOTHIS Python36
   CALL :DOTHIS Python37
+  ::CALL :DOTHIS Python38
 POPD > nul
-::PAUSE
+PAUSE
 GOTO:EOF
 
 :DOTHIS

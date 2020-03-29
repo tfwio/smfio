@@ -2,8 +2,8 @@
 @echo off
 call build-path
 
+SET SNKN=smfio
 IF NOT EXIST .src/smfio.snk (
-  SNKN=smfio
   pushd .src > nul
     sn -k 4096 %SNKN%.snk
     sn -p %SNKN%.snk %SNKN%-public.snk sha512

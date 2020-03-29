@@ -1,7 +1,11 @@
 @echo off
 call build-path
-SET SNKSIZE=65536
+SET SNKSIZE=4096
 SET SNKN=smfio
+SET PLAT=AnyCPU
+SET CONF=Debug
+SET CNF=%PLAT%-%CONF%
+
 IF NOT EXIST .src/smfio.snk (
   pushd .src > nul
     echo - Generate Strong Name Key Pair ^(%SNKN%.snk^)
@@ -16,6 +20,6 @@ IF NOT EXIST .src/smfio.snk (
 msbuild /m ".sln\\smfio.sln" "/t:smfio" "/p:Platform=Any CPU;Configuration=Debug"
 echo - Assembly Public Key ^(%SNKN%-public.snk^)
 sn -q -tp .src/%SNKN%-public.snk
-echo - Assembly Public Key ^(build/AnyCPU-Debug/smfio.dll^)
-sn -q -Tp build/AnyCPU-Debug/smfio.dll
+echo - Assembly Public Key ^(build/%CNF%/smfio.dll^)
+sn -q -Tp build/%CNF%/smfio.dll
 pause

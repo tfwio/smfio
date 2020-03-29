@@ -182,6 +182,7 @@
     <EmbeddedResource Include="ext\dk_03-GM2.map">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <None Include="smfio-public.snk" />
     <None Include="smfio.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

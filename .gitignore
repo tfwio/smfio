@@ -7,3 +7,5 @@
 /doc/*.url
 /.src/smfio-n3.csproj.user
 *.snk
+smfio-public.snk.log
+build.log
