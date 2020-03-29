@@ -195,7 +195,10 @@ namespace SMFIOViewer
 				case MidiMsgType.MetaInf:
 					lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentRunningStatus8), smbt, sseconds, string.Empty, MetaHelpers.GetMetadataTitle(midiMsg32), Reader.GetMessageString(nTrackIndex, nTrackOffset));
 					break;
-				case MidiMsgType.SequencerSpecific:
+        case MidiMsgType.SequencerSpecificUnknown:
+          lve.AddItem(tempo, pulse, System.Drawing.Color.OrangeRed, smbt, sseconds, string.Empty, MetaHelpers.GetMetadataTitle(midiMsg32), Reader.GetMessageString(nTrackIndex, nTrackOffset));
+          break;
+        case MidiMsgType.SequencerSpecific:
 					lve.AddItem(tempo, pulse, ColorResources.GetEventColor(midiMsg32, ColorResources.cR, Reader.CurrentRunningStatus8), smbt, sseconds, string.Empty, MetaHelpers.GetMetadataTitle(midiMsg32), Reader.GetMessageString(nTrackIndex, nTrackOffset));
 					break;
 				case MidiMsgType.SystemExclusive:
