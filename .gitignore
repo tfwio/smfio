@@ -5,9 +5,10 @@
 /.src/paket.dependencies
 /.src/paket.lock
 /.vscode/.ropeproject/*
-.vscode/settings.json
 /smfio
 /get-sha-cs
 /get-sha
-.src/Properties/AssemblyInfo.cs
-smfres/
+/.sln/**
+/.vscode
+/.src/Properties/AssemblyInfo.cs
+/smfres/
